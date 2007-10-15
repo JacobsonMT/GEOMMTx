@@ -9,91 +9,124 @@ import gov.nih.nlm.nls.nlp.textfeatures.Phrase;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class MMTxRunner {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
+	
+	protected static Log log = LogFactory.getLog( MMTxRunner.class );
+	
+	private MMTxAPI MMTx;
 
-    private MMTxAPI MMTx;
-    private int scoreThreshold;
+	private int scoreThreshold;
 
-    public MMTxRunner() {
-        this( new String[] {} );
-    }
+	public MMTxRunner() {
+		this(new String[] {});
+	}
 
-    public MMTxRunner( String[] options ) {
-        this( 850, options );
-    }
+	public MMTxRunner(String[] options) {
+		this(850, options);
+	}
 
-    public MMTxRunner( int scoreThreshold, String[] options ) {
-        this.scoreThreshold = scoreThreshold;
-        try {
-            MMTx = new MMTxAPI( options );
-        } catch ( Exception e ) {
-            e.printStackTrace();
-            System.exit( 1 );
-        }
-    }
+	
+	private Cache memoryOnlyCache;
+	private Map<Phrase, Collection<Candidate>> conceptCache;
 
-    public List<Phrase> getPhrases( String text ) {
-        Document doc = null;
-        List<Phrase> results = new ArrayList<Phrase>();
+	public MMTxRunner(int scoreThreshold, String[] options) {
+		this.scoreThreshold = scoreThreshold;
+		CacheManager singletonManager = CacheManager.create();
+		
+		memoryOnlyCache = new Cache("realCache", 25, false, false, 5000, 1500);
+		singletonManager.addCache(memoryOnlyCache);
 
-        // MMTX processing
-        try {
-            doc = MMTx.processDocument( text );
-        } catch ( Exception e ) {
-            e.printStackTrace();
-            System.exit( 1 );
-        }
+		try {
+			MMTx = new MMTxAPI(options);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+	}
+	
+	
 
-        if ( doc.getPhrases() == null ) return results;
+	public List<Phrase> getPhrases(String text) {
+		// check to see if we done it before
+		Element element = memoryOnlyCache.get(text);
+		if (element != null) {
+			log.info("using phrase cache");
+			return (List<Phrase>)(memoryOnlyCache.get(text).getObjectValue());
+		}
 
-        for ( Object phraseObj : doc.getPhrases() ) {
-            results.add( ( Phrase ) phraseObj );
-        } // end for
+		Document doc = null;
+		List<Phrase> results = new ArrayList<Phrase>();
 
-        return results;
-    }
+		// MMTX processing
+		try {
+			doc = MMTx.processDocument(text);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
 
-    public Collection<Candidate> getConcepts( Phrase phrase ) {
-        Collection<Candidate> results = new ArrayList<Candidate>();
+		if (doc.getPhrases() == null)
+			return results;
 
-        List finalMappings = phrase.getFinalMappings();
+		for (Object phraseObj : doc.getPhrases()) {
+			results.add((Phrase) phraseObj);
+		} // end for
 
-        // somtimes finalMappings is null, guess this happens when it can't find anything
-        if ( finalMappings == null ) return results;
+		memoryOnlyCache.put(new Element(text, results));
+		return results;
+	}
 
-        // go through the mappings
-        for ( Object mappingIterator : finalMappings ) {
-            FinalMapping aMapping = ( FinalMapping ) mappingIterator;
+	public Collection<Candidate> getConcepts(Phrase phrase) {
+		Collection<Candidate> results = new ArrayList<Candidate>();
 
-            // go through the concepts which are Candidates
-            for ( Object cObj : aMapping.getConcepts() ) {
-                Candidate concept = ( Candidate ) cObj;
-                if ( concept.getFinalScore() > scoreThreshold ) {
-                    results.add( concept );
-                }
-            } // end for
-        } // end for
-        return results;
-    }
+		List finalMappings = phrase.getFinalMappings();
 
-    public Collection<Candidate> getConcepts( String text ) {
-        Document doc = null;
-        Collection<Candidate> results = new ArrayList<Candidate>();
+		// somtimes finalMappings is null, guess this happens when it can't find
+		// anything
+		if (finalMappings == null)
+			return results;
 
-        for ( Phrase p : getPhrases( text ) ) {
-            results.addAll( getConcepts( p ) );
-        } // end for
-        return results;
-    }
+		// go through the mappings
+		for (Object mappingIterator : finalMappings) {
+			FinalMapping aMapping = (FinalMapping) mappingIterator;
 
-    public int getScoreThreshold() {
-        return scoreThreshold;
-    }
+			// go through the concepts which are Candidates
+			for (Object cObj : aMapping.getConcepts()) {
+				Candidate concept = (Candidate) cObj;
+				if (concept.getFinalScore() > scoreThreshold) {
+					results.add(concept);
+				}
+			} // end for
+		} // end for
+		return results;
+	}
 
-    public void setScoreThreshold( int scoreThreshold ) {
-        this.scoreThreshold = scoreThreshold;
-    }
+	public Collection<Candidate> getConcepts(String text) {
+		Document doc = null;
+		Collection<Candidate> results = new ArrayList<Candidate>();
+
+		for (Phrase p : getPhrases(text)) {
+			results.addAll(getConcepts(p));
+		} // end for
+		return results;
+	}
+
+	public int getScoreThreshold() {
+		return scoreThreshold;
+	}
+
+	public void setScoreThreshold(int scoreThreshold) {
+		this.scoreThreshold = scoreThreshold;
+	}
 
 }
