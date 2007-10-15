@@ -20,7 +20,8 @@ import ubic.gemma.ontology.OntologyTools;
 
 public class DiseaseOntologyMapper implements CUIMapper {
 
-    private final static String MAIN_URL = "http://www.berkeleybop.org/ontologies/obo-all/disease_ontology/disease_ontology.owl";
+	//http://www.berkeleybop.org/ontologies/obo-all/disease_ontology/disease_ontology.owl
+    private final static String MAIN_URL = "http://www.berkeleybop.org/ontologies/owl/DOID";
     private OntModel model;
     private Map<String, String> CUIMap;
 

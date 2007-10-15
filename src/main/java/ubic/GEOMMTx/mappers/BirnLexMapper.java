@@ -23,7 +23,7 @@ import com.hp.hpl.jena.query.ResultSet;
 public class BirnLexMapper implements CUIMapper {
     // some concepts in brinlex are not from neuronames
     // example: C0025921 for C57B6 Mouse
-    private final static String MAIN_URL = "http://www.nbirn.net/birnlex/";
+    private final static String MAIN_URL = "http://fireball.drexelmed.edu/birnlex/";
     private OntModel birnLex;
     private Map<String, String> CUIMap;
 
@@ -57,9 +57,9 @@ public class BirnLexMapper implements CUIMapper {
                 String cui = OntologyTools.varToString( "cui", soln );
                 String URI = OntologyTools.varToString( "class", soln );
                 CUIMap.put( cui, URI );
-                // System.out.print( label + " " );
-                // System.out.println( cui + " " );
-                // System.out.println( URI + " " );
+                 //System.out.print( label + " " );
+                 //System.out.println( cui + " " );
+                 //System.out.println( URI + " " );
                 //                
                 // if ( x.isAnon() ) continue; // some reasoners will return these.
             }
