@@ -1,5 +1,7 @@
 package ubic.GEOMMTx;
 
+import java.io.IOException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -8,14 +10,42 @@ import ubic.GEOMMTx.mappers.DiseaseOntologyMapper;
 import ubic.GEOMMTx.mappers.FMALiteMapper;
 import ubic.gemma.model.expression.experiment.ExpressionExperiment;
 import ubic.gemma.model.expression.experiment.ExpressionExperimentService;
+import ubic.gemma.util.AbstractSpringAwareCLI;
 
-public class ExpressionExperimentAnntotatorTester {
+public class ExpressionExperimentAnntotatorTester extends AbstractSpringAwareCLI {
+    private Text2Owl text2Owl;
+    protected void processOptions() {
+        super.processOptions();
+    }
+
+    @Override
+    protected void buildOptions() {
+    }
+
+    
     protected static Log log = LogFactory.getLog( ExpressionExperimentAnntotatorTester.class );
 
     /**
      * @param args
      */
     public static void main( String[] args ) {
+        Main p = new Main();
+
+        // DocumentRange t = null;
+
+        try {
+            Exception ex = p.doWork( args );
+            if ( ex != null ) {
+                ex.printStackTrace();
+            }
+        } catch ( Exception e ) {
+            throw new RuntimeException( e );
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    protected Exception doWork( String[] args ) {
         long totaltime = System.currentTimeMillis();
 
         ExpressionExperimentService ees = ( ExpressionExperimentService ) this.getBean( "expressionExperimentService" );
@@ -37,6 +67,7 @@ public class ExpressionExperimentAnntotatorTester {
 
         ExpressionExperimentAnntotator experimentAnn = new ExpressionExperimentAnntotator( experiment, text2Owl );
 
+        try {
         log.info( "getName()" );
         experimentAnn.annotateName();
         experimentAnn.writeModel();
@@ -73,6 +104,10 @@ public class ExpressionExperimentAnntotatorTester {
         ees.thawLite( experiment );
         experimentAnn = new ExpressionExperimentAnntotator( experiment, text2Owl );
         experimentAnn.writeModel();
+        } catch (Exception e) {
+            return e;
+        }
+        return null;
     }
 
 }
