@@ -18,13 +18,17 @@ import ubic.GEOMMTx.UMLSSourceCode;
 import ubic.gemma.ontology.OntologyLoader;
 import ubic.gemma.ontology.OntologyTools;
 
-public class DiseaseOntologyMapper extends AbstractMapper implements CUIMapper {
+public class DiseaseOntologyMapper extends AbstractToUMLSMapper implements CUIMapper {
 
     private OntModel model;
 
+    public String getMainURL() {
+        return "http://www.berkeleybop.org/ontologies/owl/DOID";
+    }
+
+    
     public DiseaseOntologyMapper() {
         super();
-        MAIN_URL = "http://www.berkeleybop.org/ontologies/owl/DOID";
     }
 
     public void loadFromOntology() {
@@ -32,7 +36,7 @@ public class DiseaseOntologyMapper extends AbstractMapper implements CUIMapper {
 
         // load the ontology model
         try {
-            model = OntologyLoader.loadPersistentModel( MAIN_URL, false );
+            model = OntologyLoader.loadPersistentModel( getMainURL(), false );
         } catch ( IOException e ) {
             e.printStackTrace();
             System.exit( 1 );

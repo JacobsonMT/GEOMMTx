@@ -20,12 +20,15 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 
-public class BirnLexMapper extends AbstractMapper implements CUIMapper {
+public class BirnLexMapper extends AbstractToUMLSMapper implements CUIMapper {
     private OntModel birnLex;
 
+    public String getMainURL() {
+        return "http://fireball.drexelmed.edu/birnlex/";
+    }
+    
     public BirnLexMapper() {
         super();
-        MAIN_URL = "http://fireball.drexelmed.edu/birnlex/";
     }
 
     public void loadFromOntology() {
@@ -33,7 +36,7 @@ public class BirnLexMapper extends AbstractMapper implements CUIMapper {
 
         // load the ontology model
         try {
-            birnLex = OntologyLoader.loadPersistentModel( MAIN_URL, false );
+            birnLex = OntologyLoader.loadPersistentModel( getMainURL(), false );
         } catch ( IOException e ) {
             e.printStackTrace();
             System.exit( 1 );
