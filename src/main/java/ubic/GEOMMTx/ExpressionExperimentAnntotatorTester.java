@@ -18,6 +18,7 @@ public class ExpressionExperimentAnntotatorTester extends AbstractSpringAwareCLI
         super.processOptions();
     }
 
+    
     @Override
     protected void buildOptions() {
     }
@@ -29,9 +30,7 @@ public class ExpressionExperimentAnntotatorTester extends AbstractSpringAwareCLI
      * @param args
      */
     public static void main( String[] args ) {
-        Main p = new Main();
-
-        // DocumentRange t = null;
+        ExpressionExperimentAnntotatorTester p = new ExpressionExperimentAnntotatorTester();
 
         try {
             Exception ex = p.doWork( args );
@@ -42,12 +41,19 @@ public class ExpressionExperimentAnntotatorTester extends AbstractSpringAwareCLI
             throw new RuntimeException( e );
         }
     }
+    
+   public ExpressionExperimentAnntotatorTester() {
+        
+    }
+    
 
     @SuppressWarnings("unchecked")
     @Override
     protected Exception doWork( String[] args ) {
         long totaltime = System.currentTimeMillis();
 
+        Exception err = processCommandLine( "Expression experiment annotator tester ", args );
+        if ( err != null ) return err;
         ExpressionExperimentService ees = ( ExpressionExperimentService ) this.getBean( "expressionExperimentService" );
 
         long time = System.currentTimeMillis();
