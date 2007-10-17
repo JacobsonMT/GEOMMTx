@@ -18,19 +18,21 @@ import ubic.GEOMMTx.UMLSSourceCode;
 import ubic.gemma.ontology.OntologyLoader;
 import ubic.gemma.ontology.OntologyTools;
 
-public class DiseaseOntologyMapper implements CUIMapper {
+public class DiseaseOntologyMapper extends AbstractMapper implements CUIMapper {
 
-	//http://www.berkeleybop.org/ontologies/obo-all/disease_ontology/disease_ontology.owl
-    private final static String MAIN_URL = "http://www.berkeleybop.org/ontologies/owl/DOID";
     private OntModel model;
-    private Map<String, String> CUIMap;
 
     public DiseaseOntologyMapper() {
+        super();
+        MAIN_URL = "http://www.berkeleybop.org/ontologies/owl/DOID";
+    }
+
+    public void loadFromOntology() {
         CUIMap = new HashMap<String, String>();
 
         // load the ontology model
         try {
-            model = OntologyLoader.loadPersistentModel( MAIN_URL, false  );
+            model = OntologyLoader.loadPersistentModel( MAIN_URL, false );
         } catch ( IOException e ) {
             e.printStackTrace();
             System.exit( 1 );
@@ -52,17 +54,17 @@ public class DiseaseOntologyMapper implements CUIMapper {
             ResultSet results = qexec.execSelect();
             while ( results.hasNext() ) {
                 QuerySolution soln = results.nextSolution();
-                String label = OntologyTools.varToString( "label", soln );
+                // String label = OntologyTools.varToString( "label", soln );
                 String URI = OntologyTools.varToString( "obj", soln );
                 String cui = OntologyTools.varToString( "dbcode", soln );
 
-                //UMLS_CUI:C00123 is split and we use the second half
-                cui = cui.split(":")[1];
-                
+                // UMLS_CUI:C00123 is split and we use the second half
+                cui = cui.split( ":" )[1];
+
                 CUIMap.put( cui, URI );
-                 /*System.out.print( label + " " );
-                 System.out.println( cui + " " );
-                 System.out.println( URI + " " );*/
+                /*
+                 * System.out.print( label + " " ); System.out.println( cui + " " ); System.out.println( URI + " " );
+                 */
                 //                
                 // if ( x.isAnon() ) continue; // some reasoners will return these.
             }
@@ -71,13 +73,10 @@ public class DiseaseOntologyMapper implements CUIMapper {
         }
     }
 
-    public String convert( String CUI, Collection<UMLSSourceCode> sourceCodes ) {
-        return CUIMap.get(CUI);
-    }
     public static void main( String args[] ) {
         DiseaseOntologyMapper test = new DiseaseOntologyMapper();
-        ///String cui = 
-        System.out.println(test.convert("C0020492", null));
+        // /String cui =
+        System.out.println( test.convert( "C0020492", null ) );
     }
 
 }

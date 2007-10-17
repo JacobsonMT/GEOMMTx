@@ -20,21 +20,20 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 
-public class BirnLexMapper implements CUIMapper {
-    // some concepts in brinlex are not from neuronames
-    // example: C0025921 for C57B6 Mouse
-    private final static String MAIN_URL = "http://fireball.drexelmed.edu/birnlex/";
+public class BirnLexMapper extends AbstractMapper implements CUIMapper {
     private OntModel birnLex;
-    private Map<String, String> CUIMap;
-
-    private final static String ORG_URL = "";
 
     public BirnLexMapper() {
+        super();
+        MAIN_URL = "http://fireball.drexelmed.edu/birnlex/";
+    }
+
+    public void loadFromOntology() {
         CUIMap = new HashMap<String, String>();
 
         // load the ontology model
         try {
-            birnLex = OntologyLoader.loadPersistentModel( MAIN_URL, false  );
+            birnLex = OntologyLoader.loadPersistentModel( MAIN_URL, false );
         } catch ( IOException e ) {
             e.printStackTrace();
             System.exit( 1 );
@@ -57,9 +56,9 @@ public class BirnLexMapper implements CUIMapper {
                 String cui = OntologyTools.varToString( "cui", soln );
                 String URI = OntologyTools.varToString( "class", soln );
                 CUIMap.put( cui, URI );
-                 //System.out.print( label + " " );
-                 //System.out.println( cui + " " );
-                 //System.out.println( URI + " " );
+                // System.out.print( label + " " );
+                // System.out.println( cui + " " );
+                // System.out.println( URI + " " );
                 //                
                 // if ( x.isAnon() ) continue; // some reasoners will return these.
             }
@@ -67,11 +66,6 @@ public class BirnLexMapper implements CUIMapper {
             qexec.close();
         }
 
-    }
-
-
-    public String convert( String CUI, Collection<UMLSSourceCode> sourceCodes ) {
-        return CUIMap.get(CUI);
     }
 
     public static void main( String args[] ) {
