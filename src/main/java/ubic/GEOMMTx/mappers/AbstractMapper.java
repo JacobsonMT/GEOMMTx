@@ -28,10 +28,11 @@ public abstract class AbstractMapper {
         super();
         try {
             loadFromDisk();
-            log.info( "loaded from disk" );
+            log.info( "loaded from disk, mappings:" + CUIMap.size() );
         } catch ( Exception e ) {
-            log.info( "can't load from disk, loading from ontology" );
+            log.info( "can't load from disk, loading from ontology");
             loadFromOntology();
+            log.info( "loaded, mappings:" + CUIMap.size() );
             save();
         }
 
