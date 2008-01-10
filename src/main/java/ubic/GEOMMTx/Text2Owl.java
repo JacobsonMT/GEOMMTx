@@ -14,6 +14,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.icapture.tag.mmtx.Data;
 
+import ubic.GEOMMTx.mappers.BirnLexMapper;
+import ubic.GEOMMTx.mappers.DiseaseOntologyMapper;
 import ubic.GEOMMTx.mappers.FMALiteMapper;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -37,8 +39,11 @@ public class Text2Owl {
     private Map<String, Set<UMLSSourceCode>> codeMap;
 
     public Text2Owl() {
+        this( new String[] { "--an_derivational_variants", "--no_acros_abbrs" } );
+    }
 
-        mmtx = new MMTxRunner( new String[] { "--an_derivational_variants", "--no_acros_abbrs" } );
+    public Text2Owl( String[] options ) {
+        mmtx = new MMTxRunner( options );
         CUIMappers = new ArrayList<CUIMapper>();
         umlscodes = new GetUMLSCodes();
         codeMap = umlscodes.getUMLSCodeMap();
@@ -156,13 +161,15 @@ public class Text2Owl {
     // short main test
     public static void main( String args[] ) throws Exception {
         long time = System.currentTimeMillis();
-        Text2Owl text2Owl = new Text2Owl();
+        Text2Owl text2Owl = new Text2Owl( new String[] { "--no_acros_abbrs" } );
         text2Owl.addMapper( new FMALiteMapper() );
+        text2Owl.addMapper( new DiseaseOntologyMapper() );
+        text2Owl.addMapper( new BirnLexMapper() );
 
         Model model = ModelFactory.createDefaultModel();
         Resource root = model.createResource( "http://www.purl.org/leon/umls#Sample" );
 
-        model = text2Owl.processText( "Nasal Epithelium", root );
+        //model = text2Owl.processText( "Nasal Epithelium", root );
 
         log.info( "here" );
         model = text2Owl.processText( "Sample # Group OD 260/280 RNA, ug/ul Actb Ct Chip 1 PregPBS 2.0 0.63 13.8 a 2 ", root );
@@ -182,12 +189,14 @@ public class Text2Owl {
                 .processText(
                         "Serum here.  Estrogen receptor status in breast cancer is associated with remarkably distinct gene expression patterns. Serum at end.",
                         root );
-
-        model = text2Owl.processText( "Breast cancer", root );
-        model = text2Owl
-                .processText(
-                        "Serum here.  Estrogen receptor status in breast cancer is associated with remarkably distinct gene expression patterns. Serum at end.",
-                        root );*/
+        /*
+         * model = text2Owl .processText( "Serum here. Estrogen receptor status in breast cancer is associated with
+         * remarkably distinct gene expression patterns. Serum at end.", root ); model = text2Owl .processText( "Serum
+         * here. Estrogen receptor status in breast cancer is associated with remarkably distinct gene expression
+         * patterns. Serum at end.", root ); model = text2Owl.processText( "Breast cancer", root ); model = text2Owl
+         * .processText( "Serum here. Estrogen receptor status in breast cancer is associated with remarkably distinct
+         * gene expression patterns. Serum at end.", root );
+         */
 
         model.write( System.out, "N-TRIPLE" );
         System.out.println( "----------------------" );
