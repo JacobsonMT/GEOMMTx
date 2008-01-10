@@ -9,11 +9,16 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class GetUMLSCodes {
     private String location;
 
+    protected static Log log = LogFactory.getLog( GetUMLSCodes.class );
+    
     public GetUMLSCodes() {
-        this( "C:\\Documents and Settings\\lfrench\\Desktop\\UMLS2007AA\\SecondSubset\\2007AA\\META\\MRCONSO.RRF" );
+        this( "C:\\Documents and Settings\\Leon\\Desktop\\UMLS2007AAFile\\MRCONSO.RRF" );
     }
 
     public GetUMLSCodes( String location ) {
@@ -54,7 +59,7 @@ public class GetUMLSCodes {
             e.printStackTrace();
             System.exit( 1 );
         }
-        System.out.println( "Loaded UMLS Codes, nocodes entries=" + noCodeCount );
+        log.info( "Loaded UMLS Codes, nocode entries=" + noCodeCount );
         return SABMap;
     }
 }
