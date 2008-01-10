@@ -63,20 +63,18 @@ public class Main extends AbstractSpringAwareCLI {
         Collection<ExpressionExperiment> experiments = ees.loadAll();
 
         long time = System.currentTimeMillis();
-        text2Owl = null;
 
-//        text2Owl = new Text2Owl();
-//        text2Owl.addMapper( new BirnLexMapper() );
-//        text2Owl.addMapper( new FMALiteMapper() );
-//        text2Owl.addMapper( new DiseaseOntologyMapper() );
+        loadText2Owl();
 
         System.out.println( "Total initialization time:" + ( System.currentTimeMillis() - time ) / 1000 + "s" );
 
         int c = 0;
+        int badWrites = 0;
         for ( ExpressionExperiment experiment : experiments ) {
-            log.info( "Experiment number:" + ++c + " of " + experiments.size() );
-            // if (c++ > 10)
-            // break;
+            c++;
+
+            log.info( "Experiment number:" + c + " of " + experiments.size() + " ID:" + experiment.getId() );
+
             time = System.currentTimeMillis();
 
             ees.thawLite( experiment );
@@ -88,41 +86,31 @@ public class Main extends AbstractSpringAwareCLI {
             try {
                 experimentAnn.writeModel();
             } catch ( Exception e ) {
+                badWrites++;
                 e.printStackTrace();
             }
 
+            // write it out to save memory
             log.info( "--------------------------------------------" );
-            log.info( ( ( System.currentTimeMillis() - time ) / 1000 )
-                    + "s for whole experiment, writing out to save memory" );
+            log.info( ( ( System.currentTimeMillis() - time ) / 1000 ) + "s for whole experiment, writing out" );
         }
+
+        log.info( badWrites + " failed model writes" );
 
         System.out.println( "Total time:" + ( System.currentTimeMillis() - totaltime ) / 1000 + "s" );
         return null;
     }
 
-    // model.write( new FileWriter( "RDFfromText2Owl.main.rdf" ) );
-    /*
-     * desc becomes the URI, the text results are attatched to
+    /**
+     * Hopefully this resets the memory leaks in MMTx
      */
-
-    public void printAndShow( String text, String indent, String shortName ) {
-        // get rid of dupes
-
-        // Collection<String> URIs = new CopyOnWriteArraySet<String>();
-        // URIs.addAll( text2Owl.processText( text ) );
-        // for ( String s : URIs ) {
-        // // lets record what we've seen
-        // Set<String> datasets = seen.get( s );
-        // if ( datasets == null ) {
-        // datasets = new HashSet<String>();
-        // seen.put( s, datasets );
-        // }
-        // datasets.add( shortName );
-        //
-        // System.out.println( indent + s );
-        // }
-        // System.out.println( indent + "(" + ( ( System.currentTimeMillis() -
-        // time ) / 1000 ) + "s)" );
+    private void loadText2Owl() {
+        text2Owl = null;
+        System.gc();
+        text2Owl = new Text2Owl();
+        text2Owl.addMapper( new BirnLexMapper() );
+        text2Owl.addMapper( new FMALiteMapper() );
+        text2Owl.addMapper( new DiseaseOntologyMapper() );
     }
 
     protected void processOptions() {
