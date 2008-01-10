@@ -42,9 +42,12 @@ public class MMTxRunner {
 	public MMTxRunner(int scoreThreshold, String[] options) {
 		this.scoreThreshold = scoreThreshold;
 		CacheManager singletonManager = CacheManager.create();
-		
-		memoryOnlyCache = new Cache("realCache", 25, false, false, 5000, 1500);
-		singletonManager.addCache(memoryOnlyCache);
+        
+        memoryOnlyCache = singletonManager.getCache("realCache");
+        if (memoryOnlyCache == null) {
+            memoryOnlyCache = new Cache("realCache", 25, false, false, 5000, 1500);
+            singletonManager.addCache(memoryOnlyCache);
+        }
 
 		try {
 			MMTx = new MMTxAPI(options);
