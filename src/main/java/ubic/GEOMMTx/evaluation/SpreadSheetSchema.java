@@ -12,24 +12,16 @@ import org.apache.commons.logging.LogFactory;
  * 
  * @author lfrench
  */
-public class SpreadSheetSchema {
-    private static Map<String, Integer> positions;
-    protected static Log log = LogFactory.getLog( SpreadSheetSchema.class );
+public abstract class SpreadSheetSchema {
+    protected  Map<String, Integer> positions;
+    protected  Log log = LogFactory.getLog( SpreadSheetSchema.class );
 
     // ?geoLabel ?description ?CUI ?SUI ?mapping ?phrase ?mentionLabel
-    static {
+    public SpreadSheetSchema() {
         positions = new HashMap<String, Integer>();
-//        positions.put( "geoLabel", 0 );
-        //positions.put( "description", 1 );
-        positions.put( "CUI", 0 );
-        positions.put( "SUI", 1 );
-        positions.put( "phraseLabel", 2 );
-        positions.put( "mentionLabel", 3 );
-        positions.put( "Decision", 4 );
-        positions.put( "Comment", 5 );
     }
 
-    public static String[] getHeaderRow() {
+    public  String[] getHeaderRow() {
         String[] result = new String[positions.size()];
         for ( String key : positions.keySet() ) {
             result[positions.get( key )] = key;
@@ -37,11 +29,8 @@ public class SpreadSheetSchema {
         return result;
     }
 
-    public static Integer getPosition( String varName ) {
+    public  Integer getPosition( String varName ) {
         return positions.get( varName );
     }
 
-    public static void main( String args[] ) {
-        System.out.println( "Header:" + Arrays.asList(getHeaderRow()).toString() );
-    }
 }
