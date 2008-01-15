@@ -15,6 +15,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import ubic.GEOMMTx.evaluation.CreateSpreadSheet;
+import ubic.GEOMMTx.evaluation.PhrasetoCUISpreadsheet;
 import ubic.gemma.ontology.OntologyTools;
 
 import com.hp.hpl.jena.query.Query;
@@ -46,11 +48,26 @@ public class RDFMerge {
         for ( File file : files ) {
             log.info( file.toString() );
             result.read( new FileInputStream( file ), null );
+            
         }
         log.info( "Writing out" );
         result.write( new FileOutputStream( output ) );
     }
 
+    public static void excelAll( ) throws Exception {
+        File workingDir = new File( "." );
+        File[] files = workingDir.listFiles( RDFFileFilter );
+        CreateSpreadSheet test = new PhrasetoCUISpreadsheet( "test.xls" );
+        
+        for ( File file : files ) {
+            //log.info( "populating" );
+            if (file.getName().contains("merged")) continue;
+            test.populate(file.getName());
+            log.info( "Done "+file.getName() );
+        }
+    }
+
+    
     public static void mergeWorkingDirRDF( String outputfile ) throws Exception {
         File workingDir = new File( "." );
         mergeRDFFiles( new File( outputfile ), workingDir.listFiles( RDFFileFilter ) );
@@ -143,8 +160,9 @@ public class RDFMerge {
     }
 
     public static void main( String args[] ) throws Exception {
-        // mergeWorkingDirRDF( "mergedRDF.rdf" );
+        //mergeWorkingDirRDF( "mergedRDF.rdf" );
+        //CreateSpreadSheet.main( null );
+        //excelAll();
         makeHistoGrams();
     }
-
 }
