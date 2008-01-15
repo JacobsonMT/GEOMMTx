@@ -103,6 +103,7 @@
 	<classpathentry kind="var" path="M2_REPO/org/ccil/cowan/tagsoup/tagsoup/0.9.7/tagsoup-0.9.7.jar"/>
 	<classpathentry kind="var" path="M2_REPO/mtj/mtj/0.9.8/mtj-0.9.8.jar"/>
 	<classpathentry kind="var" path="M2_REPO/jaxen/jaxen/1.1-beta-5/jaxen-1.1-beta-5.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/apache/poi/poi/3.0-FINAL/poi-3.0-FINAL.jar"/>
 	<classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.13/log4j-1.2.13.jar"/>
 	<classpathentry kind="var" path="M2_REPO/commons-configuration/commons-configuration/1.1/commons-configuration-1.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/IF"/>
