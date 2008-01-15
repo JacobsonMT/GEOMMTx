@@ -59,9 +59,10 @@ public class BirnLexMapper extends AbstractToUMLSMapper implements CUIMapper {
                 String cui = OntologyTools.varToString( "cui", soln );
                 String URI = OntologyTools.varToString( "class", soln );
                 CUIMap.put( cui, URI );
-                //System.out.println( label + " " );
+
+                //System.out.print( label + " " );
                 // System.out.println( cui + " " );
-                // System.out.println( URI + " " );
+                //System.out.println( URI + " " );
                 //                
                 // if ( x.isAnon() ) continue; // some reasoners will return these.
             }

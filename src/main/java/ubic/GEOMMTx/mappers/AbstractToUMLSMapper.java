@@ -43,6 +43,7 @@ public abstract class AbstractToUMLSMapper implements CUIMapper {
 
     }
 
+
     public void loadFromDisk() throws Exception {
         ObjectInputStream o = new ObjectInputStream( new FileInputStream( getFileName() ) );
         CUIMap = ( Map<String, String> ) o.readObject();

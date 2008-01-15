@@ -8,7 +8,10 @@ import ubic.GEOMMTx.UMLSSourceCode;
 
 public class FMALiteMapper implements CUIMapper {
     private final static String MAIN_URL = "http://purl.org/obo/owl/FMA#FMA_";
-    
+
+    public String getMainURL() {
+        return "http://www.berkeleybop.org/ontologies/owl/FMA";
+    }    
     
     public String convert(String CUI, Collection<UMLSSourceCode> sourceCodes) {
         if (sourceCodes == null) return null;
