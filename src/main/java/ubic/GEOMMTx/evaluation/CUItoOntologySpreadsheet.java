@@ -13,51 +13,56 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.Selector;
+import com.hp.hpl.jena.rdf.model.SimpleSelector;
+import com.hp.hpl.jena.vocabulary.RDFS;
 
 public class CUItoOntologySpreadsheet extends CreateSpreadSheet {
     Model linkedOntologies;
 
     public CUItoOntologySpreadsheet( String filename ) throws Exception {
         super( filename, new CUItoOntologySchema() );
-        // load in other ontologies?
-        // birnlex, Disease and FMAlite?
-        // OntModel birnLex = OntologyLoader.loadPersistentModel( "http://fireball.drexelmed.edu/birnlex/", false );
-        // log.info( "loaded birnlex" );
-        // Model FMAlite =
-        // OntologyLoader.loadPersistentModel("http://www.berkeleybop.org/ontologies/obo-all/fma_lite/fma_lite.owl",
-        // false );
-        // log.info( "loaded FMA" );
-        // Model DO = OntologyLoader.loadPersistentModel(
-        // "http://www.berkeleybop.org/ontologies/obo-all/disease_ontology/disease_ontology.owl", false );
-        // log.info( "loaded Disease ontology" );
-
-        // linkedOntologies = birnLex;
-        // linkedOntologies.union( FMAlite );
-        // linkedOntologies.union( DO );
-        log.info( "merged all" );
     }
 
     public void populate( String inputFile ) throws Exception {
-        OntModel birnLex = OntologyLoader.loadPersistentModel( "http://fireball.drexelmed.edu/birnlex/", false );
-        log.info( "loaded birnLex..." );
-        // OntModel FMAlite = OntologyLoader.loadPersistentModel(
-        // "http://www.berkeleybop.org/ontologies/obo-all/fma_lite/fma_lite.owl", false );
-        // log.info( "loaded FMA" );
-        OntModel DO = OntologyLoader.loadPersistentModel(
-                "http://www.berkeleybop.org/ontologies/obo-all/disease_ontology/disease_ontology.owl", false );
-        log.info( "loaded Disease ontology" );
-
         Model model = ModelFactory.createDefaultModel();
         FileInputStream fi = new FileInputStream( inputFile );
         model.read( fi, null );
         fi.close();
-        log.info( "Done reading..." );
-        model.add( birnLex );
+
+        RDFNode nullNode = null;
+        Selector labelSelector = new SimpleSelector( null, RDFS.label, nullNode );
+
+        OntModel birnLex = OntologyLoader.loadPersistentModel( "http://fireball.drexelmed.edu/birnlex/", false );
+        log.info( "loaded birnLex..." );
+        model.add( birnLex.listStatements( labelSelector ) );
         log.info( "Done merging Birnlex..." );
-        // model.add( FMAlite );
-        //log.info( "Done merging FMA..." );
-        model.add(DO);
-        log.info( "Done merging Disease Ontology..." );
+        birnLex.close();
+
+         OntModel FMAlite = OntologyLoader.loadPersistentModel(
+         "http://www.berkeleybop.org/ontologies/obo-all/fma_lite/fma_lite.owl", false );
+         log.info( "loaded FMA" );
+         model.add(FMAlite.listStatements(labelSelector));
+         log.info( "Done merging FMA..." );
+         FMAlite.close()
+        
+         OntModel DO = OntologyLoader.loadPersistentModel(
+         "http://www.berkeleybop.org/ontologies/obo-all/disease_ontology/disease_ontology.owl", false );
+         log.info( "loaded Disease ontology" );
+         model.add(DO.listStatements(labelSelector));
+         log.info( "Done merging Disease Ontology..." );
+         DO.close();
+
+        // // bit of a hack job here, I ran the code on FMA and extracted the labels only.
+        // // a good fix would be to use statement selector to get the labels.
+        // fi = new FileInputStream( "FMALabels.rdf" );
+        // Model FMAlabels = ModelFactory.createDefaultModel();
+        // FMAlabels.read( fi, null );
+        // fi.close();
+        // model.add( FMAlabels );
+
+        // log.info( "Done reading..." );
 
         String queryString = "PREFIX leon: <http://www.purl.org/leon/umls#>                                 \r\n"
                 + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>                                \r\n"
@@ -87,6 +92,11 @@ public class CUItoOntologySpreadsheet extends CreateSpreadSheet {
             while ( results.hasNext() ) {
                 // get the next solution and load it into a map (varName -> value)
                 Map<String, String> solutionMap = mapQuerySolution( results.nextSolution() );
+
+                // so if the two labels are the same, do we need to evaluate it with a human?
+                if ( solutionMap.get( "CUILabel" ).equalsIgnoreCase( solutionMap.get( "mappedTermLabel" ) ) ) {
+                    continue;
+                }
 
                 // here we take the variable names, find the position and value and put it in the excel file
                 for ( String varName : solutionMap.keySet() ) {
