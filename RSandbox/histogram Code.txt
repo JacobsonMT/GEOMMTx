@@ -1,0 +1,33 @@
+#use rdfmerge.makeHistoGrams to make the data files for this
+
+# 2 is exp to concept
+file <- "Histogram2Data"
+x <- as.numeric(read.table(file))
+
+max <- max(x)
+
+h<-hist(x, breaks=max)
+
+counts<-h$counts
+
+hist(x, breaks=max,  main="How many concepts do the experiments link to?", xlab="Number of Concepts per Experiments", ylab="Experiment Frequency")
+
+
+# 1 is concept to exp
+file <- "Histogram1Data"
+x <- as.numeric(read.table(file))
+
+max <- max(x)
+
+h<-hist(x, breaks=max)
+
+counts<-h$counts
+
+
+sum(counts)
+sum(counts[1:length(counts)])
+sum(counts[2:length(counts)])
+sum(counts[3:length(counts)])
+sum(counts[10:length(counts)])
+
+hist(x, breaks=max, xlim=c(1,20), main="How many experiments do the concepts link to?", xlab="Number of Experiments per Concept", ylab="Concept Frequency")
