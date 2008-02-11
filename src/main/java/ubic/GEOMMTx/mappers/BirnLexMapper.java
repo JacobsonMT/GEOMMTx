@@ -26,7 +26,7 @@ public class BirnLexMapper extends AbstractToUMLSMapper implements CUIMapper {
     public String getMainURL() {
         return "http://fireball.drexelmed.edu/birnlex/";
     }
-    
+
     public BirnLexMapper() {
         super();
     }
@@ -60,9 +60,9 @@ public class BirnLexMapper extends AbstractToUMLSMapper implements CUIMapper {
                 String URI = OntologyTools.varToString( "class", soln );
                 CUIMap.put( cui, URI );
 
-                //System.out.print( label + " " );
+                // System.out.print( label + " " );
                 // System.out.println( cui + " " );
-                //System.out.println( URI + " " );
+                // System.out.println( URI + " " );
                 //                
                 // if ( x.isAnon() ) continue; // some reasoners will return these.
             }
@@ -72,8 +72,62 @@ public class BirnLexMapper extends AbstractToUMLSMapper implements CUIMapper {
 
     }
 
+    public void bonfire() {
+        // CUIMap = new HashMap<String, String>();
+
+        // load the ontology model
+        try {
+            birnLex = OntologyLoader.loadPersistentModel( getMainURL(), false );
+        } catch ( IOException e ) {
+            e.printStackTrace();
+            System.exit( 1 );
+        }
+
+        String queryString = "PREFIX BIRNLex_annotation_properties: <http://www.nbirn.net/birnlex/1.1/BIRNLex_annotation_properties.owl#>\n"
+                + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
+                + "PREFIX birn_annot: <http://www.nbirn.net/birnlex/1.1/BIRNLex_annotation_properties.owl#>\n"
+                + "SELECT ?class ?label ?source ?sourceID\n"
+                + "WHERE  {\n"
+                + "   ?class birn_annot:birnlexExternalSource ?source ." + "   ?class birn_annot:bonfireID ?sourceID ."
+                // + " ?class BIRNLex_annotation_properties:UmlsCui ?cui .\n"
+                + "   ?class rdfs:label ?label .\n" + "}";
+        System.out.println(queryString);
+
+        Query q = QueryFactory.create( queryString );
+        QueryExecution qexec = QueryExecutionFactory.create( q, birnLex );
+        try {
+            ResultSet results = qexec.execSelect();
+            int seen = 0;
+            while ( results.hasNext() ) {
+                QuerySolution soln = results.nextSolution();
+                String label = OntologyTools.varToString( "label", soln );
+                // String cui = OntologyTools.varToString( "cui", soln );
+                String URI = OntologyTools.varToString( "class", soln );
+                String source = OntologyTools.varToString( "source", soln );
+                String sourceID = OntologyTools.varToString( "sourceID", soln );
+                // CUIMap.put( cui, URI );
+
+                if ( CUIMap.get( sourceID ) != null ) {
+                    seen++;
+                } else {
+                    System.out.print( label + "|" );
+                    System.out.print( source + "|" );
+                    System.out.print( sourceID + "|" );
+                    System.out.println( URI + " " );
+                }
+                //                
+                // if ( x.isAnon() ) continue; // some reasoners will return these.
+            }
+            System.out.println( seen );
+        } finally {
+            qexec.close();
+        }
+
+    }
+
     public static void main( String args[] ) {
         BirnLexMapper test = new BirnLexMapper();
+        test.bonfire();
     }
 
 }
