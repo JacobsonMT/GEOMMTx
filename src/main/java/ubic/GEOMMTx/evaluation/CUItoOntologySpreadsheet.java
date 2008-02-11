@@ -40,19 +40,19 @@ public class CUItoOntologySpreadsheet extends CreateSpreadSheet {
         log.info( "Done merging Birnlex..." );
         birnLex.close();
 
-         OntModel FMAlite = OntologyLoader.loadPersistentModel(
-         "http://www.berkeleybop.org/ontologies/obo-all/fma_lite/fma_lite.owl", false );
-         log.info( "loaded FMA" );
-         model.add(FMAlite.listStatements(labelSelector));
-         log.info( "Done merging FMA..." );
-         FMAlite.close()
-        
-         OntModel DO = OntologyLoader.loadPersistentModel(
-         "http://www.berkeleybop.org/ontologies/obo-all/disease_ontology/disease_ontology.owl", false );
-         log.info( "loaded Disease ontology" );
-         model.add(DO.listStatements(labelSelector));
-         log.info( "Done merging Disease Ontology..." );
-         DO.close();
+        OntModel FMAlite = OntologyLoader.loadPersistentModel(
+                "http://www.berkeleybop.org/ontologies/obo-all/fma_lite/fma_lite.owl", false );
+        log.info( "loaded FMA" );
+        model.add( FMAlite.listStatements( labelSelector ) );
+        log.info( "Done merging FMA..." );
+        FMAlite.close();
+
+        OntModel DO = OntologyLoader.loadPersistentModel(
+                "http://www.berkeleybop.org/ontologies/obo-all/disease_ontology/disease_ontology.owl", false );
+        log.info( "loaded Disease ontology" );
+        model.add( DO.listStatements( labelSelector ) );
+        log.info( "Done merging Disease Ontology..." );
+        DO.close();
 
         // // bit of a hack job here, I ran the code on FMA and extracted the labels only.
         // // a good fix would be to use statement selector to get the labels.
