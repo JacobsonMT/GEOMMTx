@@ -56,7 +56,7 @@ public class Main extends AbstractSpringAwareCLI {
     @Override
     protected Exception doWork( String[] args ) {
         long totaltime = System.currentTimeMillis();
-        Exception err = processCommandLine( "Expression experiment bibref finder ", args );
+        Exception err = processCommandLine( "GEOMMTx ", args );
         if ( err != null ) return err;
 
         ExpressionExperimentService ees = ( ExpressionExperimentService ) this.getBean( "expressionExperimentService" );
