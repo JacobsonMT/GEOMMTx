@@ -37,7 +37,7 @@ public class DiseaseOntologyMapper extends AbstractToUMLSMapper implements CUIMa
         // load the ontology model
         try {
             model = OntologyLoader.loadPersistentModel( getMainURL(), false );
-        } catch ( IOException e ) {
+        } catch ( Exception e ) {
             e.printStackTrace();
             System.exit( 1 );
         }
