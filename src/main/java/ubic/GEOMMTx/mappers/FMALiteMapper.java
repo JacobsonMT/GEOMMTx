@@ -17,6 +17,7 @@ public class FMALiteMapper implements CUIMapper {
         if (sourceCodes == null) return null;
         String code = null;
         for (UMLSSourceCode sourceCode : sourceCodes) {
+            // if FMA is the source
             if (sourceCode.getSource().equals( "UWDA173" )) {
                 code = sourceCode.getCode();
             }
