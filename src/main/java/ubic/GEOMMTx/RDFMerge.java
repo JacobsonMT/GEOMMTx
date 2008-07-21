@@ -46,9 +46,10 @@ public class RDFMerge {
     public static void mergeRDFFiles( File output, File[] files ) throws Exception {
         Model result = ModelFactory.createDefaultModel();
         for ( File file : files ) {
+            Model current = ModelFactory.createDefaultModel();
             log.info( file.toString() );
-            result.read( new FileInputStream( file ), null );
-            
+            current.read( new FileInputStream( file ), null );
+            result = result.union(current);
         }
         log.info( "Writing out" );
         result.write( new FileOutputStream( output ) );
@@ -160,9 +161,9 @@ public class RDFMerge {
     }
 
     public static void main( String args[] ) throws Exception {
-        //mergeWorkingDirRDF( "mergedRDF.rdf" );
+        mergeWorkingDirRDF( "testMergedRDF.rdf" );
         //CreateSpreadSheet.main( null );
         //excelAll();
-        makeHistoGrams();
+        //makeHistoGrams();
     }
 }
