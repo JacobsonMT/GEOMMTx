@@ -3,7 +3,9 @@ package ubic.GEOMMTx.mappers;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.query.Query;
@@ -23,7 +25,7 @@ public class DiseaseOntologyMapper extends AbstractToUMLSMapper implements CUIMa
     private OntModel model;
 
     public String getMainURL() {
-        return "http://www.berkeleybop.org/ontologies/owl/DOID";
+        return "http://www.berkeleybop.org/ontologies/obo-all/disease_ontology/disease_ontology.owl";
     }
 
     
@@ -32,11 +34,11 @@ public class DiseaseOntologyMapper extends AbstractToUMLSMapper implements CUIMa
     }
 
     public void loadFromOntology() {
-        CUIMap = new HashMap<String, String>();
+        CUIMap = new HashMap<String, Set<String>>();
 
         // load the ontology model
         try {
-            model = OntologyLoader.loadPersistentModel( getMainURL(), false );
+            model = OntologyLoader.loadMemoryModel( getMainURL());
         } catch ( Exception e ) {
             e.printStackTrace();
             System.exit( 1 );
@@ -65,7 +67,13 @@ public class DiseaseOntologyMapper extends AbstractToUMLSMapper implements CUIMa
                 // UMLS_CUI:C00123 is split and we use the second half
                 cui = cui.split( ":" )[1];
 
-                CUIMap.put( cui, URI );
+                Set<String> URIs = CUIMap.get(cui);
+                if (URIs == null) {
+                    URIs = new HashSet<String>();
+                    CUIMap.put( cui, URIs);
+                }
+                URIs.add(URI);
+
                 /*
                  * System.out.print( label + " " ); System.out.println( cui + " " ); System.out.println( URI + " " );
                  */
@@ -79,8 +87,12 @@ public class DiseaseOntologyMapper extends AbstractToUMLSMapper implements CUIMa
 
     public static void main( String args[] ) {
         DiseaseOntologyMapper test = new DiseaseOntologyMapper();
+        //test.loadFromOntology();
+        //test.save();
         // /String cui =
         System.out.println( test.convert( "C0020492", null ) );
+        System.out.println( "CUI's that have more that one URI:" + test.countOnetoMany() );
+        
     }
 
 }

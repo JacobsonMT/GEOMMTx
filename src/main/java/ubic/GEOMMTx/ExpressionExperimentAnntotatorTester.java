@@ -59,8 +59,8 @@ public class ExpressionExperimentAnntotatorTester extends AbstractSpringAwareCLI
 
         Text2Owl text2Owl = new Text2Owl();
         text2Owl.addMapper( new BirnLexMapper() );
-        text2Owl.addMapper( new FMALiteMapper() );
-        text2Owl.addMapper( new DiseaseOntologyMapper() );
+//        text2Owl.addMapper( new FMALiteMapper() );
+//        text2Owl.addMapper( new DiseaseOntologyMapper() );
 
         System.out.println( "Total initialization time:" + ( System.currentTimeMillis() - time ) / 1000 + "s" );
 
@@ -72,18 +72,18 @@ public class ExpressionExperimentAnntotatorTester extends AbstractSpringAwareCLI
         ExpressionExperimentAnntotator experimentAnn = new ExpressionExperimentAnntotator( experiment, text2Owl );
 
         try {
-            log.info( "getName()" );
-            experimentAnn.annotateName();
-            experimentAnn.writeModel();
-            
-            log.info( "getDescription()" );
-            experimentAnn.annotateDescription();
-            experimentAnn.writeModel();
-
-            log.info( "Primary Publication" );
-            experimentAnn.annotateReferences();
-            experimentAnn.writeModel();
-
+//            log.info( "getName()" );
+//            experimentAnn.annotateName();
+//            experimentAnn.writeModel();
+//            
+//            log.info( "getDescription()" );
+//            experimentAnn.annotateDescription();
+//            experimentAnn.writeModel();
+//
+//            log.info( "Primary Publication" );
+//            experimentAnn.annotateReferences();
+//            experimentAnn.writeModel();
+//
             log.info( "Factors" );
             experimentAnn.annotateExperimentalDesign();
             experimentAnn.writeModel();

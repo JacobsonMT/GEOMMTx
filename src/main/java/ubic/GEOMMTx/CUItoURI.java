@@ -35,7 +35,7 @@ public class CUItoURI {
 
         // call all the mappers
         for ( CUIMapper mapper : mappers ) {
-            URIs.add( mapper.convert( CUI, sourceCodes ) );
+            URIs.addAll( mapper.convert( CUI, sourceCodes ) );
         }
 
         return URIs;

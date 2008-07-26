@@ -45,6 +45,10 @@ public class UMLSSourceCode {
         result = PRIME * result + ( ( source == null ) ? 0 : source.hashCode() );
         return result;
     }
+    
+    public String toString() {
+        return code +"[" + source+"]";
+    }
 
     @Override
     public boolean equals( Object obj ) {

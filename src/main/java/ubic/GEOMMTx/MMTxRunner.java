@@ -18,6 +18,8 @@ import net.sf.ehcache.Element;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.assembler.acceptance.AllAccept.SetupDatabase;
+
 public class MMTxRunner {
 	private static final long serialVersionUID = 1L;
 	
@@ -30,9 +32,10 @@ public class MMTxRunner {
 	public MMTxRunner() {
 		this(new String[] {});
 	}
+    
 
 	public MMTxRunner(String[] options) {
-		this(850, options);
+		this(SetupParameters.scoreThreshold, options);
 	}
 
 	

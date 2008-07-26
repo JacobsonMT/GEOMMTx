@@ -6,6 +6,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,7 +23,7 @@ public abstract class AbstractToUMLSMapper implements CUIMapper {
     protected static Log log = LogFactory.getLog( AbstractToUMLSMapper.class );
 
     //
-    protected Map<String, String> CUIMap;
+    protected Map<String, Set<String>> CUIMap;
 
     // save
     // loadFromDisk
@@ -40,13 +41,11 @@ public abstract class AbstractToUMLSMapper implements CUIMapper {
             log.info( "loaded, mappings:" + CUIMap.size() );
             save();
         }
-
     }
-
 
     public void loadFromDisk() throws Exception {
         ObjectInputStream o = new ObjectInputStream( new FileInputStream( getFileName() ) );
-        CUIMap = ( Map<String, String> ) o.readObject();
+        CUIMap = ( Map<String, Set<String>> ) o.readObject();
         o.close();
 
     }
@@ -56,17 +55,25 @@ public abstract class AbstractToUMLSMapper implements CUIMapper {
     abstract String getMainURL();
 
     /**
-     * Converts a UMLS concept into URI for a specific ontology
+     * Converts a UMLS concept into a set of URI's for a specific ontology
      * 
      * @param CUI UMLS concept identifier
      * @return
      */
-    public String convert( String CUI, Collection<UMLSSourceCode> sourceCodes ) {
+    public Set<String> convert( String CUI, Collection<UMLSSourceCode> sourceCodes ) {
         return CUIMap.get( CUI );
     }
 
     public String getFileName() {
         return this.getClass().getName() + ".mappings";
+    }
+
+    public int countOnetoMany() {
+        int result = 0;
+        for ( Set<String> URISet : CUIMap.values() ) {
+           if (URISet.size() > 1) result++;    
+        }
+        return result;
     }
 
     public void save() {

@@ -1,12 +1,12 @@
 package ubic.GEOMMTx.evaluation;
 
-import java.io.FileInputStream;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 /**
  * This class loads in the excel files that were checked by annotators. It gathers the responses and computes precision
@@ -30,6 +30,43 @@ public class EvaluatePhraseToCUISpreadsheet {
         Map<String, Boolean> decisions = new HashMap<String, Boolean>();
 
         return decisions;
+    }
+
+    public Set<CUISUIPair> getRejectedSUIs( String file ) throws Exception {
+        PhraseToCUISchema schema = new PhraseToCUISchema();
+        HSSFSheet sheet = ExcelUtil.getSheetFromFile( file, "Sheet0" );
+
+        // start at one, skip the header
+        int row = 1;
+        int nullCount = 0;
+        int CUIPos = schema.getPosition( "CUI" );
+        int SUIPos = schema.getPosition( "SUI" );
+        int rejectPos = schema.getPosition( "Reject" );
+        Set<CUISUIPair> seen = new HashSet<CUISUIPair>();
+
+        // if we get two blank lines in a row, then exit
+        while ( nullCount < 2 ) {
+            
+            String CUI = ExcelUtil.getValue( sheet, row, CUIPos );
+            String SUI = ExcelUtil.getValue( sheet, row, SUIPos );
+            String reject = ExcelUtil.getValue( sheet, row, rejectPos );
+
+            System.out.println( CUI );
+            // System.out.println( BCUI );
+            if ( CUI == null ) {
+                nullCount++;
+            } else {
+                nullCount = 0;
+                if ( reject.equals( "X" ) ) {
+                    seen.add( new CUISUIPair( CUI, SUI ) );
+                    // delete all mentions that have this CUI and SUI combination
+                }
+            }
+            row++;
+        }
+//      System.out.println( seen );
+//      System.out.println( seen.size() );
+        return seen;
     }
 
     public void runThroughFiles( String file1, String file2 ) throws Exception {
@@ -84,7 +121,7 @@ public class EvaluatePhraseToCUISpreadsheet {
                     if ( commentA != null ) blockDisplay += " (" + file1 + ":" + commentA + ")";
                     if ( commentB != null ) blockDisplay += " (" + file2 + ":" + commentB + ")";
                     blockDisplay += "\n";
-                    
+
                     row++;
                     ACUI = ExcelUtil.getValue( sheetA, row, CUIPos );
                 } while ( ACUI != null );
@@ -132,8 +169,8 @@ public class EvaluatePhraseToCUISpreadsheet {
         // TODO Auto-generated method stub
         EvaluatePhraseToCUISpreadsheet evaluator = new EvaluatePhraseToCUISpreadsheet();
         // evaluator.runThroughFiles( "PtoCPaul.xls", "PtoCSuzanne.xls" );
-        evaluator.runThroughFiles( "Paul", "Suzanne" );
-
+        // evaluator.runThroughFiles( "Paul", "Suzanne" );
+        evaluator.getRejectedSUIs( "./FinalEvaluations/Mapping from Phrase to CUI.xls" );
     }
 
 }

@@ -18,6 +18,9 @@ import com.hp.hpl.jena.rdf.model.Selector;
 import com.hp.hpl.jena.rdf.model.SimpleSelector;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
+/*
+ * old code, needs to be updated with new URL's
+ */
 public class CUItoOntologySpreadsheet extends CreateSpreadSheet {
     Model linkedOntologies;
 

@@ -14,25 +14,28 @@ import org.apache.commons.logging.LogFactory;
 
 public class GetUMLSCodes {
     private String location;
+    private Map<String, Set<UMLSSourceCode>> SABMap;
 
     protected static Log log = LogFactory.getLog( GetUMLSCodes.class );
     
     public GetUMLSCodes() {
-        this( "C:\\Documents and Settings\\Leon\\Desktop\\UMLS2007AAFile\\MRCONSO.RRF" );
+        this( SetupParameters.CUI_CODE_LOC );
     }
-
+    
+    //location of MRCONSO.RRF
     public GetUMLSCodes( String location ) {
         this.location = location;
+        loadUMLSCodeMap();
     }
-
+    
     public static void main( String[] args ) {
         GetUMLSCodes umlscodez = new GetUMLSCodes();
-        umlscodez.getUMLSCodeMap();
+        System.out.println("Size:"+umlscodez.getUMLSCodeMap().size());
     }
 
-    public Map<String, Set<UMLSSourceCode>> getUMLSCodeMap() {
+    public void loadUMLSCodeMap() {
         int noCodeCount = 0;
-        Map<String, Set<UMLSSourceCode>> SABMap = new HashMap<String, Set<UMLSSourceCode>>();
+        SABMap = new HashMap<String, Set<UMLSSourceCode>>();
         try {
             PrintWriter fOut = new PrintWriter( new FileWriter( "temp.txt" ) );
             BufferedReader f = new BufferedReader( new FileReader( location ) );
@@ -41,6 +44,7 @@ public class GetUMLSCodes {
             while ( ( line = f.readLine() ) != null ) {
                 tokens = line.split( "[|]" );
                 String CUI = tokens[0];
+                // SAB is source vocab
                 String SAB = tokens[11];
                 String CODE = tokens[13];
                 if ( !SABMap.containsKey( CUI ) ) {
@@ -60,6 +64,9 @@ public class GetUMLSCodes {
             System.exit( 1 );
         }
         log.info( "Loaded UMLS Codes, nocode entries=" + noCodeCount );
+    }
+
+    public Map<String, Set<UMLSSourceCode>> getUMLSCodeMap() {
         return SABMap;
     }
 }

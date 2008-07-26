@@ -1,14 +1,10 @@
 package ubic.GEOMMTx.mappers;
 
-import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.xerces.parsers.XMLParser;
+import java.util.HashSet;
+import java.util.Set;
 
 import ubic.GEOMMTx.CUIMapper;
-import ubic.GEOMMTx.UMLSSourceCode;
 import ubic.gemma.ontology.OntologyLoader;
 import ubic.gemma.ontology.OntologyTools;
 
@@ -36,7 +32,7 @@ public class BirnLexMapper extends AbstractToUMLSMapper implements CUIMapper {
     }
 
     public void loadFromOntology() {
-        CUIMap = new HashMap<String, String>();
+        CUIMap = new HashMap<String, Set<String>>();
 
         // load the ontology model
         try {
@@ -62,13 +58,13 @@ public class BirnLexMapper extends AbstractToUMLSMapper implements CUIMapper {
                 String URI = OntologyTools.varToString( "class", soln );
                 //some have blank UMLS codes
                 if ( !cui.equals( "" ) ) {
-                    if(CUIMap.get(cui)!=null) {
-                        System.out.print( label + "|" );
-                        System.out.print( cui + "|" );
-                        System.out.println( URI + "|" + CUIMap.get(cui));
-                        
+                    // if we already have a mapping for the CUI then?
+                    Set<String> URIs = CUIMap.get(cui);
+                    if (URIs == null) {
+                        URIs = new HashSet<String>();
+                        CUIMap.put( cui, URIs);
                     }
-                    CUIMap.put( cui, URI );
+                    URIs.add(URI);
                 }
 
                 //System.out.print( label + "|" );
@@ -88,6 +84,7 @@ public class BirnLexMapper extends AbstractToUMLSMapper implements CUIMapper {
         test.loadFromOntology();
         test.save();
         // test.bonfire();
+        System.out.println( "CUI's that have more that one URI:" + test.countOnetoMany() );
     }
 
 }

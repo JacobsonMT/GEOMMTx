@@ -8,10 +8,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import ubic.gemma.model.common.description.BibliographicReference;
+import ubic.gemma.model.common.description.Characteristic;
 import ubic.gemma.model.expression.bioAssay.BioAssay;
 import ubic.gemma.model.expression.experiment.ExperimentalDesign;
 import ubic.gemma.model.expression.experiment.ExperimentalFactor;
 import ubic.gemma.model.expression.experiment.ExpressionExperiment;
+import ubic.gemma.model.expression.experiment.FactorValue;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -53,7 +55,8 @@ public class ExpressionExperimentAnntotator {
     }
 
     public void annotateName() {
-        doRDF( experiment.getName(), "name" );
+        // experiment then desc then name
+        doRDF( experiment.getName(), "experiment/" + ID + "/name" );
     }
 
     public void annotateDescription() {
@@ -63,7 +66,7 @@ public class ExpressionExperimentAnntotator {
             log.info( "fixing 444" );
         }
 
-        doRDF( description, "description" );
+        doRDF( description, "experiment/" + ID + "/description" );
     }
 
     public void annotateAll() {
@@ -90,17 +93,19 @@ public class ExpressionExperimentAnntotator {
             log.info( "skipping all Bioassays for 576" );
             return;
         }
-
+        
         for ( BioAssay ba : experiment.getBioAssays() ) {
             // ba.getId()
             String nameSpaceBase = "bioAssay/" + ba.getId() + "/";
             if ( ba.getName() != null ) {
-                doRDF( ba.getName(), nameSpaceBase + "name" );
+                doRDF( ba.getName().replace("Expr(", "Expr "), nameSpaceBase + "name" );
             }
 
             if ( ba.getDescription() != null ) {
                 doRDF( ba.getDescription(), nameSpaceBase + "description" );
             }
+//            log.info(ba.getDescription());
+            log.info(ba.getName().replace("Expr(", "Expr "));
         }
     }
 
@@ -122,6 +127,22 @@ public class ExpressionExperimentAnntotator {
                     doRDF( factor.getName(), nameSpaceBaseFactors + "name" );
 
                     doRDF( factor.getDescription(), nameSpaceBaseFactors + "description" );
+
+
+//                    Collection<FactorValue> factorValues = factor.getFactorValues();
+//                    for ( FactorValue factorValue : factorValues ) {
+//                        log.info( factorValue.getValue() );
+//                        log.info( factorValue.getId() );
+//                        for ( Characteristic c : factorValue.getCharacteristics() ) {
+//                            log.info( c.getName() );
+//                            log.info( c.getValue() );
+//                            log.info( c.getDescription());
+//                            log.info( c.getId() );
+//                        }
+//
+//                        // doRDF( factorValue.getValue(), nameSpaceBaseFactors + "factorValue/" + factorValue.getId());
+//                    }
+
                 }
             }
         }
