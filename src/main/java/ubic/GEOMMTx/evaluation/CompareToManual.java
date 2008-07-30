@@ -151,7 +151,6 @@ public class CompareToManual extends AbstractSpringAwareCLI {
         Set<String> datasets = new HashSet<String>( mmtxURLs.keySet() );
         datasets.addAll( manualURLs.keySet() );
         for ( String dataset : datasets ) {
-            Set<String> machineURLs = mmtxURLs.get( dataset );
             Set<String> humanURLs = manualURLs.get( dataset );
             List<String> removeMe = new LinkedList<String>();
             for ( String url : humanURLs ) {
@@ -212,6 +211,7 @@ public class CompareToManual extends AbstractSpringAwareCLI {
 
             ees.thawLite( experiment );
             Collection<Characteristic> characters = experiment.getCharacteristics();
+            
 
             Set<String> currentURL = new HashSet<String>();
             result.put( experiment.getId() + "", currentURL );
