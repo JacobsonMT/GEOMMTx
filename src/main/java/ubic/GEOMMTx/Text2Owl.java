@@ -23,6 +23,8 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
+import static ubic.GEOMMTx.Vocabulary.*;
+
 public class Text2Owl {
     private MMTxRunner mmtx;
 
@@ -61,18 +63,8 @@ public class Text2Owl {
     public Model processText( String text, Resource root ) {
         Model model;
         model = root.getModel();
-        String leonNS = "http://www.purl.org/leon/umls#";
 
         Collection<Candidate> candidates;
-
-        Property spanStart = model.createProperty( leonNS + "spanStart" );
-        Property spanEnd = model.createProperty( leonNS + "spanEnd" );
-        Property hasMention = model.createProperty( leonNS + "hasMention" );
-        Property mappedTerm = model.createProperty( leonNS + "mappedTerm" );
-        Property hasCUI = model.createProperty( leonNS + "hasCUI" );
-        Property hasSUI = model.createProperty( leonNS + "hasSUI" );
-        Property hasScore = model.createProperty( leonNS + "hasScore" );
-        Property hasPhrase = model.createProperty( leonNS + "hasPhrase" );
 
         // phrases, or chunks of the text
         for ( Phrase p : mmtx.getPhrases( text ) ) {
@@ -108,11 +100,11 @@ public class Text2Owl {
                         phraseNode = model.createResource();
                     }
                     mentionNode.addProperty( hasCUI, model.createResource( "http://www.purl.org/umls/umls#" + CUI ) );
-                    mentionNode.addProperty( RDFS.label, c.getConcept() );
+                    mentionNode.addLiteral( RDFS.label, c.getConcept() );
 
                     mentionNode.addProperty( hasSUI, model.createResource( "http://www.purl.org/umls/umls#"
                             + c.getSUI() ) );
-                    mentionNode.addProperty( hasScore, "" + c.getFinalScore() );
+                    mentionNode.addLiteral( hasScore, c.getFinalScore() );
                     phraseNode.addProperty( hasMention, mentionNode );
                 }
             }
@@ -120,10 +112,10 @@ public class Text2Owl {
             // only connect this phrase to root if we got at least one mention
             if ( phraseNode != null ) {
                 // add the text
-                phraseNode.addProperty( RDFS.label, p.getOriginalString() );
+                phraseNode.addLiteral( RDFS.label, p.getOriginalString() );
                 // add span
-                phraseNode.addProperty( spanStart, "" + p.getSpan().getBeginCharacter() );
-                phraseNode.addProperty( spanEnd, "" + p.getSpan().getEndCharacter() );
+                phraseNode.addLiteral( spanStart, p.getSpan().getBeginCharacter() );
+                phraseNode.addLiteral( spanEnd, p.getSpan().getEndCharacter() );
 
                 // add the link
                 root.addProperty( hasPhrase, phraseNode );
@@ -131,7 +123,6 @@ public class Text2Owl {
         }
         return model;
     }
-
 
     // short main test
     public static void main( String args[] ) throws Exception {
@@ -144,9 +135,11 @@ public class Text2Owl {
         Model model = ModelFactory.createDefaultModel();
         Resource root = model.createResource( "http://www.purl.org/leon/umls#Sample" );
 
-        model = text2Owl.processText( "Cancer", root );
+        model = text2Owl.processText( "Expression data from adult laboratory mouse brain hemispheres", root );
+        model = text2Owl.processText( "mouse brain hemispheres", root );
 
         log.info( "here" );
+        // Hippocampus CA3 acute
         // model = text2Owl.processText( "Sample # Group OD 260/280 RNA, ug/ul Actb Ct Chip 1 PregPBS 2.0 0.63 13.8 a 2
         // ", root );
         // log.info( "here" );
