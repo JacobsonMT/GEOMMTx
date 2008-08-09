@@ -1,5 +1,6 @@
 package ubic.GEOMMTx.evaluation;
 
+import java.io.File;
 import java.io.FileInputStream;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -44,13 +45,24 @@ public class ExcelUtil {
     }
 
     public static void setValue( HSSFSheet sheet, int row, int col, String value ) {
-        setValue( sheet, row, ( short ) col, value );
-    }
-
-    public static void setValue( HSSFSheet sheet, int row, short col, String value ) {
         HSSFRow r = sheet.createRow( row );
-        HSSFCell c = r.createCell( col );
+        HSSFCell c = r.createCell( ( short ) col );
         c.setCellType( HSSFCell.CELL_TYPE_STRING );
         c.setCellValue( new HSSFRichTextString( value ) );
     }
+
+    public static void setFormula( HSSFSheet sheet, int row, int col, String value ) {
+        HSSFRow r = sheet.createRow( row );
+        HSSFCell c = r.createCell( ( short ) col );
+        c.setCellType( HSSFCell.CELL_TYPE_FORMULA );
+        c.setCellFormula( value );
+    }
+
+    public static void main( String args[] ) throws Exception {
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        HSSFSheet spreadsheet = workbook.createSheet();
+        ExcelUtil.setFormula( spreadsheet, 1, 1, "HYPERLINK(\"x\",\"x\")" );
+
+    }
+
 }
