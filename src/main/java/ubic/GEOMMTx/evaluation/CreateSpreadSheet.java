@@ -60,10 +60,10 @@ public abstract class CreateSpreadSheet {
         }
     }
 
-    public abstract void populate(String inputFile) throws Exception;
+    //public abstract void populate(String inputFile) throws Exception;
 
     /**
-     * Given an Jena query solution
+     * Given an Jena query solution get a map that has the varnames and there values
      * 
      * @param soln
      * @return

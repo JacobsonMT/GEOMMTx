@@ -59,31 +59,32 @@ public class ExpressionExperimentAnntotatorTester extends AbstractSpringAwareCLI
 
         Text2Owl text2Owl = new Text2Owl();
         text2Owl.addMapper( new BirnLexMapper() );
-//        text2Owl.addMapper( new FMALiteMapper() );
-//        text2Owl.addMapper( new DiseaseOntologyMapper() );
+        text2Owl.addMapper( new FMALiteMapper() );
+        text2Owl.addMapper( new DiseaseOntologyMapper() );
 
-        System.out.println( "Total initialization time:" + ( System.currentTimeMillis() - time ) / 1000 + "s" );
+        log.info( "Total initialization time:" + ( System.currentTimeMillis() - time ) / 1000 + "s" );
 
         time = System.currentTimeMillis();
 
-        ExpressionExperiment experiment = ees.load( 620l );
+        //ExpressionExperiment experiment = ees.load( 620l );
+        ExpressionExperiment experiment = ees.load( 15l );
         ees.thawLite( experiment );
 
         ExpressionExperimentAnntotator experimentAnn = new ExpressionExperimentAnntotator( experiment, text2Owl );
 
         try {
-//            log.info( "getName()" );
-//            experimentAnn.annotateName();
-//            experimentAnn.writeModel();
-//            
-//            log.info( "getDescription()" );
-//            experimentAnn.annotateDescription();
-//            experimentAnn.writeModel();
-//
-//            log.info( "Primary Publication" );
-//            experimentAnn.annotateReferences();
-//            experimentAnn.writeModel();
-//
+            log.info( "getName()" );
+            experimentAnn.annotateName();
+            experimentAnn.writeModel();
+            
+            log.info( "getDescription()" );
+            experimentAnn.annotateDescription();
+            experimentAnn.writeModel();
+
+            log.info( "Primary Publication" );
+            experimentAnn.annotateReferences();
+            experimentAnn.writeModel();
+
             log.info( "Factors" );
             experimentAnn.annotateExperimentalDesign();
             experimentAnn.writeModel();
@@ -102,7 +103,7 @@ public class ExpressionExperimentAnntotatorTester extends AbstractSpringAwareCLI
             log.info( ( ( System.currentTimeMillis() - time ) / 1000 )
                     + "s for whole experiment, writing out to save memory" );
 
-            System.out.println( "Total time:" + ( System.currentTimeMillis() - totaltime ) / 1000 + "s" );
+            log.info( "Total time:" + ( System.currentTimeMillis() - totaltime ) / 1000 + "s" );
 
             experiment = ees.load( 1l );
             ees.thawLite( experiment );

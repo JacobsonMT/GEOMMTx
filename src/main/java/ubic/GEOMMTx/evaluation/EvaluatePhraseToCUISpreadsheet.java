@@ -8,6 +8,8 @@ import java.util.Map.Entry;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 
+import ubic.GEOMMTx.SetupParameters;
+
 /**
  * This class loads in the excel files that were checked by annotators. It gathers the responses and computes precision
  * and recall
@@ -26,10 +28,8 @@ public class EvaluatePhraseToCUISpreadsheet {
         return comments;
     }
 
-    public Map<String, Boolean> loadDecisions( HSSFSheet sheet ) {
-        Map<String, Boolean> decisions = new HashMap<String, Boolean>();
-
-        return decisions;
+    public Set<CUISUIPair> getRejectedSUIs() throws Exception {
+        return getRejectedSUIs( SetupParameters.CUISUIEvaluationFile );
     }
 
     public Set<CUISUIPair> getRejectedSUIs( String file ) throws Exception {
@@ -46,12 +46,12 @@ public class EvaluatePhraseToCUISpreadsheet {
 
         // if we get two blank lines in a row, then exit
         while ( nullCount < 2 ) {
-            
+
             String CUI = ExcelUtil.getValue( sheet, row, CUIPos );
             String SUI = ExcelUtil.getValue( sheet, row, SUIPos );
             String reject = ExcelUtil.getValue( sheet, row, rejectPos );
 
-            System.out.println( CUI );
+            //System.out.println( CUI );
             // System.out.println( BCUI );
             if ( CUI == null ) {
                 nullCount++;
@@ -64,8 +64,8 @@ public class EvaluatePhraseToCUISpreadsheet {
             }
             row++;
         }
-//      System.out.println( seen );
-//      System.out.println( seen.size() );
+        // System.out.println( seen );
+        // System.out.println( seen.size() );
         return seen;
     }
 
@@ -170,7 +170,9 @@ public class EvaluatePhraseToCUISpreadsheet {
         EvaluatePhraseToCUISpreadsheet evaluator = new EvaluatePhraseToCUISpreadsheet();
         // evaluator.runThroughFiles( "PtoCPaul.xls", "PtoCSuzanne.xls" );
         // evaluator.runThroughFiles( "Paul", "Suzanne" );
-        evaluator.getRejectedSUIs( "./FinalEvaluations/Mapping from Phrase to CUI.xls" );
+        System.out.println(evaluator.getRejectedSUIs());
+        System.out.println(evaluator.getRejectedSUIs().size());
+        
     }
 
 }

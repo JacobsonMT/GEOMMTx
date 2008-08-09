@@ -40,7 +40,6 @@ public class MMTxRunner {
 
 	
 	private Cache memoryOnlyCache;
-	private Map<Phrase, Collection<Candidate>> conceptCache;
 
 	public MMTxRunner(int scoreThreshold, String[] options) {
 		this.scoreThreshold = scoreThreshold;

@@ -85,7 +85,7 @@ public class PhrasetoCUISpreadsheet extends CreateSpreadSheet {
      * @param args
      */
     public static void main( String[] args ) throws Exception {
-        CreateSpreadSheet test = new PhrasetoCUISpreadsheet( "test.xls" );
+        PhrasetoCUISpreadsheet test = new PhrasetoCUISpreadsheet( "test.xls" );
         log.info( "populating" );
         test.populate( "mergedRDF.rdf" );
         log.info( "saving.." );

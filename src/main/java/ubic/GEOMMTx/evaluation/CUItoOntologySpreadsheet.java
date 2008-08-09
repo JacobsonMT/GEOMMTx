@@ -120,7 +120,7 @@ public class CUItoOntologySpreadsheet extends CreateSpreadSheet {
      * @param args
      */
     public static void main( String[] args ) throws Exception {
-        CreateSpreadSheet test = new CUItoOntologySpreadsheet( "tt.xls" );
+        CUItoOntologySpreadsheet test = new CUItoOntologySpreadsheet( "tt.xls" );
 
         log.info( "populating" );
         test.populate( "mergedRDF.rdf" );
