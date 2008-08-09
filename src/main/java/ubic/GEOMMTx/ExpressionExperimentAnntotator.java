@@ -79,6 +79,7 @@ public class ExpressionExperimentAnntotator {
         log.info( "Publications" );
         annotateReferences();
 
+        //log.info( "Skipping Factors" );
         log.info( "Factors" );
         annotateExperimentalDesign();
 
