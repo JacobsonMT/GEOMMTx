@@ -1,25 +1,27 @@
-#use rdfmerge.makeHistoGrams to make the data files for this
+﻿#use rdfmerge.makeHistoGrams to make the data files for this
 
 # 2 is exp to concept
-file <- "Histogram2Data"
+file <- "HowManyConceptsForEachExperiment.txt"
 x <- as.numeric(read.table(file))
 
 max <- max(x)
 
-h<-hist(x, breaks=max)
+h<-hist(x, breaks=c(-1:max))
 
 counts<-h$counts
 
-hist(x, breaks=max,  main="How many concepts do the experiments link to?", xlab="Number of Concepts per Experiments", ylab="Experiment Frequency")
-
+hist(x, breaks=c(-1:max),  main="How many concepts do the experiments link to?", xlab="Number of Concepts per Experiments", ylab="Experiment Frequency")
+png("HowManyConceptsForEachExperiment.png", width=800, height = 800)
+hist(x, breaks=c(-1:max),  main="How many concepts do the experiments link to?", xlab="Number of Concepts", ylab="Experiment Frequency")
+dev.off()
 
 # 1 is concept to exp
-file <- "Histogram1Data"
+file <- "HowManyExperimentsForEachConcept.txt"
 x <- as.numeric(read.table(file))
 
 max <- max(x)
 
-h<-hist(x, breaks=max)
+h<-hist(x, breaks=c(-1:max))
 
 counts<-h$counts
 
@@ -30,4 +32,9 @@ sum(counts[2:length(counts)])
 sum(counts[3:length(counts)])
 sum(counts[10:length(counts)])
 
-hist(x, breaks=max, xlim=c(1,20), main="How many experiments do the concepts link to?", xlab="Number of Experiments per Concept", ylab="Concept Frequency")
+hist(x, breaks=max, xlim=c(1,20), main="How many experiments do the concepts link to?", xlab="Number of Experiments", ylab="Concept Frequency")
+png("HowManyExperimentsForEachConcept.png", width=800, height = 800)
+hist(x, breaks=max, xlim=c(1,20), main="How many experiments do the concepts link to?", xlab="Number of Experiments", ylab="Concept Frequency")
+dev.off()
+
+
