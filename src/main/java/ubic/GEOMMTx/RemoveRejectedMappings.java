@@ -161,24 +161,24 @@ public class RemoveRejectedMappings {
         // System.out.println( "CUI+IRI:" + remove.removeCUIIRIPairs( model ) );
         // model.write( new FileWriter( "mergedRDFBirnLexUpdate.afterrejected.rdf" ) );
 
-        // Model model = Text2OwlModelTools.loadModel( "mergedRDFBirnLexUpdate.afterrejected.rdf" );
-        // System.out.println( "Frequent Useless URLs:" + remove.removeFrequentURLs( model ) );
-        // model.write( new FileWriter( "mergedRDFBirnLexUpdate.afterUseless.rdf" ) );
+//        Model model = Text2OwlModelTools.loadModel( "mergedRDFBirnLexUpdate.afterrejected.rdf" );
+//        System.out.println( "Frequent Useless URLs:" + remove.removeFrequentURLs( model ) );
+//        model.write( new FileWriter( "mergedRDFBirnLexUpdate.afterUseless2.rdf" ) );
 
         // Model model = Text2OwlModelTools.loadModel( "296.fix.rdf" );
         // System.out.println( "Frequent Useless URLs:" + remove.removeFrequentURLs( model ) );
         // model.write( new FileWriter( "296.afterUseless.rdf" ) );
 
-        // Model model = Text2OwlModelTools.loadModel( "mergedRDF.rdf" );
-        // System.out.println( "Frequent Useless URLs:" + remove.removeFrequentURLs( model ) );
-        // System.out.println( "CUI+SUI:" + remove.removeCUISUIPairs( model ) );
-        // System.out.println( "CUI+IRI:" + remove.removeCUIIRIPairs( model ) );
-        // model.write( new FileWriter( "mergedRDF.rejected.removed.rdf" ) );
+         Model model = Text2OwlModelTools.loadModel( "mergedRDF.rdf" );
+         System.out.println( "Frequent Useless URLs:" + remove.removeFrequentURLs( model ) );
+         System.out.println( "CUI+SUI:" + remove.removeCUISUIPairs( model ) );
+         System.out.println( "CUI+IRI:" + remove.removeCUIIRIPairs( model ) );
+         model.write( new FileWriter( "mergedRDF.rejected.removed.rdf" ) );
 
-        Model model = Text2OwlModelTools.loadModel( "mergedRDF.rejected.removed.rdf" );
-        int minScore = 1000;
-        System.out.println( "Below score of " + minScore + ":" + remove.removeLowScores( model, minScore ) );
-        model.write( new FileWriter( "mergedRDF.rejected.removed."+minScore+".rdf" ) );
+//        Model model = Text2OwlModelTools.loadModel( "mergedRDF.rejected.removed.rdf" );
+//        int minScore = 1000;
+//        System.out.println( "Below score of " + minScore + ":" + remove.removeLowScores( model, minScore ) );
+//        model.write( new FileWriter( "mergedRDF.rejected.removed."+minScore+".rdf" ) );
 
     }
 }
