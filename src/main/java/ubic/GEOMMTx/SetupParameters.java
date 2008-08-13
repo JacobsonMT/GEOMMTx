@@ -17,6 +17,9 @@ public class SetupParameters {
 
     // the UMLS version that MMTx is using
     public static String UMLS_VERSION = "2006AA";
+    
+    //RDF file that stores Gemma experiment titles
+    public static String gemmaTitles = "GemmaTitles.rdf";
 
     // Options to pass to MMTx
     public static String[] mmtxOptions = new String[] { "--an_derivational_variants", "--no_acros_abbrs" };
@@ -25,7 +28,7 @@ public class SetupParameters {
     public static String CUISUIEvaluationFile = "./FinalEvaluations/Mapping from Phrase to CUI.xls";
 
     // the IRI's that are deemed too generic like house mice, cell, DNA and RNA
-    public static String uselessFrequentURLsFile = "./FinalEvaluations/UselessFrequentURLs";
+    public static String uselessFrequentURLsFile = "./FinalEvaluations/UselessFrequentURLs.txt";
 
     // The few rejected CUI to IRI/URL pairings as determined by human curation
     public static HashSet<CUIIRIPair> rejectedCUIIRIPairs;
