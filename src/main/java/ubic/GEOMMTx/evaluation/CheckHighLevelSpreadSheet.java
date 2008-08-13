@@ -19,6 +19,9 @@ public class CheckHighLevelSpreadSheet extends CreateSpreadSheet {
     public void populate( Map<String, Set<String>> newPredictions, Map<String,String> labels, int size ) throws Exception {
 
         List<String> datasets = new LinkedList<String>( newPredictions.keySet() );
+        
+        //sort then shuffle so we can re-create the file
+        Collections.sort(datasets);
 
         Collections.shuffle(datasets, new Random(1));
         
