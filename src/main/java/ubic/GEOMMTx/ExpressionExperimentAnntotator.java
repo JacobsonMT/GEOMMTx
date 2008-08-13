@@ -8,12 +8,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import ubic.gemma.model.common.description.BibliographicReference;
-import ubic.gemma.model.common.description.Characteristic;
 import ubic.gemma.model.expression.bioAssay.BioAssay;
 import ubic.gemma.model.expression.experiment.ExperimentalDesign;
 import ubic.gemma.model.expression.experiment.ExperimentalFactor;
 import ubic.gemma.model.expression.experiment.ExpressionExperiment;
-import ubic.gemma.model.expression.experiment.FactorValue;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -28,7 +26,7 @@ public class ExpressionExperimentAnntotator {
     private Text2Owl text2Owl;
     private String ID;
     private Resource root;
-    private String gemmaNamespace = "http://bioinformatics.ubc.ca/Gemma/";;
+    public static String gemmaNamespace = "http://bioinformatics.ubc.ca/Gemma/";;
 
     /**
      * Requires the experiment is thawed lite
@@ -57,6 +55,7 @@ public class ExpressionExperimentAnntotator {
     public void annotateName() {
         // experiment then desc then name
         doRDF( experiment.getName(), "experiment/" + ID + "/name" );
+
     }
 
     public void annotateDescription() {
@@ -79,7 +78,7 @@ public class ExpressionExperimentAnntotator {
         log.info( "Publications" );
         annotateReferences();
 
-        //log.info( "Skipping Factors" );
+        // log.info( "Skipping Factors" );
         log.info( "Factors" );
         annotateExperimentalDesign();
 
@@ -94,19 +93,19 @@ public class ExpressionExperimentAnntotator {
             log.info( "skipping all Bioassays for 576" );
             return;
         }
-        
+
         for ( BioAssay ba : experiment.getBioAssays() ) {
             // ba.getId()
             String nameSpaceBase = "bioAssay/" + ba.getId() + "/";
             if ( ba.getName() != null ) {
-                doRDF( ba.getName().replace("Expr(", "Expr "), nameSpaceBase + "name" );
+                doRDF( ba.getName().replace( "Expr(", "Expr " ), nameSpaceBase + "name" );
             }
 
             if ( ba.getDescription() != null ) {
                 doRDF( ba.getDescription(), nameSpaceBase + "description" );
             }
-//            log.info(ba.getDescription());
-            log.info(ba.getName().replace("Expr(", "Expr "));
+            // log.info(ba.getDescription());
+            log.info( ba.getName().replace( "Expr(", "Expr " ) );
         }
     }
 
@@ -129,20 +128,19 @@ public class ExpressionExperimentAnntotator {
 
                     doRDF( factor.getDescription(), nameSpaceBaseFactors + "description" );
 
-
-//                    Collection<FactorValue> factorValues = factor.getFactorValues();
-//                    for ( FactorValue factorValue : factorValues ) {
-//                        log.info( factorValue.getValue() );
-//                        log.info( factorValue.getId() );
-//                        for ( Characteristic c : factorValue.getCharacteristics() ) {
-//                            log.info( c.getName() );
-//                            log.info( c.getValue() );
-//                            log.info( c.getDescription());
-//                            log.info( c.getId() );
-//                        }
-//
-//                        // doRDF( factorValue.getValue(), nameSpaceBaseFactors + "factorValue/" + factorValue.getId());
-//                    }
+                    // Collection<FactorValue> factorValues = factor.getFactorValues();
+                    // for ( FactorValue factorValue : factorValues ) {
+                    // log.info( factorValue.getValue() );
+                    // log.info( factorValue.getId() );
+                    // for ( Characteristic c : factorValue.getCharacteristics() ) {
+                    // log.info( c.getName() );
+                    // log.info( c.getValue() );
+                    // log.info( c.getDescription());
+                    // log.info( c.getId() );
+                    // }
+                    //
+                    // // doRDF( factorValue.getValue(), nameSpaceBaseFactors + "factorValue/" + factorValue.getId());
+                    // }
 
                 }
             }
