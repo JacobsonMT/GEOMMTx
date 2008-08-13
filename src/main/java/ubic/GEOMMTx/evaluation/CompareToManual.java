@@ -2,6 +2,7 @@ package ubic.GEOMMTx.evaluation;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Collection;
@@ -13,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import ubic.GEOMMTx.ExpressionExperimentAnntotator;
+import ubic.GEOMMTx.SetupParameters;
 import ubic.GEOMMTx.Text2OwlModelTools;
 import ubic.gemma.model.common.description.Characteristic;
 import ubic.gemma.model.common.description.VocabCharacteristic;
@@ -28,6 +31,9 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.vocabulary.DC;
 
 public class CompareToManual extends AbstractSpringAwareCLI {
 
@@ -43,7 +49,7 @@ public class CompareToManual extends AbstractSpringAwareCLI {
         intersect.retainAll( mmtxURLs.keySet() );
         return intersect;
     }
-    
+
     public void makeSpreadSheet() throws Exception {
         Map<String, Set<String>> newPredictions = new HashMap<String, Set<String>>();
         for ( String dataset : originalMMTxIDs ) {
@@ -84,8 +90,8 @@ public class CompareToManual extends AbstractSpringAwareCLI {
     @SuppressWarnings("unchecked")
     @Override
     protected Exception doWork( String[] args ) {
-        filename = "mergedRDF.rejected.removed.rdf";
-        // filename = "mergedRDFBirnLexUpdate.afterUseless.rdf";
+        // filename = "mergedRDF.rejected.removed.rdf";
+        filename = "mergedRDFBirnLexUpdate.afterUseless.rdf";
         long totaltime = System.currentTimeMillis();
         Exception err = processCommandLine( "GEOMMTx ", args );
         if ( err != null ) return err;
@@ -94,7 +100,7 @@ public class CompareToManual extends AbstractSpringAwareCLI {
 
         // get human and mmtx mappings
         getMappings( filename );
-
+        
         log.info( "gemma intersect mmtx size=" + getIntersectExperiments().size() );
         // log.info( intersect );
 
@@ -102,9 +108,11 @@ public class CompareToManual extends AbstractSpringAwareCLI {
         minus.removeAll( manualURLs.keySet() );
         log.info( "mmtx minus gemma size=" + minus.size() );
         log.info( minus );
-
+        // getHumanMappingsFromServer();
         setNullstoEmpty();
         cleanURLs();
+
+        //writeExperimentTitles();
 
         printStats();
 
@@ -112,13 +120,15 @@ public class CompareToManual extends AbstractSpringAwareCLI {
         // filterAndPrint( "/owl/DOID#" );
         // filterAndPrint( "birnlex" );
 
-        for ( String dataset : originalMMTxIDs ) {
-            System.out.println( "-----------------------------------" );
-            System.out.println( "ID" + dataset );
-            showMe( dataset );
-        }
+        // for ( String dataset : originalMMTxIDs ) {
+        // System.out.println( "-----------------------------------" );
+        // System.out.println( "ID" + dataset );
+        // showMe( dataset );
+        // }
 
-        printComparisonsCSV();
+        // printComparisonsCSV();
+
+        // printMissedURLs();
 
         // try {
         // makeSpreadSheet();
@@ -175,9 +185,8 @@ public class CompareToManual extends AbstractSpringAwareCLI {
         Set<String> datasets = new HashSet<String>( mmtxURLs.keySet() );
         datasets.addAll( manualURLs.keySet() );
         for ( String dataset : datasets ) {
-            Set<String> machineURLs = mmtxURLs.get( dataset );
+            //Set<String> machineURLs = mmtxURLs.get( dataset );
             Set<String> humanURLs = manualURLs.get( dataset );
-            machineURLs.remove( "" );
             humanURLs.remove( "null" );
             humanURLs.remove( null );
             humanURLs.remove( "" );
@@ -194,7 +203,6 @@ public class CompareToManual extends AbstractSpringAwareCLI {
                 if ( url.contains( "OrganismalTaxonomy" ) ) {
                     removeMe.add( url );
                 }
-
             }
             humanURLs.removeAll( removeMe );
         }
@@ -254,8 +262,8 @@ public class CompareToManual extends AbstractSpringAwareCLI {
             Set<String> humanURLs = manualURLs.get( dataset );
             Set<String> intersect = getIntersection( dataset );
 
-            totalHuman += humanURLs.size();
             totalMachine += machineURLs.size();
+            totalHuman += humanURLs.size();
             totalIntersect += intersect.size();
         }
         System.out.println( "Human total:" + totalHuman );
@@ -275,11 +283,35 @@ public class CompareToManual extends AbstractSpringAwareCLI {
         }
     }
 
+    private void printMissedURLs() {
+        Map<String, Integer> missed = new HashMap<String, Integer>();
+        for ( String dataset : originalMMTxIDs ) {
+            Set<String> intersect = getIntersection( dataset );
+            for ( String URI : intersect ) {
+                Integer i = missed.get( URI );
+                if ( i == null )
+                    i = 1;
+                else
+                    i++;
+                missed.put( URI, i );
+            }
+        }
+        for ( String URI : missed.keySet() ) {
+            System.out.println( labels.get( URI ) + "|" + URI + "|" + missed.get( URI ) );
+        }
+
+    }
+
     private Map<String, Set<String>> getHumanMappingsFromDisk() throws Exception {
         Map<String, Set<String>> result;
         ObjectInputStream o = new ObjectInputStream( new FileInputStream( "annotator.mappings" ) );
         result = ( Map<String, Set<String>> ) o.readObject();
         o.close();
+
+        ObjectInputStream o2 = new ObjectInputStream( new FileInputStream( "label.mappings" ) );
+        labels = ( Map<String, String> ) o2.readObject();
+        o2.close();
+
         log.info( "Loaded Gemma annotations from local disk" );
         return result;
     }
@@ -290,6 +322,11 @@ public class CompareToManual extends AbstractSpringAwareCLI {
             ObjectOutputStream o = new ObjectOutputStream( new FileOutputStream( "annotator.mappings" ) );
             o.writeObject( manualURLs );
             o.close();
+
+            ObjectOutputStream o2 = new ObjectOutputStream( new FileOutputStream( "label.mappings" ) );
+            o2.writeObject( labels );
+            o2.close();
+
             log.info( "Saved manual annotations" );
         } catch ( Exception e ) {
             log.info( "cannot save CUI mappings" );
@@ -341,6 +378,36 @@ public class CompareToManual extends AbstractSpringAwareCLI {
 
         }
         return result;
+    }
+
+    private void writeExperimentTitles() {
+        writeExperimentTitles( SetupParameters.gemmaTitles);
+    }
+
+    private void writeExperimentTitles( String filename ) {
+        ExpressionExperimentService ees = ( ExpressionExperimentService ) this.getBean( "expressionExperimentService" );
+        Collection<ExpressionExperiment> experiments = ees.loadAll();
+        Model model = ModelFactory.createDefaultModel();
+
+        int c = 0;
+        for ( ExpressionExperiment experiment : experiments ) {
+            c++;
+            // if (c == 30) break;
+            Long ID = experiment.getId();
+
+            log.info( "Experiment number:" + c + " of " + experiments.size() + " ID:" + experiment.getId() );
+
+            ees.thawLite( experiment );
+
+            String GEOObjectURI = ExpressionExperimentAnntotator.gemmaNamespace + "experiment/" + ID;
+            Resource expNode = model.createResource( GEOObjectURI );
+            expNode.addProperty( DC.title, experiment.getName() );
+        }
+        try {
+            model.write( new FileWriter( filename ) );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
     }
 
     private void printROCCurveValues( String filename ) {
@@ -440,10 +507,11 @@ public class CompareToManual extends AbstractSpringAwareCLI {
                 + "\n"
                 + "WHERE {\n                                                            "
                 + "    ?dataset leon:describedBy ?description .\n                                                            "
-                + "    ?description leon:hasPhrase ?phrase .\n                                                            "
-                + "    ?phrase leon:hasMention ?mention .\n                                                            "
-                + "    ?mention leon:mappedTerm ?mapping .\n                                                            "
-                + "    ?mention rdf:label ?label .\n" + "}";
+                + "    OPTIONAL {\n                                                                           "
+                + "      ?description leon:hasPhrase ?phrase .\n                                                            "
+                + "      ?phrase leon:hasMention ?mention .\n                                                           "
+                + "      ?mention leon:mappedTerm ?mapping .\n                                                            "
+                + "      ?mention rdf:label ?label .\n" + "} }";
 
         Model model = Text2OwlModelTools.loadModel( filename );
 
@@ -467,12 +535,16 @@ public class CompareToManual extends AbstractSpringAwareCLI {
                 result.put( dataset, new HashSet<String>() );
                 datasetURLs = result.get( dataset );
             }
+
             String URL = OntologyTools.varToString( "mapping", soln );
-            datasetURLs.add( URL );
-            if ( specificLabels ) {
-                labels.put( URL, OntologyTools.varToString( "label", soln ) + "[UMLS]" );
-            } else {
-                labels.put( URL, OntologyTools.varToString( "label", soln ) );
+            // it maybe a dataset that has no predictions
+            if ( URL != null ) {
+                datasetURLs.add( URL );
+                if ( specificLabels ) {
+                    labels.put( URL, OntologyTools.varToString( "label", soln ) + "[UMLS]" );
+                } else {
+                    labels.put( URL, OntologyTools.varToString( "label", soln ) );
+                }
             }
         }
         return result;
@@ -500,11 +572,15 @@ public class CompareToManual extends AbstractSpringAwareCLI {
     }
 
     public String lineSpacedSet( Set<String> input ) {
-        List inputList = new LinkedList<String>( input );
-        Collections.sort( inputList );
+        List<String> outputList = new LinkedList<String>();
+        for ( String line : input ) {
+            outputList.add( labels.get( line ) + "->" + line );
+        }
+        Collections.sort( outputList );
+
         String result = "";
-        for ( String line : input )
-            result += labels.get( line ) + "->" + line + "\n";
+        for ( String line : outputList )
+            result += line + "\n";
         return result;
     }
 
