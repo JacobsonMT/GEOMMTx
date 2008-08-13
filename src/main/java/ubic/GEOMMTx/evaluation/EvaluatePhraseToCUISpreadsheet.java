@@ -6,8 +6,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 
+import ubic.GEOMMTx.RemoveRejectedMappings;
 import ubic.GEOMMTx.SetupParameters;
 
 /**
@@ -17,6 +20,7 @@ import ubic.GEOMMTx.SetupParameters;
  * @author lfrench
  */
 public class EvaluatePhraseToCUISpreadsheet {
+    protected static Log log = LogFactory.getLog( EvaluatePhraseToCUISpreadsheet.class );
 
     public EvaluatePhraseToCUISpreadsheet() {
 
@@ -42,7 +46,8 @@ public class EvaluatePhraseToCUISpreadsheet {
         int CUIPos = schema.getPosition( "CUI" );
         int SUIPos = schema.getPosition( "SUI" );
         int rejectPos = schema.getPosition( "Reject" );
-        Set<CUISUIPair> seen = new HashSet<CUISUIPair>();
+        Set<CUISUIPair> rejected = new HashSet<CUISUIPair>();
+        Set<CUISUIPair> all = new HashSet<CUISUIPair>();
 
         // if we get two blank lines in a row, then exit
         while ( nullCount < 2 ) {
@@ -57,8 +62,9 @@ public class EvaluatePhraseToCUISpreadsheet {
                 nullCount++;
             } else {
                 nullCount = 0;
+                all.add(new CUISUIPair( CUI, SUI ));
                 if ( reject.equals( "X" ) ) {
-                    seen.add( new CUISUIPair( CUI, SUI ) );
+                    rejected.add( new CUISUIPair( CUI, SUI ) );
                     // delete all mentions that have this CUI and SUI combination
                 }
             }
@@ -66,7 +72,8 @@ public class EvaluatePhraseToCUISpreadsheet {
         }
         // System.out.println( seen );
         // System.out.println( seen.size() );
-        return seen;
+        log.info("All CUI SUI parings:" + all.size());
+        return rejected;
     }
 
     public void runThroughFiles( String file1, String file2 ) throws Exception {
@@ -172,7 +179,6 @@ public class EvaluatePhraseToCUISpreadsheet {
         // evaluator.runThroughFiles( "Paul", "Suzanne" );
         System.out.println(evaluator.getRejectedSUIs());
         System.out.println(evaluator.getRejectedSUIs().size());
-        
     }
 
 }
