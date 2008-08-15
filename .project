@@ -10,11 +10,6 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
-		<buildCommand>
-			<name>org.maven.ide.eclipse.maven2Builder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
@@ -24,7 +19,7 @@
 		<link>
 			<name>MMTX_CONFIG</name>
 			<type>2</type>
-			<location>C:/java/apps/mmtx2.4.c/config</location>
+			<location>/home/paul/C::/java/apps/mmtx2.4.c/config</location>
 		</link>
 	</linkedResources>
 </projectDescription>

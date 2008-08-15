@@ -13,7 +13,9 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import ubic.GEOMMTx.SetupParameters;
+import ubic.basecode.dataStructure.matrix.DenseDoubleMatrix;
 import ubic.basecode.dataStructure.matrix.DenseDoubleMatrix2DNamed;
+import ubic.basecode.dataStructure.matrix.DoubleMatrix;
 import ubic.basecode.dataStructure.matrix.DoubleMatrixNamed;
 import ubic.basecode.io.writer.MatrixWriter;
 import ubic.gemma.ontology.OntologyTools;
@@ -137,8 +139,8 @@ public class MakeHistogramData {
                 + "    OPTIONAL {?dataset dc:title ?title} .                                                           \r\n"
                 + " }                                                                                        \r\n";
 
-        DoubleMatrixNamed<String, String> resultMatrix = new DenseDoubleMatrix2DNamed<String, String>( expToConcept
-                .size(), conceptToExp.size() );
+        DoubleMatrix<String, String> resultMatrix = new DenseDoubleMatrix<String, String>( expToConcept.size(),
+                conceptToExp.size() );
         resultMatrix.setRowNames( new ArrayList<String>( titles ) );
         resultMatrix.setColumnNames( new ArrayList<String>( labels ) );
 
@@ -201,7 +203,7 @@ public class MakeHistogramData {
         System.out.println( "Matrix wrote" );
     }
 
-    public static void writeRTable( String filename, DoubleMatrixNamed<String, String> matrix ) throws Exception {
+    public static void writeRTable( String filename, DoubleMatrix<String, String> matrix ) throws Exception {
         // write it out for R
         FileWriter fOut = new FileWriter( filename );
         MatrixWriter matWriter = new MatrixWriter( fOut );
