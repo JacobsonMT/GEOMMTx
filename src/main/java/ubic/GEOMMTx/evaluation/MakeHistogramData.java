@@ -14,9 +14,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import ubic.GEOMMTx.SetupParameters;
 import ubic.basecode.dataStructure.matrix.DenseDoubleMatrix;
-import ubic.basecode.dataStructure.matrix.DenseDoubleMatrix2DNamed;
 import ubic.basecode.dataStructure.matrix.DoubleMatrix;
-import ubic.basecode.dataStructure.matrix.DoubleMatrixNamed;
 import ubic.basecode.io.writer.MatrixWriter;
 import ubic.gemma.ontology.OntologyTools;
 
