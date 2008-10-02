@@ -13,7 +13,7 @@ public class SetupParameters {
 
     // threshold for mmtx score (max 1000)
     // this value is also stored in the RDF
-    public static int scoreThreshold = 0;// 850;
+    public static int scoreThreshold =  0;
 
     // the UMLS version that MMTx is using
     public static String UMLS_VERSION = "2006AA";
@@ -44,5 +44,9 @@ public class SetupParameters {
         rejectedCUIIRIPairs.add( new CUIIRIPair( "http://www.purl.org/umls/umls#C0001655",
                 "http://purl.org/obo/owl/FMA#FMA_74639" ) );
     }
+    
+    //used by compare to manual, it writes the data in gemma to local disk to save reloading
+    public static String cachedGemmaAnnotations = "annotator.mappings";
+    public static String cachedLabels = "ontology.label.mappings";
 
 }
