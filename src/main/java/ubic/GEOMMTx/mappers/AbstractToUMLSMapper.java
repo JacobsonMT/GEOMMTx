@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -71,7 +72,17 @@ public abstract class AbstractToUMLSMapper implements CUIMapper {
     public int countOnetoMany() {
         int result = 0;
         for ( Set<String> URISet : CUIMap.values() ) {
-           if (URISet.size() > 1) result++;    
+            if ( URISet.size() > 1 ) result++;
+        }
+        return result;
+    }
+
+    public Set<String> getAllURLs() {
+        Set<String> result = new HashSet<String>();
+        for ( Set<String> URLs : CUIMap.values() ) {
+            if ( URLs != null ) {
+                result.addAll( URLs );
+            }
         }
         return result;
     }
