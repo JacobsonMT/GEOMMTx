@@ -16,6 +16,7 @@ import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 
 import ubic.GEOMMTx.CUIMapper;
+import ubic.GEOMMTx.GetUMLSCodes;
 import ubic.GEOMMTx.UMLSSourceCode;
 import ubic.gemma.ontology.OntologyLoader;
 import ubic.gemma.ontology.OntologyTools;
@@ -28,10 +29,13 @@ public class DiseaseOntologyMapper extends AbstractToUMLSMapper implements CUIMa
         return "http://www.berkeleybop.org/ontologies/obo-all/disease_ontology/disease_ontology.owl";
     }
 
+
     
     public DiseaseOntologyMapper() {
         super();
     }
+    
+
 
     public void loadFromOntology() {
         CUIMap = new HashMap<String, Set<String>>();
@@ -90,9 +94,10 @@ public class DiseaseOntologyMapper extends AbstractToUMLSMapper implements CUIMa
         //test.loadFromOntology();
         //test.save();
         // /String cui =
+        
         System.out.println( test.convert( "C0020492", null ) );
         System.out.println( "CUI's that have more that one URI:" + test.countOnetoMany() );
-        
+        System.out.println("All urls size:"+ test.getAllURLs().size() );
     }
 
 }

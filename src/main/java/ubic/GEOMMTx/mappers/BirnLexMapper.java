@@ -45,7 +45,10 @@ public class BirnLexMapper extends AbstractToUMLSMapper implements CUIMapper {
         String queryString = "PREFIX obo_annot: <http://purl.org/nbirn/birnlex/ontology/annotation/OBO_annotation_properties.owl#>\n"
                 + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
                 + "SELECT ?class ?label ?cui\n"
-                + "WHERE  {\n" + "   ?class obo_annot:UmlsCui ?cui .\n" + "   ?class rdfs:label ?label .\n" + "}";
+                + "WHERE  {\n"
+                + "   ?class obo_annot:UmlsCui ?cui .                                      \n"
+                + "   ?class rdfs:label ?label .\n                                               "
+                + "}                     ";
 
         Query q = QueryFactory.create( queryString );
         QueryExecution qexec = QueryExecutionFactory.create( q, birnLex );
@@ -56,20 +59,20 @@ public class BirnLexMapper extends AbstractToUMLSMapper implements CUIMapper {
                 String label = OntologyTools.varToString( "label", soln );
                 String cui = OntologyTools.varToString( "cui", soln );
                 String URI = OntologyTools.varToString( "class", soln );
-                //some have blank UMLS codes
+                // some have blank UMLS codes
                 if ( !cui.equals( "" ) ) {
                     // if we already have a mapping for the CUI then?
-                    Set<String> URIs = CUIMap.get(cui);
-                    if (URIs == null) {
+                    Set<String> URIs = CUIMap.get( cui );
+                    if ( URIs == null ) {
                         URIs = new HashSet<String>();
-                        CUIMap.put( cui, URIs);
+                        CUIMap.put( cui, URIs );
                     }
-                    URIs.add(URI);
+                    URIs.add( URI );
                 }
 
-                //System.out.print( label + "|" );
-                //System.out.print( cui + "|" );
-                //System.out.println( URI + "|" );
+                // System.out.print( label + "|" );
+                // System.out.print( cui + "|" );
+                // System.out.println( URI + "|" );
                 //                
                 // if ( x.isAnon() ) continue; // some reasoners will return these.
             }
@@ -85,6 +88,9 @@ public class BirnLexMapper extends AbstractToUMLSMapper implements CUIMapper {
         test.save();
         // test.bonfire();
         System.out.println( "CUI's that have more that one URI:" + test.countOnetoMany() );
+        
+        System.out.println("All urls size:"+ test.getAllURLs().size() );
+
     }
 
 }

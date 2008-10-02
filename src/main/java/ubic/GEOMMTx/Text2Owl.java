@@ -127,7 +127,7 @@ public class Text2Owl {
     // short main test
     public static void main( String args[] ) throws Exception {
         long time = System.currentTimeMillis();
-        Text2Owl text2Owl = new Text2Owl( new String[] { "--no_acros_abbrs" } );
+        Text2Owl text2Owl = new Text2Owl( new String[] { "--an_derivational_variants","--no_acros_abbrs" } );
         text2Owl.addMapper( new FMALiteMapper() );
         text2Owl.addMapper( new DiseaseOntologyMapper() );
         text2Owl.addMapper( new BirnLexMapper() );
