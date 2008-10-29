@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rdf:RDF [
+  <!ENTITY gemmaAnnotations "http://bioinformatics.ubc.ca/Gemma/ws/xml/gemmaAnnotations.owl">
+  <!ENTITY owl "http://www.w3.org/2002/07/owl#">
+  <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#">
+  <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#">
+]>
+<rdf:RDF xml:base="&gemmaAnnotations;"
+         xmlns:owl="&owl;"
+         xmlns:rdf="&rdf;"
+         xmlns:rdfs="&rdfs;">
+
+<!-- Ontology Information -->
+  <owl:Ontology rdf:about=""
+                rdfs:label="Gemma Annotation Schema"
+                owl:versionInfo="0.1"/>
+
+<!-- Classes -->
+  <owl:Class rdf:about="#GemmaExperiment"/>
+
+<!-- Annotation Properties -->
+  <owl:AnnotationProperty rdf:about="&rdfs;label"/>
+  <owl:AnnotationProperty rdf:about="&owl;versionInfo"/>
+
+<!-- Datatype Properties -->
+  <owl:DatatypeProperty rdf:about="#hasScore"/>
+  <owl:DatatypeProperty rdf:about="#spanEnd"/>
+  <owl:DatatypeProperty rdf:about="#spanStart"/>
+
+<!-- Object Properties -->
+  <owl:ObjectProperty rdf:about="#describedBy"/>
+  <owl:ObjectProperty rdf:about="#hasCUI"/>
+  <owl:ObjectProperty rdf:about="#hasMention"/>
+  <owl:ObjectProperty rdf:about="#hasPhrase"/>
+  <owl:ObjectProperty rdf:about="#hasSUI"/>
+  <owl:ObjectProperty rdf:about="#mappedTerm"/>
+</rdf:RDF>
