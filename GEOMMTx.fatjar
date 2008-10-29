@@ -1,0 +1,14 @@
+#Fat Jar Configuration File
+#Wed Oct 08 17:19:38 PDT 2008
+onejar.license.required=true
+manifest.classpath=
+manifest.removesigners=true
+onejar.checkbox=false
+jarname=GEOMMTx.jar
+manifest.mergeall=false
+manifest.mainclass=ubic.GEOMMTx.AnnotateExperimentPipeLine
+manifest.file=<createnew>
+jarname.isextern=false
+onejar.expand=
+excludes=<jar|xercesImpl-2.8.1.jar>;<jar|xml-apis-1.0.b2.jar>;<jar|xmlParserAPIs-2.6.2.jar>;<jar|commons-fileupload-1.1.jar>;<jar|easymock-2.2.jar>;<jar|icu4j-3.4.jar>;<jar|junit-3.8.1.jar>;<jar|xalan-2.7.0.jar>;<jar|xom-1.0.jar>;<jar|mmtxProjectJS.jar>
+includes=
