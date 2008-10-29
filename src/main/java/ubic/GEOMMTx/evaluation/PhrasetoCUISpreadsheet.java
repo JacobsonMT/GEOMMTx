@@ -26,7 +26,7 @@ public class PhrasetoCUISpreadsheet extends CreateSpreadSheet {
         fi.close();
         log.info( "Done reading..." );
 
-        String queryString = "PREFIX leon: <http://www.purl.org/leon/umls#>                                 \r\n"
+        String queryString = "PREFIX gemmaAnn: <http://bioinformatics.ubc.ca/Gemma/ws/xml/gemmaAnnotations.owl#>                                 \r\n"
                 + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>                                \r\n"
                 + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>                                     \r\n"
                 + "PREFIX gss: <http://www.w3.org/2001/11/IsaViz/graphstylesheets#>                         \r\n"
@@ -34,12 +34,12 @@ public class PhrasetoCUISpreadsheet extends CreateSpreadSheet {
                 + "PREFIX rs: <http://www.w3.org/2001/sw/DataAccess/tests/result-set#>                      \r\n"
                 + "SELECT DISTINCT ?CUI ?SUI ?phraseLabel ?mentionLabel                    \r\n"
                 + "WHERE {                                                                                  \r\n"
-                + "    ?phrase leon:hasMention ?mention .                                                   \r\n"
+                + "    ?phrase gemmaAnn:hasMention ?mention .                                                   \r\n"
                 + "    ?phrase rdfs:label ?phraseLabel .                                                   \r\n"
-                + "    ?mention leon:hasSUI ?SUI .                                                         \r\n"
-                + "    ?mention leon:hasCUI ?CUI .                                                         \r\n"
+                + "    ?mention gemmaAnn:hasSUI ?SUI .                                                         \r\n"
+                + "    ?mention gemmaAnn:hasCUI ?CUI .                                                         \r\n"
                 + "    ?mention rdfs:label ?mentionLabel .                                                 \r\n"
-                + "    ?mention leon:mappedTerm ?mappedTerm .                                                 \r\n"
+                + "    ?mention gemmaAnn:mappedTerm ?mappedTerm .                                                 \r\n"
                 + "} ORDER BY ASC(?CUI) ASC(?SUI)                                                                   \r\n";
 
         // sparql query

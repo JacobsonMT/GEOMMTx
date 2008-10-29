@@ -19,7 +19,7 @@ public class GetUMLSCodes {
     protected static Log log = LogFactory.getLog( GetUMLSCodes.class );
     
     public GetUMLSCodes() {
-        this( SetupParameters.CUI_CODE_LOC );
+        this( SetupParameters.config.getString( "gemma.annotator.cui_code_loc" ) );
     }
     
     //location of MRCONSO.RRF

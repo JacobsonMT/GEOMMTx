@@ -1,39 +1,33 @@
 package ubic.GEOMMTx;
 
 import java.util.HashSet;
+import java.util.Iterator;
+
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.PropertiesConfiguration;
+
+import com.ibm.icu.text.Normalizer;
 
 import ubic.GEOMMTx.evaluation.CUIIRIPair;
 
 public class SetupParameters {
-    // the place where cuisui_sourceinfo.txt is
-    public static String CUI_SOURCE_LOC = "/grp/java/apps/mmtx2.4c/nls/mmtx/data/2006/mmtx";
 
-    // location of MRCONSO file that has the source codes for the concepts
-    public static String CUI_CODE_LOC = "/home/leon/Desktop/mmtx/MRCONSO.RRF";
+    static String filename = "Annotator.properties";
 
-    // threshold for mmtx score (max 1000)
-    // this value is also stored in the RDF
-    public static int scoreThreshold =  0;
-
-    // the UMLS version that MMTx is using
-    public static String UMLS_VERSION = "2006AA";
-    
-    //RDF file that stores Gemma experiment titles
-    public static String gemmaTitles = "GemmaTitles.rdf";
-
-    // Options to pass to MMTx
-    public static String[] mmtxOptions = new String[] { "--an_derivational_variants", "--no_acros_abbrs" };
-
-    // The many rejected phrase to CUI pairings as determined by human curation
-    public static String CUISUIEvaluationFile = "./FinalEvaluations/Mapping from Phrase to CUI.xls";
-
-    // the IRI's that are deemed too generic like house mice, cell, DNA and RNA
-    public static String uselessFrequentURLsFile = "./FinalEvaluations/UselessFrequentURLs.txt";
+    // just grab the config and call get to get the parameter value
+    public static Configuration config;
 
     // The few rejected CUI to IRI/URL pairings as determined by human curation
     public static HashSet<CUIIRIPair> rejectedCUIIRIPairs;
 
     static {
+        try {
+            config = new PropertiesConfiguration( filename );
+        } catch ( Exception e ) {
+            System.out.println( "Could not load " + filename );
+            System.exit( 1 );
+        }
+
         rejectedCUIIRIPairs = new HashSet<CUIIRIPair>();
         rejectedCUIIRIPairs.add( new CUIIRIPair( "http://www.purl.org/umls/umls#C0001162",
                 "http://purl.org/obo/owl/FMA#FMA_50869" ) );
@@ -44,9 +38,17 @@ public class SetupParameters {
         rejectedCUIIRIPairs.add( new CUIIRIPair( "http://www.purl.org/umls/umls#C0001655",
                 "http://purl.org/obo/owl/FMA#FMA_74639" ) );
     }
-    
-    //used by compare to manual, it writes the data in gemma to local disk to save reloading
-    public static String cachedGemmaAnnotations = "annotator.mappings";
-    public static String cachedLabels = "ontology.label.mappings";
+
+    public static void main( String argsp[] ) {
+        Iterator i = config.getKeys( "gemma.annotator" );
+
+        while ( i.hasNext() ) {
+            String key = ( String ) i.next();
+            System.out.println( key + ":" + config.getString( key ) );
+        }
+
+        System.out.println( "options[0] :" + config.getStringArray( "gemma.annotator.mmtxOptions" )[0] );
+        System.out.println( "options[1] :" + config.getStringArray( "gemma.annotator.mmtxOptions" )[1] );
+    }
 
 }

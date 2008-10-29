@@ -105,7 +105,7 @@ public class ExpressionExperimentAnntotator {
                 doRDF( ba.getDescription(), nameSpaceBase + "description" );
             }
             // log.info(ba.getDescription());
-            log.info( ba.getName().replace( "Expr(", "Expr " ) );
+            //log.info( ba.getName().replace( "Expr(", "Expr " ) );
         }
     }
 
@@ -152,8 +152,10 @@ public class ExpressionExperimentAnntotator {
         if ( ref != null ) {
             String nameSpaceBase = "primaryReference/" + ref.getId() + "/";
 
+            log.info("in title doRDF");
             doRDF( ref.getTitle(), nameSpaceBase + "title" );
             if ( ref.getAbstractText() != null ) {
+                log.info("in abstract doRDF");
                 doRDF( ref.getAbstractText(), nameSpaceBase + "abstract" );
             }
         }
@@ -173,7 +175,9 @@ public class ExpressionExperimentAnntotator {
     }
 
     public void writeModel() throws IOException {
-        model.write( new FileWriter( ID + ".rdf" ) );
+        FileWriter fout = new FileWriter( ID + ".rdf" );
+        model.write(  fout );
+        fout.close();
     }
 
     /**
@@ -192,7 +196,7 @@ public class ExpressionExperimentAnntotator {
         Resource thisResource = model.createResource( thisObjectURI );
 
         // connect root to this resource
-        root.addProperty( model.createProperty( "http://www.purl.org/leon/umls#describedBy" ), thisResource );
+        root.addProperty( Vocabulary.describedBy, thisResource );
 
         // this is to avoid text2Owl init times while testing, should be refactored
         if ( text2Owl == null ) return;

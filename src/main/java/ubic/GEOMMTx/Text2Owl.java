@@ -40,7 +40,7 @@ public class Text2Owl {
     private Map<String, Set<UMLSSourceCode>> codeMap;
 
     public Text2Owl() {
-        this( SetupParameters.mmtxOptions );
+        this( SetupParameters.config.getStringArray( "gemma.annotator.mmtxOptions" ) );
     }
 
     public Text2Owl( String[] options ) {
@@ -53,6 +53,10 @@ public class Text2Owl {
         // ConceptToSource.main( null );
         log.info( "Done init for UMLSCodes" );
 
+    }
+    
+    public void clearCache() {
+        mmtx.clearCache();
     }
 
     public void addMapper( CUIMapper mapper ) {
@@ -133,7 +137,7 @@ public class Text2Owl {
         text2Owl.addMapper( new BirnLexMapper() );
 
         Model model = ModelFactory.createDefaultModel();
-        Resource root = model.createResource( "http://www.purl.org/leon/umls#Sample" );
+        Resource root = model.createResource( "http://www.bioinformatics.ubca.ca/testing/umls#Sample" );
 
         model = text2Owl.processText( "Expression data from adult laboratory mouse brain hemispheres", root );
         model = text2Owl.processText( "mouse brain hemispheres", root );

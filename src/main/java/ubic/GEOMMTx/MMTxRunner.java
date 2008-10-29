@@ -35,7 +35,7 @@ public class MMTxRunner {
     
 
 	public MMTxRunner(String[] options) {
-		this(SetupParameters.scoreThreshold, options);
+		this(SetupParameters.config.getInt( "gemma.annotator.scoreThreshold"), options);
 	}
 
 	
@@ -59,13 +59,16 @@ public class MMTxRunner {
 		}
 	}
 	
-	
+    public void clearCache() {
+        memoryOnlyCache.removeAll();
+    }
+
 
 	public List<Phrase> getPhrases(String text) {
 		// check to see if we done it before
 		Element element = memoryOnlyCache.get(text);
 		if (element != null) {
-			log.info("using phrase cache");
+			//log.info("using phrase cache");
 			return (List<Phrase>)(memoryOnlyCache.get(text).getObjectValue());
 		}
 

@@ -57,13 +57,13 @@ public class MakeHistogramData {
 
         Model model = ModelFactory.createDefaultModel();
         model.read( new FileInputStream( file ), null );
-        model.read( new FileInputStream( SetupParameters.gemmaTitles ), null );
+        model.read( new FileInputStream( SetupParameters.config.getString( "gemma.annotator.gemmaTitles" ) ), null );
 
-        String queryString = "PREFIX leon: <http://www.purl.org/leon/umls#>                                            \n"
+        String queryString = "PREFIX gemmaAnn: <http://bioinformatics.ubc.ca/Gemma/ws/xml/gemmaAnnotations.owl#>                                            \n"
                 + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>                                     \n"
                 + "SELECT DISTINCT ?mapping ?label \n"
                 + "WHERE {                                                                                  \n"
-                + "    ?mention leon:mappedTerm ?mapping .                                                            \n"
+                + "    ?mention gemmaAnn:mappedTerm ?mapping .                                                            \n"
                 + "    ?mention rdfs:label ?label .                                                         \n"
                 + " }                                                                                        \n";
         Query q = QueryFactory.create( queryString );
@@ -77,18 +77,18 @@ public class MakeHistogramData {
         }
         qexec.close();
 
-        queryString = "PREFIX leon: <http://www.purl.org/leon/umls#>                                            \r\n"
+        queryString = "PREFIX gemmaAnn: <http://bioinformatics.ubc.ca/Gemma/ws/xml/gemmaAnnotations.owl#>                                            \r\n"
                 + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>                                     \r\n"
                 + "PREFIX dc: <http://purl.org/dc/elements/1.1/>                                           \r\n"
                 + "SELECT DISTINCT ?dataset ?geoLabel ?mapping ?title                                        \r\n"
                 + "WHERE {                                                                                  \r\n"
-                + "    ?dataset leon:describedBy ?description .                                             \r\n"
+                + "    ?dataset gemmaAnn:describedBy ?description .                                             \r\n"
                 + "    ?dataset rdfs:label ?geoLabel .                                                      \r\n"
                 + "    OPTIONAL {?dataset dc:title ?title}  .                                                           \r\n"
                 + "    OPTIONAL{                                                                             \n"
-                + "      ?description leon:hasPhrase ?phrase .                                                \r\n"
-                + "      ?phrase leon:hasMention ?mention .                                                   \r\n"
-                + "      ?mention leon:mappedTerm ?mapping .                                                  \r\n"
+                + "      ?description gemmaAnn:hasPhrase ?phrase .                                                \r\n"
+                + "      ?phrase gemmaAnn:hasMention ?mention .                                                   \r\n"
+                + "      ?mention gemmaAnn:mappedTerm ?mapping .                                                  \r\n"
                 + "      ?mention rdfs:label ?label .                                                         \r\n"
                 + "} }                                                                                        \r\n";
 
@@ -123,16 +123,16 @@ public class MakeHistogramData {
         }
         System.out.println( "labels:" + labels.size() );
 
-        queryString = "PREFIX leon: <http://www.purl.org/leon/umls#>                                            \r\n"
+        queryString = "PREFIX gemmaAnn: <http://bioinformatics.ubc.ca/Gemma/ws/xml/gemmaAnnotations.owl#>                                            \r\n"
                 + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>                                     \r\n"
                 + "PREFIX dc: <http://purl.org/dc/elements/1.1/>                                           \r\n"
                 + "SELECT DISTINCT ?dataset ?geoLabel ?mapping  ?title                                                  \r\n"
                 + "WHERE {                                                                                  \r\n"
-                + "    ?dataset leon:describedBy ?description .                                             \r\n"
+                + "    ?dataset gemmaAnn:describedBy ?description .                                             \r\n"
                 + "    ?dataset rdfs:label ?geoLabel .                                                      \r\n"
-                + "    ?description leon:hasPhrase ?phrase .                                                \r\n"
-                + "    ?phrase leon:hasMention ?mention .                                                   \r\n"
-                + "    ?mention leon:mappedTerm ?mapping .                                                  \r\n"
+                + "    ?description gemmaAnn:hasPhrase ?phrase .                                                \r\n"
+                + "    ?phrase gemmaAnn:hasMention ?mention .                                                   \r\n"
+                + "    ?mention gemmaAnn:mappedTerm ?mapping .                                                  \r\n"
                 + "    ?mention rdfs:label ?label .                                                         \r\n"
                 + "    OPTIONAL {?dataset dc:title ?title} .                                                           \r\n"
                 + " }                                                                                        \r\n";
@@ -169,13 +169,13 @@ public class MakeHistogramData {
         // run query
 
         // remove dupes within experiments - hash->set
-
-        // System.out.println( "Concept to experiment" );
-        // System.out.println( arrayToRString( getCounts( conceptToExp ) ) );
-        // printMapSizes( conceptToExp );
-        // System.out.println( "Experiment to Concept" );
-        // System.out.println( arrayToRString( getCounts( expToConcept ) ) );
-        // printMapSizes( expToConcept );
+        // excel file setup .xls
+        System.out.println( "Concept to experiment" );
+        System.out.println( arrayToRString( getCounts( conceptToExp ) ) );
+        printMapSizes( conceptToExp );
+        System.out.println( "Experiment to Concept" );
+        System.out.println( arrayToRString( getCounts( expToConcept ) ) );
+        printMapSizes( expToConcept );
 
         System.out.println( "Concept to experiment" );
         System.out.println( arrayToRString( getCounts( conceptToExp ) ) );

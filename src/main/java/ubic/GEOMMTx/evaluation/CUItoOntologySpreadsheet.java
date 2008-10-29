@@ -1,22 +1,21 @@
 package ubic.GEOMMTx.evaluation;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+import java.util.HashMap;
 import java.util.Map;
 
+import ubic.GEOMMTx.OntologyLabelLoader;
+import ubic.GEOMMTx.SetupParameters;
 import ubic.gemma.ontology.OntologyLoader;
 
-import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Selector;
-import com.hp.hpl.jena.rdf.model.SimpleSelector;
-import com.hp.hpl.jena.vocabulary.RDFS;
 
 /*
  * old code, needs to be updated with new URL's
@@ -24,50 +23,25 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 public class CUItoOntologySpreadsheet extends CreateSpreadSheet {
     Model linkedOntologies;
 
+    Model model;
+
     public CUItoOntologySpreadsheet( String filename ) throws Exception {
         super( filename, new CUItoOntologySchema() );
+        OntologyLabelLoader labels = new OntologyLabelLoader();
+        model = labels.loadOntologies();
     }
 
+
+
+
     public void populate( String inputFile ) throws Exception {
-        Model model = ModelFactory.createDefaultModel();
         FileInputStream fi = new FileInputStream( inputFile );
         model.read( fi, null );
         fi.close();
 
-        RDFNode nullNode = null;
-        Selector labelSelector = new SimpleSelector( null, RDFS.label, nullNode );
-
-        OntModel birnLex = OntologyLoader.loadPersistentModel( "http://fireball.drexelmed.edu/birnlex/", false );
-        log.info( "loaded birnLex..." );
-        model.add( birnLex.listStatements( labelSelector ) );
-        log.info( "Done merging Birnlex..." );
-        birnLex.close();
-
-        OntModel FMAlite = OntologyLoader.loadPersistentModel(
-                "http://www.berkeleybop.org/ontologies/obo-all/fma_lite/fma_lite.owl", false );
-        log.info( "loaded FMA" );
-        model.add( FMAlite.listStatements( labelSelector ) );
-        log.info( "Done merging FMA..." );
-        FMAlite.close();
-
-        OntModel DO = OntologyLoader.loadPersistentModel(
-                "http://www.berkeleybop.org/ontologies/obo-all/disease_ontology/disease_ontology.owl", false );
-        log.info( "loaded Disease ontology" );
-        model.add( DO.listStatements( labelSelector ) );
-        log.info( "Done merging Disease Ontology..." );
-        DO.close();
-
-        // // bit of a hack job here, I ran the code on FMA and extracted the labels only.
-        // // a good fix would be to use statement selector to get the labels.
-        // fi = new FileInputStream( "FMALabels.rdf" );
-        // Model FMAlabels = ModelFactory.createDefaultModel();
-        // FMAlabels.read( fi, null );
-        // fi.close();
-        // model.add( FMAlabels );
-
         // log.info( "Done reading..." );
 
-        String queryString = "PREFIX leon: <http://www.purl.org/leon/umls#>                                 \r\n"
+        String queryString = "PREFIX gemmaAnn: <http://bioinformatics.ubc.ca/Gemma/ws/xml/gemmaAnnotations.owl#>                                 \r\n"
                 + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>                                \r\n"
                 + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>                                     \r\n"
                 + "PREFIX gss: <http://www.w3.org/2001/11/IsaViz/graphstylesheets#>                         \r\n"
@@ -75,9 +49,9 @@ public class CUItoOntologySpreadsheet extends CreateSpreadSheet {
                 + "PREFIX rs: <http://www.w3.org/2001/sw/DataAccess/tests/result-set#>                      \r\n"
                 + "SELECT DISTINCT ?CUI ?CUILabel ?mappedTerm ?mappedTermLabel                              \r\n"
                 + "WHERE {                                                                                  \r\n"
-                + "    ?mention leon:hasCUI ?CUI .                                                         \r\n"
+                + "    ?mention gemmaAnn:hasCUI ?CUI .                                                         \r\n"
                 + "    ?mention rdfs:label ?CUILabel .                                                 \r\n"
-                + "    ?mention leon:mappedTerm ?mappedTerm .                                                 \r\n"
+                + "    ?mention gemmaAnn:mappedTerm ?mappedTerm .                                                 \r\n"
                 + " ?mappedTerm rdfs:label ?mappedTermLabel . \r\n" + "} ORDER BY ASC(?CUI) ASC(?mappedTerm)";
 
         // sparql query
@@ -89,6 +63,7 @@ public class CUItoOntologySpreadsheet extends CreateSpreadSheet {
         QueryExecution qexec = QueryExecutionFactory.create( q, model );
 
         try {
+            int skipped = 0;
             int row = 1;
             ResultSet results = qexec.execSelect();
             log.info( "Query executed" );
@@ -98,6 +73,7 @@ public class CUItoOntologySpreadsheet extends CreateSpreadSheet {
 
                 // so if the two labels are the same, do we need to evaluate it with a human?
                 if ( solutionMap.get( "CUILabel" ).equalsIgnoreCase( solutionMap.get( "mappedTermLabel" ) ) ) {
+                    skipped++;
                     continue;
                 }
 
@@ -122,12 +98,11 @@ public class CUItoOntologySpreadsheet extends CreateSpreadSheet {
     public static void main( String[] args ) throws Exception {
         CUItoOntologySpreadsheet test = new CUItoOntologySpreadsheet( "tt.xls" );
 
-        log.info( "populating" );
-        test.populate( "mergedRDF.rdf" );
-        log.info( "saving.." );
-        test.save();
-        log.info( "Done!" );
+        // log.info( "populating" );
+        // test.populate( "mergedRDF.firstrun.rdf" );
+        // log.info( "saving.." );
+        // test.save();
+        // log.info( "Done!" );
 
     }
-
 }

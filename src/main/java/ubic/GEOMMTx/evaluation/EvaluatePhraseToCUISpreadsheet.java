@@ -33,7 +33,7 @@ public class EvaluatePhraseToCUISpreadsheet {
     }
 
     public Set<CUISUIPair> getRejectedSUIs() throws Exception {
-        return getRejectedSUIs( SetupParameters.CUISUIEvaluationFile );
+        return getRejectedSUIs( SetupParameters.config.getString( "gemma.annotator.CUISUIEvaluationFile"));
     }
 
     public Set<CUISUIPair> getRejectedSUIs( String file ) throws Exception {

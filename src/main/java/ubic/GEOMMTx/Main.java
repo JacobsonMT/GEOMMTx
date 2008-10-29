@@ -9,6 +9,7 @@ import java.util.Set;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
+import sun.nio.cs.ext.MacHebrew;
 import ubic.GEOMMTx.mappers.BirnLexMapper;
 import ubic.GEOMMTx.mappers.DiseaseOntologyMapper;
 import ubic.GEOMMTx.mappers.FMALiteMapper;
@@ -112,6 +113,7 @@ public class Main extends AbstractSpringAwareCLI {
         text2Owl.addMapper( new FMALiteMapper() );
         text2Owl.addMapper( new DiseaseOntologyMapper() );
     }
+    
 
     protected void processOptions() {
         super.processOptions();

@@ -68,7 +68,7 @@ public abstract class CreateSpreadSheet {
      * @param soln
      * @return
      */
-    public Map<String, String> mapQuerySolution( QuerySolution soln ) {
+    public static Map<String, String> mapQuerySolution( QuerySolution soln ) {
         Map<String, String> map = new HashMap<String, String>();
         String varName = "";
         for ( Iterator i = soln.varNames(); i.hasNext(); ) {
