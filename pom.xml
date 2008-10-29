@@ -20,7 +20,7 @@
 	</build>
 
 	<dependencies>
-    	<dependency>
+		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
 			<version>3.0-FINAL</version>
@@ -56,4 +56,65 @@
 			<version>2.4C</version>
 		</dependency>
 	</dependencies>
+	<repositories>
+		<repository>
+			<id>pavlab</id>
+			<name>PavLab</name>
+			<url>http://www.bioinformatics.ubc.ca/pavlidis/lab/maven2</url>
+			<layout>default</layout>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+			</releases>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>apache.plugin.snapshots</id>
+			<name>Apache Development Repository</name>
+			<url>
+				http://cvs.apache.org/maven-snapshot-repository
+					</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>mojo</id>
+			<name>Mojo</name>
+			<url>
+				http://snapshots.maven.codehaus.org/maven2/
+					</url>
+			<layout>default</layout>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>pavlab</id>
+			<name>PavLab</name>
+			<url>http://www.bioinformatics.ubc.ca/pavlidis/lab/maven2</url>
+			<layout>default</layout>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+			</releases>
+		</pluginRepository>
+	</pluginRepositories>
 </project>
