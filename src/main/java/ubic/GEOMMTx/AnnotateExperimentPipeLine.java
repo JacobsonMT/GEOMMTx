@@ -1,6 +1,5 @@
 package ubic.GEOMMTx;
 
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -10,20 +9,21 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.biomage.tools.ontology.MGEDOntologyClassEntry;
 
 import ubic.GEOMMTx.filters.AbstractFilter;
-import ubic.GEOMMTx.filters.BIRNLexFMANullsFilter;
 import ubic.GEOMMTx.filters.CUIIRIFilter;
 import ubic.GEOMMTx.filters.CUISUIFilter;
-import ubic.GEOMMTx.filters.ExperimentalFactorFilter;
 import ubic.GEOMMTx.filters.FrequentFilter;
 import ubic.GEOMMTx.mappers.BirnLexMapper;
 import ubic.GEOMMTx.mappers.DiseaseOntologyMapper;
 import ubic.GEOMMTx.mappers.FMALiteMapper;
+import ubic.gemma.loader.expression.mage.MgedOntologyHelper;
 import ubic.gemma.model.association.GOEvidenceCode;
-import ubic.gemma.model.common.description.Characteristic;
+import ubic.gemma.model.common.description.VocabCharacteristic;
 import ubic.gemma.model.expression.experiment.ExpressionExperiment;
 import ubic.gemma.model.expression.experiment.ExpressionExperimentService;
+import ubic.gemma.ontology.MgedOntologyService;
 import ubic.gemma.util.AbstractSpringAwareCLI;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -173,15 +173,32 @@ public class AnnotateExperimentPipeLine extends AbstractSpringAwareCLI {
             log.warn( "Couldnt load labels" );
         }
 
+        // The call that does all the work
         Set<String> predictedAnnotations = getAnnotations( experiment );
-        // for (String URI: predictedAnnotations) {
-        // Characteristic c = Characteristic.Factory.newInstance();
-        // c.setValue( URI );
-        // //c.setCategory( ? )
-        // c.setEvidenceCode( GOEvidenceCode.IEA );
-        // //audit trail?
-        // experiment.getCharacteristics().add( c );
-        // }
+
+        for ( String URI : predictedAnnotations ) {
+            System.out.println( labels.get( URI ) + " - " + URI );
+
+            VocabCharacteristic c = VocabCharacteristic.Factory.newInstance();
+            c.setValueUri( URI );
+            c.setValue( labels.get( URI ) );
+
+            String category = null;
+            if ( URI.contains( "/owl/FMA#" ) || URI.contains( "BIRNLex-Anatomy" ) ) {
+                category = "OrganismPart";
+            }
+            if ( URI.contains( "/owl/DOID#" ) ) {
+                category = "DiseaseState";
+            }
+            if ( category != null ) {
+                c.setCategory( category );
+                c.setCategory( MgedOntologyService.MGED_ONTO_BASE_URL + category );
+            }
+            System.out.println( "Predicted category:" + category );
+            c.setEvidenceCode( GOEvidenceCode.IEA );
+            // audit trail?
+            // experiment.getCharacteristics().add( c );
+        }
 
         // System.out.println( "Time todo first:" + ( System.currentTimeMillis() - time ) );
         //
@@ -196,7 +213,6 @@ public class AnnotateExperimentPipeLine extends AbstractSpringAwareCLI {
         //
         // for ( String annotation : getAnnotations( experiment ) ) {
         // System.out.println( labels.get( annotation ) + " - " + annotation );
-        //
         // }
         System.out.println( "Total Time:" + ( System.currentTimeMillis() - time ) );
         return null;
