@@ -28,6 +28,13 @@ import ubic.gemma.util.AbstractSpringAwareCLI;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
+/**
+ * A class that starts with a experiment ID and in the end outputs the predicted annotation URL's, after filtering
+ * 
+ * @author leon
+ * @version $Id$
+ * 
+ */
 public class AnnotateExperimentPipeLine extends AbstractSpringAwareCLI {
     private Text2Owl text2Owl;
     protected static Log log = LogFactory.getLog( AnnotateExperimentPipeLine.class );
