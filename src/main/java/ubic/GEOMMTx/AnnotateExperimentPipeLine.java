@@ -40,9 +40,13 @@ public class AnnotateExperimentPipeLine extends AbstractSpringAwareCLI {
     protected static Log log = LogFactory.getLog( AnnotateExperimentPipeLine.class );
     boolean loadOntologies = false;
     private List<AbstractFilter> filters;
-
+    
     protected void processOptions() {
         super.processOptions();
+        if ( this.hasOption( 'd' ) ) {
+            //this.experimentID = this.getOptionValue( 'e' );
+        }
+
     }
 
     @Override
@@ -163,7 +167,7 @@ public class AnnotateExperimentPipeLine extends AbstractSpringAwareCLI {
         time = System.currentTimeMillis();
 
         // ExpressionExperiment experiment = ees.load( 620l );
-        ExpressionExperiment experiment = ees.load( Long.parseLong( getOption( "e" ).getValue() ) );
+        ExpressionExperiment experiment = ees.load( Long.parseLong( getOptionValue( "e" )) );
         ees.thawLite( experiment );
 
         Map<String, String> labels = null;
