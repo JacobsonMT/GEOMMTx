@@ -17,8 +17,9 @@ import java.util.Set;
 
 import ubic.GEOMMTx.ExpressionExperimentAnntotator;
 import ubic.GEOMMTx.LabelLoader;
-import ubic.GEOMMTx.SetupParameters;
+import ubic.GEOMMTx.ParentFinder;
 import ubic.GEOMMTx.ProjectRDFModelTools;
+import ubic.GEOMMTx.SetupParameters;
 import ubic.GEOMMTx.mappers.BirnLexMapper;
 import ubic.GEOMMTx.mappers.DiseaseOntologyMapper;
 import ubic.GEOMMTx.mappers.FMALiteMapper;
@@ -77,6 +78,21 @@ public class CompareToManual extends AbstractSpringAwareCLI {
     protected void buildOptions() {
     }
 
+    public int countMMTxHits( String URI ) {
+        int hits = 0;
+        DescriptionExtractor de = new DescriptionExtractor( filename );
+        for ( String exp : mmtxURLs.keySet() ) {
+            Set<String> anno = mmtxURLs.get( exp );
+            if ( anno.contains( URI ) ) {
+                System.out.println( exp );
+                System.out.println( de.getDecriptionType( exp, URI ) );
+                hits++;
+            }
+
+        }
+        return hits;
+    }
+
     public static void main( String[] args ) {
         CompareToManual p = new CompareToManual();
 
@@ -95,7 +111,9 @@ public class CompareToManual extends AbstractSpringAwareCLI {
     @SuppressWarnings("unchecked")
     @Override
     protected Exception doWork( String[] args ) {
-        // System.out.println(getMentionCount( "mergedRDF.firstrun.rdf"));
+        // System.out.println(ProjectRDFModelTools.getMentionCount( "mergedRDFBirnLexUpdate.afterrejected.rdf"));
+        // /System.out.println(ProjectRDFModelTools.getMentionCount("mergedRDFBirnLexUpdate.afterUseless.rdf");
+        // System.out.println(ProjectRDFModelTools.getMentionCount( "mergedRDF.firstrun.rdf"));
         // System.out.println(getMentionCount( "mergedRDFBirnLexUpdate.rdf"));
         // System.out.println(getMentionCount( "mergedRDFBirnLexUpdateNoExp.rdf"));
         // System.out.println(getMentionCount( "mergedRDFBirnLexUpdate.afterrejected.rdf"));
@@ -104,7 +122,9 @@ public class CompareToManual extends AbstractSpringAwareCLI {
 
         // FOR SECOND RUN switch OrganismalTaxonomy in cleanURL's
         // filename = "mergedRDF.rejected.removed.rdf"; //second run
-        filename = "mergedRDFBirnLexUpdate.afterUseless.rdf"; // first run
+        filename = "mergedRDFBirnLexUpdate.afterUseless.rdf"; // first run latest
+
+        // System.out.println(ProjectRDFModelTools.getMentionCount(filename));
 
         long totaltime = System.currentTimeMillis();
         Exception err = processCommandLine( "GEOMMTx ", args );
@@ -129,27 +149,64 @@ public class CompareToManual extends AbstractSpringAwareCLI {
         // writeExperimentTitles();
 
         printStats();
+        // print100Stats();
+        // loadInFinalEvaluation();
+        // print100Stats();
 
-        //printSourceStats();
+        // showMe("672");
+        // log.info( countMMTxHits( "http://purl.org/obo/owl/FMA#FMA_67093" ) );
+        // printSourceStats();
+
+        // System.out.println( "Just one" );
+        // filterForOneSource();
+        // printStats();
+        // loadMappings();
+        //
+        // System.out.println( "Two or more" );
+        // filterForTwoOrMoreSources();
+        // printStats();
+        // loadInFinalEvaluation();
+        // print100Stats();
+        // loadMappings();
+        //
+        // // removeAbstractSource();
+        // System.out.println( "Remove abstracts" );
+        // removeAbstractOneSource();
+        // printStats();
 
         // print100Stats();
 
         // howManyMissingMappings();
 
-        // howManyMissingMappings();
+        // printMMTxForTagCloud();
+        // printHumanForTagCloud();
+        // printMissedForTagCloud();
 
-        printMMTxForTagCloud();
+        // getHumanMappingsFromServer();
 
-        printHumanForTagCloud();
-        
-        printMissedForTagCloud();
-
-        // filterAndPrint( "/owl/FMA#" );
-        // filterAndPrint( "/owl/DOID#" );
-        // filterAndPrint( "birnlex" );
+        // boolean evalSetOnly = false;
+        // filterAndPrint( "/owl/FMA#", evalSetOnly );
+        // filterAndPrint( "/owl/DOID#", evalSetOnly );
+        // filterAndPrint( "birnlex", evalSetOnly );
 
         // printStats();
 
+//        examineSingleSource( "primaryReference/abstract" );
+//        examineSingleSource( "bioAssay/name" );
+//        examineSingleSource( "bioAssay/description" );
+//        examineSingleSource( "experiment/name" );
+//        examineSingleSource( "experiment/description" );
+//        examineSingleSource( "primaryReference/title" );
+
+        System.out.println( "two or more" );
+        loadMappings();
+        filterForTwoOrMoreSources();
+        printStats();
+        loadInFinalEvaluation();
+        print100Stats();
+
+        // filterAndPrint( "/owl/DOID#", false );
+        //        
         // ParentFinder parentFinder = new ParentFinder();
         // try {
         // parentFinder.init();
@@ -157,14 +214,14 @@ public class CompareToManual extends AbstractSpringAwareCLI {
         // e.printStackTrace();
         // }
         // mmtxURLs = parentFinder.expandToParents( mmtxURLs );
-        //
+        //        
         // System.out.println( "Children/leaves stats" );
         // printStats();
-        //
+        //        
         // mmtxURLs = parentFinder.reduceToLeaves( mmtxURLs );
         // System.out.println( "Leaves only" );
         // printStats();
-        //
+        //        
         // System.out.println( "Nulls: " + parentFinder.nullTerms );
 
         // for ( String dataset : originalMMTxIDs ) {
@@ -189,10 +246,23 @@ public class CompareToManual extends AbstractSpringAwareCLI {
         return null;
     }
 
-    private void filterAndPrint( String filterString ) {
-        getMappings( filename );
-        setNullstoEmpty();
-        cleanURLs();
+    public void examineSingleSource( String source ) {
+        loadMappings();
+        removeExceptOneSource( source );
+        System.out.println( "SOURCE = " + source + " ---------------" );
+        printStats();
+        System.out.println( "SOURCE 100 Stats= " + source + " ---------------" );
+        loadInFinalEvaluation();
+        print100Stats();
+        System.out.println( "========END= " + source + " ---------------" );
+    }
+
+    private void filterAndPrint( String filterString, boolean evalSet ) {
+        loadMappings();
+        if ( evalSet ) {
+            setTo100EvalSet();
+            loadInFinalEvaluation();
+        }
         log.info( filterString );
         filterAllURLs( filterString );
         printStats();
@@ -321,6 +391,66 @@ public class CompareToManual extends AbstractSpringAwareCLI {
         return intersect;
     }
 
+    private void removeAbstractSource() {
+        DescriptionExtractor de = new DescriptionExtractor( filename );
+        for ( String dataset : originalMMTxIDs ) {
+            Set<String> machineURLs = mmtxURLs.get( dataset );
+            Set<String> oneSourceMachineURLs = new HashSet<String>();
+            for ( String URI : machineURLs ) {
+                if ( de.getDecriptionType( dataset, URI ).contains( "primaryReference/abstract" ) ) continue;
+                oneSourceMachineURLs.add( URI );
+            }
+            mmtxURLs.put( dataset, oneSourceMachineURLs );
+        }
+    }
+
+    // primaryReference/abstract
+    // bioAssay/name
+    // bioAssay/description
+    // experiment/name
+    // experiment/description
+    // primaryReference/title
+    // primaryReference/abstract
+    private void removeExceptOneSource( String source ) {
+        DescriptionExtractor de = new DescriptionExtractor( filename );
+        for ( String dataset : originalMMTxIDs ) {
+            Set<String> machineURLs = mmtxURLs.get( dataset );
+            Set<String> oneSourceMachineURLs = new HashSet<String>();
+            for ( String URI : machineURLs ) {
+                if ( de.getDecriptionType( dataset, URI ).contains( source )
+                        && de.getDecriptionType( dataset, URI ).size() == 1 ) continue;
+                oneSourceMachineURLs.add( URI );
+            }
+            mmtxURLs.put( dataset, oneSourceMachineURLs );
+        }
+    }
+
+    private void filterForTwoOrMoreSources() {
+        DescriptionExtractor de = new DescriptionExtractor( filename );
+        for ( String dataset : originalMMTxIDs ) {
+            Set<String> machineURLs = mmtxURLs.get( dataset );
+            Set<String> notOneSourceMachineURLs = new HashSet<String>();
+            for ( String URI : machineURLs ) {
+                if ( de.getDecriptionType( dataset, URI ).size() < 2 ) continue;
+                notOneSourceMachineURLs.add( URI );
+            }
+            mmtxURLs.put( dataset, notOneSourceMachineURLs );
+        }
+    }
+
+    private void filterForOneSource() {
+        DescriptionExtractor de = new DescriptionExtractor( filename );
+        for ( String dataset : originalMMTxIDs ) {
+            Set<String> machineURLs = mmtxURLs.get( dataset );
+            Set<String> oneSourceMachineURLs = new HashSet<String>();
+            for ( String URI : machineURLs ) {
+                if ( de.getDecriptionType( dataset, URI ).size() != 1 ) continue;
+                oneSourceMachineURLs.add( URI );
+            }
+            mmtxURLs.put( dataset, oneSourceMachineURLs );
+        }
+    }
+
     private void printSourceStats() {
         List<String> allSources = new LinkedList<String>();
         List<String> intersectSources = new LinkedList<String>();
@@ -329,8 +459,16 @@ public class CompareToManual extends AbstractSpringAwareCLI {
         for ( String dataset : originalMMTxIDs ) {
             Set<String> machineURLs = mmtxURLs.get( dataset );
             Set<String> intersect = getIntersection( dataset );
-            allSources.addAll( de.getDecriptionType( dataset, machineURLs ) );
-            intersectSources.addAll( de.getDecriptionType( dataset, intersect ) );
+
+            for ( String URI : machineURLs ) {
+                if ( de.getDecriptionType( dataset, URI ).size() != 1 ) continue;
+                allSources.addAll( de.getDecriptionType( dataset, URI ) );
+            }
+            // only look at those with one source
+            for ( String URI : intersect ) {
+                if ( de.getDecriptionType( dataset, URI ).size() != 1 ) continue;
+                intersectSources.addAll( de.getDecriptionType( dataset, URI ) );
+            }
         }
         // crunch them down to a hash
         System.out.println( "== all MMTx predictions ==" );
@@ -340,7 +478,7 @@ public class CompareToManual extends AbstractSpringAwareCLI {
         printMap( listToFrequencyMap( intersectSources ) );
     }
 
-    public void printMap( Map<String, Integer> map ) {
+    public static void printMap( Map<String, Integer> map ) {
         int total = 0;
         for ( String key : map.keySet() ) {
             total += map.get( key );
@@ -350,7 +488,7 @@ public class CompareToManual extends AbstractSpringAwareCLI {
         }
     }
 
-    public Map<String, Integer> listToFrequencyMap( List<String> input ) {
+    public static Map<String, Integer> listToFrequencyMap( List<String> input ) {
         Map<String, Integer> result = new HashMap<String, Integer>();
         int i;
         for ( String s : input ) {
@@ -381,11 +519,16 @@ public class CompareToManual extends AbstractSpringAwareCLI {
             totalHuman += humanURLs.size();
             totalIntersect += intersect.size();
         }
-        System.out.println( "Human total:" + totalHuman + " Unique:" + uniqueHuman.size() );
-        System.out.println( "Machine:" + totalMachine + " Unique:" + uniqueMachine.size() );
+        System.out.println( "Human total:" + totalHuman + " Unique:" + uniqueHuman.size() + "  percent unique:"
+                + ( int ) ( 100.0 * uniqueHuman.size() / ( float ) totalHuman ) );
+        System.out.println( "Machine:" + totalMachine + " Unique:" + uniqueMachine.size() + "  percent unique:"
+                + ( int ) ( 100.0 * uniqueMachine.size() / ( float ) totalMachine ) );
         System.out.println( "Intersect:" + totalIntersect + " Unique:" + uniqueIntersect.size() );
-        System.out.println( "Recall:" + totalIntersect / ( float ) totalHuman );
-        System.out.println( "Precision:" + totalIntersect / ( float ) totalMachine );
+        float recall = totalIntersect / ( float ) totalHuman;
+        System.out.println( "Recall:" + recall );
+        float precision = totalIntersect / ( float ) totalMachine;
+        System.out.println( "Precision:" + precision );
+        System.out.println( "F-measure:" + 2 * precision * recall / ( precision + recall ) );
     }
 
     private void printComparisonsCSV() {
@@ -495,6 +638,9 @@ public class CompareToManual extends AbstractSpringAwareCLI {
                 if ( ch instanceof VocabCharacteristic ) {
                     VocabCharacteristic vc = ( VocabCharacteristic ) ch;
                     currentURL.add( vc.getValueUri() );
+
+                    System.out.println( vc.getCategory() );
+                    System.out.println( vc.getCategoryUri() );
                     // if ( specificLabels ) {
                     // labels.put( vc.getValueUri(), vc.getValue() + "[Gemma]" );
                     // } else {
@@ -708,29 +854,32 @@ public class CompareToManual extends AbstractSpringAwareCLI {
     public void howManyMissingMappings() {
         Collection<String> result;
 
-        filterAndPrint( "/owl/FMA#" );
+        filterAndPrint( "/owl/FMA#", false );
         FMALiteMapper fma = new FMALiteMapper();
         result = removeFromHumanSeen( fma.getAllURLs() );
         System.out.println( "Seen manual FMA URL's that we have no mapping to:" + result.size() );
 
-        filterAndPrint( "/owl/DOID#" );
+        filterAndPrint( "/owl/DOID#", false );
         DiseaseOntologyMapper DO = new DiseaseOntologyMapper();
         result = removeFromHumanSeen( DO.getAllURLs() );
         System.out.println( "Seen manual DO URL's that we have no mapping to:" + result.size() );
 
-        filterAndPrint( "birnlex" );
+        filterAndPrint( "birnlex", false );
         BirnLexMapper BIRN = new BirnLexMapper();
         result = removeFromHumanSeen( BIRN.getAllURLs() );
         System.out.println( "Seen manual BIRN URL's that we have no mapping to:" + result.size() );
 
+        loadMappings();
+    }
+
+    private void loadMappings() {
         // Reset
         getMappings( filename );
         setNullstoEmpty();
         cleanURLs();
     }
 
-    public void print100Stats() {
-        // the below expID's are the ones we choose for manual curation
+    public void setTo100EvalSet() {
         String[] exps100 = new String[] { "107", "114", "129", "137", "140", "155", "159", "167", "198", "199", "2",
                 "20", "206", "211", "213", "216", "219", "221", "232", "241", "243", "245", "246", "257", "258", "26",
                 "265", "267", "268", "277", "288", "295", "299", "302", "319", "323", "35", "36", "363", "368", "369",
@@ -739,6 +888,26 @@ public class CompareToManual extends AbstractSpringAwareCLI {
                 "596", "597", "6", "602", "606", "609", "613", "617", "619", "625", "627", "633", "639", "64", "647",
                 "651", "653", "657", "66", "663", "667", "672", "699", "74", "76", "79", "80", "90", "95" };
         originalMMTxIDs = new HashSet<String>( Arrays.asList( exps100 ) );
+    }
+
+    public void loadInFinalEvaluation() {
+        CheckHighLevelSpreadSheetReader reader = new CheckHighLevelSpreadSheetReader();
+        Map<String, Set<String>> accepted = null;
+        try {
+            accepted = reader.getRejectedAnnotations();
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+        for ( String exp : accepted.keySet() ) {
+            Set<String> anots = accepted.get( exp );
+            // add them all to the manual annotations
+            manualURLs.get( exp ).addAll( anots );
+        }
+    }
+
+    public void print100Stats() {
+        setTo100EvalSet();
+        // the below expID's are the ones we choose for manual curation
         printStats();
     }
 
