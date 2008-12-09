@@ -80,5 +80,9 @@ public class BIRNLexFMANullsFilter extends AbstractFilter {
         //log.info( "number of null URL's:" + count );
         return removeMentionsURLs( model, removeURIs );
     }
+    
+    public static void main( String args[] ) throws Exception {
+        BIRNLexFMANullsFilter test = new BIRNLexFMANullsFilter();
+    }
 
 }
