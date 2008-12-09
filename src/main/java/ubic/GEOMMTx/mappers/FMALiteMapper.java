@@ -28,7 +28,7 @@ public class FMALiteMapper implements CUIMapper {
         Set<String> codes = new HashSet<String>();
         for ( UMLSSourceCode sourceCode : sourceCodes ) {
             // if FMA is the source
-            if ( sourceCode.getSource().equals( "UWDA173" ) ) {
+            if ( sourceCode.getSource().startsWith( "UWDA" ) ||  sourceCode.getSource().startsWith( "FMA" ) ) {
                 code = sourceCode.getCode();
                 codes.add( MAIN_URL + code );
             }
@@ -68,8 +68,8 @@ public class FMALiteMapper implements CUIMapper {
         }
         System.out.println( "number of FMA references:" + count );
 
-        URL = fma.convert( "C0006104", codes.getUMLSCodeMap().get( "C0006104" ) );
-        System.out.println( URL );
-        System.out.println( fma.getAllURLs().size() );
+//        URL = fma.convert( "C0006104", codes.getUMLSCodeMap().get( "C0006104" ) );
+//        System.out.println( URL );
+//        System.out.println( fma.getAllURLs().size() );
     }
 }
