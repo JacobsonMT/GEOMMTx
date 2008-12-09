@@ -9,7 +9,6 @@ import gov.nih.nlm.nls.nlp.textfeatures.Phrase;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
@@ -17,8 +16,6 @@ import net.sf.ehcache.Element;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import com.hp.hpl.jena.assembler.acceptance.AllAccept.SetupDatabase;
 
 public class MMTxRunner {
 	private static final long serialVersionUID = 1L;
@@ -30,13 +27,13 @@ public class MMTxRunner {
 	private int scoreThreshold;
 
 	public MMTxRunner() {
-		this(new String[] {});
+		this(0,new String[] {});
 	}
     
 
-	public MMTxRunner(String[] options) {
-		this(SetupParameters.config.getInt( "gemma.annotator.scoreThreshold"), options);
-	}
+//	public MMTxRunner(String[] options) {
+//		this(, options);
+//	}
 
 	
 	private Cache memoryOnlyCache;
@@ -52,6 +49,7 @@ public class MMTxRunner {
         }
 
 		try {
+            // try MMTxAPILite?
 			MMTx = new MMTxAPI(options);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -82,6 +80,7 @@ public class MMTxRunner {
 			e.printStackTrace();
 			System.exit(1);
 		}
+        //doc.getSentences()
 
 		if (doc.getPhrases() == null)
 			return results;
@@ -136,5 +135,4 @@ public class MMTxRunner {
 	public void setScoreThreshold(int scoreThreshold) {
 		this.scoreThreshold = scoreThreshold;
 	}
-
 }

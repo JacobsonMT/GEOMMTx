@@ -40,11 +40,12 @@ public class Text2Owl {
     private Map<String, Set<UMLSSourceCode>> codeMap;
 
     public Text2Owl() {
-        this( SetupParameters.config.getStringArray( "gemma.annotator.mmtxOptions" ) );
+        this( SetupParameters.config.getInt( "gemma.annotator.scoreThreshold" ), SetupParameters.config
+                .getStringArray( "gemma.annotator.mmtxOptions" ) );
     }
 
-    public Text2Owl( String[] options ) {
-        mmtx = new MMTxRunner( options );
+    public Text2Owl( int threshold, String[] options ) {
+        mmtx = new MMTxRunner( threshold, options );
         CUIMappers = new ArrayList<CUIMapper>();
         umlscodes = new GetUMLSCodes();
         codeMap = umlscodes.getUMLSCodeMap();
@@ -54,7 +55,7 @@ public class Text2Owl {
         log.info( "Done init for UMLSCodes" );
 
     }
-    
+
     public void clearCache() {
         mmtx.clearCache();
     }
@@ -131,7 +132,7 @@ public class Text2Owl {
     // short main test
     public static void main( String args[] ) throws Exception {
         long time = System.currentTimeMillis();
-        Text2Owl text2Owl = new Text2Owl( new String[] { "--an_derivational_variants","--no_acros_abbrs" } );
+        Text2Owl text2Owl = new Text2Owl( 850, new String[] { "--an_derivational_variants", "--no_acros_abbrs" } );
         text2Owl.addMapper( new FMALiteMapper() );
         text2Owl.addMapper( new DiseaseOntologyMapper() );
         text2Owl.addMapper( new BirnLexMapper() );
@@ -139,9 +140,9 @@ public class Text2Owl {
         Model model = ModelFactory.createDefaultModel();
         Resource root = model.createResource( "http://www.bioinformatics.ubca.ca/testing/umls#Sample" );
 
-        model = text2Owl.processText( "Expression data from adult laboratory mouse brain hemispheres", root );
-        model = text2Owl.processText( "mouse brain hemispheres", root );
-
+//        model = text2Owl.processText( "Expression data from adult laboratory mouse brain hemispheres", root );
+//        model = text2Owl.processText( "mouse brain hemispheres", root );
+        model = text2Owl.processText( "thymocyte", root );
         log.info( "here" );
         // Hippocampus CA3 acute
         // model = text2Owl.processText( "Sample # Group OD 260/280 RNA, ug/ul Actb Ct Chip 1 PregPBS 2.0 0.63 13.8 a 2

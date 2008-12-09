@@ -42,11 +42,15 @@ public class FrequentFilter extends AbstractFilter {
  */
     public static void main( String args[] ) throws Exception {
         Map<String, String> labels = LabelLoader.readLabels();
-        System.out.println( "Uninformative Labels" );
-        FrequentFilter f = new FrequentFilter();
-        for ( String URI : f.getFrequentURLs() ) {
-            System.out.println( labels.get( URI ) + " -> " + URI );
+        
+        BufferedReader f = new BufferedReader( new FileReader( SetupParameters.config
+                .getString( "gemma.annotator.uselessFrequentURLsFile" ) ) );
+        String line;
+        while ( ( line = f.readLine() ) != null ) {
+            System.out.println( labels.get( line ) + " -> " + line );
         }
+        f.close();
+
     }
 
 }

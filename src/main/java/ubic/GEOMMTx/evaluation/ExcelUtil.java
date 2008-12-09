@@ -11,6 +11,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 public class ExcelUtil {
+    
     public static HSSFSheet getSheetFromFile( String filename, String sheetName ) throws Exception {
         POIFSFileSystem fs = new POIFSFileSystem( new FileInputStream( filename ) );
         HSSFWorkbook wb = new HSSFWorkbook( fs );
@@ -36,6 +37,8 @@ public class ExcelUtil {
                 // WARNING bad for doubles
                 return "" + cell.getNumericCellValue();
             }
+            if ( cell.getCellType() == HSSFCell.CELL_TYPE_FORMULA ) return cell.getCellFormula();
+
         } catch ( Exception e ) {
             System.err.println( "row:" + row + " col:" + col );
             e.printStackTrace();

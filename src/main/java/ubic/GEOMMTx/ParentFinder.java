@@ -10,6 +10,8 @@ import org.apache.commons.logging.LogFactory;
 
 import ubic.gemma.ontology.AbstractOntologyService;
 import ubic.gemma.ontology.BirnLexOntologyService;
+import ubic.gemma.ontology.FMAOntologyService;
+import ubic.gemma.ontology.HumanDiseaseOntologyService;
 import ubic.gemma.ontology.OntologyTerm;
 
 public class ParentFinder {
@@ -18,10 +20,10 @@ public class ParentFinder {
     Set<AbstractOntologyService> ontologies = new HashSet<AbstractOntologyService>();
 
     public void init() throws Exception {
-        BirnLexOntologyService hd = new BirnLexOntologyService();
-        
-        //HumanDiseaseOntologyService hd = new HumanDiseaseOntologyService();
-        //FMAOntologyService hd = new FMAOntologyService();
+        // BirnLexOntologyService hd = new BirnLexOntologyService();
+
+        HumanDiseaseOntologyService hd = new HumanDiseaseOntologyService();
+        // FMAOntologyService hd = new FMAOntologyService();
         hd.init( true );
         while ( !hd.isOntologyLoaded() ) {
             Thread.sleep( 5000 );
@@ -56,7 +58,7 @@ public class ParentFinder {
         System.out.println( allParents( inputURIs ) );
 
     }
-    
+
     // load ontologies
     // have a method that returns children?
     public static void main( String args[] ) throws Exception {
@@ -76,9 +78,9 @@ public class ParentFinder {
         for ( String URI : inputURIs ) {
             Set<String> intersection = new HashSet<String>( inputURIs );
             OntologyTerm t = getTerm( URI );
-            if (t== null) {
+            if ( t == null ) {
                 nullTerms++;
-                log.warn( "got null term "+ URI );
+                // log.warn( "got null term " + URI );
                 continue;
             }
 
@@ -102,14 +104,15 @@ public class ParentFinder {
      * @param inputURIs
      * @return
      */
-    public int nullTerms =0;
+    public int nullTerms = 0;
+
     public Set<String> allParents( Set<String> inputURIs ) {
         Set<String> result = new HashSet<String>( inputURIs );
         for ( String URI : inputURIs ) {
             OntologyTerm t = getTerm( URI );
-            if (t== null) {
+            if ( t == null ) {
                 nullTerms++;
-                log.warn( "got null term "+ URI );
+                log.warn( "got null term " + URI );
                 continue;
             }
             // convert the parents to string and add it
