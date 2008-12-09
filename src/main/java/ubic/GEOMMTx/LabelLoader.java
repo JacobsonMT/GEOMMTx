@@ -20,6 +20,12 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
 
+/**
+ * Gets the labels of the ontology classes and saves them to disk
+ * 
+ * @author leon
+ *
+ */
 public class LabelLoader {
     protected static Log log = LogFactory.getLog( LabelLoader.class );
 
