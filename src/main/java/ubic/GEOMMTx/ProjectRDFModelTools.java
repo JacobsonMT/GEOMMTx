@@ -74,21 +74,26 @@ public class ProjectRDFModelTools {
         int count = 0;
         String queryString = "PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>"
                 + "PREFIX gemmaAnn: <http://bioinformatics.ubc.ca/Gemma/ws/xml/gemmaAnnotations.owl#>\n                              "
-                + "SELECT ?phrase ?mention\n                                                            "
+                + "SELECT ?description ?dataset ?phrase ?mapping\n                                                            "
                 + "WHERE {\n                                                            "
                 + "    ?dataset gemmaAnn:describedBy ?description .\n                                                            "
                 + "    ?description gemmaAnn:hasPhrase ?phrase .\n                                                            "
                 + "    ?phrase gemmaAnn:hasMention ?mention .\n                                                           "
+                + "    ?mention gemmaAnn:mappedTerm ?mapping .\n                                                           "
                 + " }";
         Query q = QueryFactory.create( queryString );
         QueryExecution qexec = QueryExecutionFactory.create( q, model );
         ResultSet results = qexec.execSelect();
         while ( results.hasNext() ) {
             results.next();
-            
+
             count++;
         }
         return count;
+    }
+
+    public static void main( String args[] ) {
+        System.out.println( ProjectRDFModelTools.getMentionCount( "mergedRDFBirnLexUpdate.afterUseless.rdf" ) );
     }
 
     public static Map<String, Set<String>> getURLsExperiments( String filename ) {
@@ -161,7 +166,7 @@ public class ProjectRDFModelTools {
         return result;
     }
 
-    public int getMentionCount( String filename ) {
+    static public int getMentionCount( String filename ) {
         Model model = ProjectRDFModelTools.loadModel( filename );
         int count = getMentionCount( model );
         model.close();
