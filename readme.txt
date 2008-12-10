@@ -13,5 +13,6 @@ Run mvn install to download libraries
 
 Execution:
 ubic.GEOMMTx.ExampleAnnotator.java provides a simple class for executing the pipeline.  It's input is the first command line argument, and it's output is example.rdf
+Note: the first run may take some time as it makes the mappings for BIRNLex and Disease Ontology (after the first run its stored locally)
 
 Contact: leonfrench@gmail.com
