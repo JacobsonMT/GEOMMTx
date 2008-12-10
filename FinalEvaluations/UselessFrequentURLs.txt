@@ -1,0 +1,16 @@
+http://purl.org/obo/owl/FMA#FMA_74402
+http://purl.org/obo/owl/FMA#FMA_68646
+http://purl.org/obo/owl/FMA#FMA_67095
+http://purl.org/obo/owl/FMA#FMA_9637
+http://purl.org/obo/owl/DOID#DOID_4
+http://purl.org/obo/owl/FMA#FMA_67257
+http://purl.org/obo/owl/FMA#FMA_67122
+http://purl.org/obo/owl/DOID#DOID_225
+http://purl.org/obo/owl/FMA#FMA_61109
+http://purl.org/obo/owl/FMA#FMA_63083
+http://purl.org/obo/owl/FMA#FMA_45728
+http://purl.org/obo/owl/FMA#FMA_49444
+http://purl.org/obo/owl/FMA#FMA_74535
+http://purl.org/obo/owl/FMA#FMA_30332
+http://purl.org/obo/owl/FMA#FMA_74525
+http://purl.org/obo/owl/FMA#FMA_74552
