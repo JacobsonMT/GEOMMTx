@@ -46,6 +46,10 @@ public class ExampleAnnotator {
      * @param args
      */
     public static void main( String[] args ) throws Exception {
+        if ( args.length == 0) {
+            System.out.println( "Usage: ExampleAnnotator \"text to be processed\"" );
+            System.exit(1);
+        }
         String outputFile = "example.rdf";
 
         String text = args[0];
