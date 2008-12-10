@@ -1,3 +1,21 @@
+/*
+ * The Gemma project
+ * 
+ * Copyright (c) 2007 University of British Columbia
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 package ubic.GEOMMTx;
 
 import java.util.LinkedList;
@@ -14,7 +32,7 @@ import org.biomage.tools.ontology.MGEDOntologyClassEntry;
 import ubic.GEOMMTx.filters.AbstractFilter;
 import ubic.GEOMMTx.filters.CUIIRIFilter;
 import ubic.GEOMMTx.filters.CUISUIFilter;
-import ubic.GEOMMTx.filters.FrequentFilter;
+import ubic.GEOMMTx.filters.UninformativeFilter;
 import ubic.GEOMMTx.mappers.BirnLexMapper;
 import ubic.GEOMMTx.mappers.DiseaseOntologyMapper;
 import ubic.GEOMMTx.mappers.FMALiteMapper;
@@ -40,7 +58,7 @@ public class AnnotateExperimentPipeLine extends AbstractSpringAwareCLI {
     protected static Log log = LogFactory.getLog( AnnotateExperimentPipeLine.class );
     boolean loadOntologies = false;
     private List<AbstractFilter> filters;
-    
+
     protected void processOptions() {
         super.processOptions();
     }
@@ -80,7 +98,7 @@ public class AnnotateExperimentPipeLine extends AbstractSpringAwareCLI {
             filters.add( new CUISUIFilter() );
             filters.add( new CUIIRIFilter() );
             // filters.add( new BIRNLexFMANullsFilter() );
-            filters.add( new FrequentFilter() );
+            filters.add( new UninformativeFilter() );
         } catch ( Exception e ) {
             // TODO
             e.printStackTrace();
@@ -163,7 +181,7 @@ public class AnnotateExperimentPipeLine extends AbstractSpringAwareCLI {
         time = System.currentTimeMillis();
 
         // ExpressionExperiment experiment = ees.load( 620l );
-        ExpressionExperiment experiment = ees.load( Long.parseLong( getOptionValue( "e" )) );
+        ExpressionExperiment experiment = ees.load( Long.parseLong( getOptionValue( "e" ) ) );
         ees.thawLite( experiment );
 
         Map<String, String> labels = null;
@@ -172,14 +190,14 @@ public class AnnotateExperimentPipeLine extends AbstractSpringAwareCLI {
         } catch ( Exception e ) {
             log.warn( "Couldnt load labels" );
         }
-        PredictedCharacteristicFactory charGen = new PredictedCharacteristicFactory(labels);
+        PredictedCharacteristicFactory charGen = new PredictedCharacteristicFactory( labels );
 
         // The call that does all the work
         Set<String> predictedAnnotations = getAnnotations( experiment );
 
         for ( String URI : predictedAnnotations ) {
             System.out.println( labels.get( URI ) + " - " + URI );
-            
+
             VocabCharacteristic c = charGen.getCharacteristic( URI );
 
         }

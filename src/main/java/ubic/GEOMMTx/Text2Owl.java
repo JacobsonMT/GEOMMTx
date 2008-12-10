@@ -1,3 +1,21 @@
+/*
+ * The Gemma project
+ * 
+ * Copyright (c) 2007 University of British Columbia
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 package ubic.GEOMMTx;
 
 import gov.nih.nlm.nls.nlp.textfeatures.Candidate;
@@ -52,7 +70,7 @@ public class Text2Owl {
 
         // call the static constructor of data
         // ConceptToSource.main( null );
-        log.info( "Done init for UMLSCodes" );
+        // log.info( "Done init for UMLSCodes" );
 
     }
 
@@ -140,9 +158,9 @@ public class Text2Owl {
         Model model = ModelFactory.createDefaultModel();
         Resource root = model.createResource( "http://www.bioinformatics.ubca.ca/testing/umls#Sample" );
 
-//        model = text2Owl.processText( "Expression data from adult laboratory mouse brain hemispheres", root );
-//        model = text2Owl.processText( "mouse brain hemispheres", root );
-        model = text2Owl.processText( "thymocyte", root );
+        // model = text2Owl.processText( "Expression data from adult laboratory mouse brain hemispheres", root );
+        // model = text2Owl.processText( "mouse brain hemispheres", root );
+        model = text2Owl.processText( "brain", root );
         log.info( "here" );
         // Hippocampus CA3 acute
         // model = text2Owl.processText( "Sample # Group OD 260/280 RNA, ug/ul Actb Ct Chip 1 PregPBS 2.0 0.63 13.8 a 2

@@ -1,3 +1,21 @@
+/*
+ * The Gemma project
+ * 
+ * Copyright (c) 2007 University of British Columbia
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 package ubic.GEOMMTx.evaluation;
 
 import java.util.HashSet;
@@ -10,7 +28,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 
 import ubic.GEOMMTx.HashMapStringSet;
 import ubic.GEOMMTx.SetupParameters;
-import ubic.GEOMMTx.filters.FrequentFilter;
+import ubic.GEOMMTx.filters.UninformativeFilter;
 
 public class CheckHighLevelSpreadSheetReader {
     public Map<String, Set<String>> getRejectedAnnotations() throws Exception {
@@ -19,7 +37,7 @@ public class CheckHighLevelSpreadSheetReader {
 
     public Map<String, Set<String>> getAcceptedAnnotations( String file ) throws Exception {
         // CheckHighLevelSchema schema = new CheckHighLevelSchema();
-        FrequentFilter f = new FrequentFilter();
+        UninformativeFilter f = new UninformativeFilter();
 
         HSSFSheet sheet = ExcelUtil.getSheetFromFile( file, "Sheet1" );
 
