@@ -28,7 +28,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 
-import ubic.GEOMMTx.RemoveRejectedMappings;
 import ubic.GEOMMTx.SetupParameters;
 
 /**

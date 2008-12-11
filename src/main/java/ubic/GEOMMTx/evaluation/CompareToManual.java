@@ -33,11 +33,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import ubic.GEOMMTx.ExpressionExperimentAnntotator;
 import ubic.GEOMMTx.LabelLoader;
 import ubic.GEOMMTx.ParentFinder;
 import ubic.GEOMMTx.ProjectRDFModelTools;
 import ubic.GEOMMTx.SetupParameters;
+import ubic.GEOMMTx.gemmaDependent.ExpressionExperimentAnntotator;
 import ubic.GEOMMTx.mappers.BirnLexMapper;
 import ubic.GEOMMTx.mappers.DiseaseOntologyMapper;
 import ubic.GEOMMTx.mappers.FMALiteMapper;
