@@ -42,27 +42,31 @@ import com.hp.hpl.jena.rdf.model.Model;
  * Gets the labels of the ontology classes and saves them to disk
  * 
  * @author leon
- *
+ * 
  */
 public class LabelLoader {
     protected static Log log = LogFactory.getLog( LabelLoader.class );
 
-    Model model;
-
-    public LabelLoader() {
-        OntologyLabelLoader labels = new OntologyLabelLoader();
-        model = labels.loadOntologies();
+    private LabelLoader() {
     }
 
     public static Map<String, String> readLabels() throws Exception {
-        ObjectInputStream o2 = new ObjectInputStream( new FileInputStream( SetupParameters.config
-                .getString( "gemma.annotator.cachedLabels" ) ) );
-        Map<String, String> labels = ( Map<String, String> ) o2.readObject();
-        o2.close();
-        return labels;
+        try {
+            ObjectInputStream o2 = new ObjectInputStream( new FileInputStream( SetupParameters.config
+                    .getString( "gemma.annotator.cachedLabels" ) ) );
+            Map<String, String> labels = ( Map<String, String> ) o2.readObject();
+            o2.close();
+            return labels;
+        } catch ( Exception e ) {
+            log.error( "Problem loading cached labels, loading from internet" );
+            return writeLabels();
+        }
     }
 
-    public Map<String, String> writeLabels() throws Exception {
+    public static Map<String, String> writeLabels() throws Exception {
+        OntologyLabelLoader labelLoader = new OntologyLabelLoader();
+        Model model = labelLoader.loadOntologies();
+
         Map<String, String> labels = new HashMap<String, String>();
 
         String queryString = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>                                     \r\n"
