@@ -46,9 +46,9 @@ public class ExampleAnnotator {
      * @param args
      */
     public static void main( String[] args ) throws Exception {
-        if ( args.length == 0) {
+        if ( args.length == 0 ) {
             System.out.println( "Usage: ExampleAnnotator \"text to be processed\"" );
-            System.exit(1);
+            System.exit( 1 );
         }
         String outputFile = "example.rdf";
 
@@ -74,8 +74,10 @@ public class ExampleAnnotator {
         Model model = ModelFactory.createDefaultModel();
         Resource root = model.createResource( "http://www.bioinformatics.ubca.ca/testing/example" );
 
+        // do the annotation
         model = text2Owl.processText( text, root );
 
+        // write out the resulting RDF graph
         FileWriter fout = new FileWriter( outputFile );
         model.write( fout );
         fout.close();
