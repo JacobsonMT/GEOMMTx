@@ -46,6 +46,12 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
 
+/**
+ * Runs though all experiments in Gemma and produces a RDF file for each.  Right now it does not use any filters on the resulting mentions.
+ * 
+ * @author leon
+ *
+ */
 public class RunAllGemmaExperiments extends AbstractSpringAwareCLI {
 
     private Text2Owl text2Owl;
