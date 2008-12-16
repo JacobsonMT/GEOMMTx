@@ -119,7 +119,6 @@ public class GetUMLSCodes {
         int noCodeCount = 0;
         SABMap = new HashMap<String, Set<UMLSSourceCode>>();
         try {
-            PrintWriter fOut = new PrintWriter( new FileWriter( "temp.txt" ) );
             BufferedReader f = new BufferedReader( new FileReader( location ) );
             String line;
             String[] tokens;
