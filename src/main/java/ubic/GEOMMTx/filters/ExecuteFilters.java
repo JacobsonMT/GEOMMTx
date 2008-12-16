@@ -36,14 +36,14 @@ public class ExecuteFilters {
      * @param args
      */
     public static void main( String argsp[] ) throws Exception {
-        Model model = ProjectRDFModelTools.loadModel( "mergedRDFBirnLexUpdateNoExp.rdf" );
+        Model model = ProjectRDFModelTools.loadModel( "mergedRDFBirnLexUpdate.afterUseless.axon4.rdf" );
         //Model model = ProjectRDFModelTools.loadModel( "mergedRDFBirnLexUpdate.afterrejected.testing.rdf" );
 
         // test
         List<AbstractFilter> filters = new LinkedList<AbstractFilter>();
-        //filters.add( new ExperimentalFactorFilter() );
-//        filters.add( new CUISUIFilter() );
-//        filters.add( new CUIIRIFilter() );
+        filters.add( new ExperimentalFactorFilter() );
+        filters.add( new CUISUIFilter() );
+        filters.add( new CUIIRIFilter() );
         filters.add( new BIRNLexFMANullsFilter() );
         filters.add( new UninformativeFilter() );
         // low score filter not used
@@ -54,7 +54,7 @@ public class ExecuteFilters {
             int result = filter.filter( model );
             log.info( "Removed: " + result );
         }
-        model.write( new FileWriter( "mergedRDFBirnLexUpdateNoExp.afterUseless.rdf" ) );
+        model.write( new FileWriter( "mergedRDFBirnLexUpdate.afterUseless.axon4.filtered.rdf" ) );
         log.info( "Final Mentions:" + ProjectRDFModelTools.getMentionCount( model ) );
 
     }

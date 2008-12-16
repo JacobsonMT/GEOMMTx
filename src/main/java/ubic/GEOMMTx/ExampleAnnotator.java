@@ -37,14 +37,9 @@ import ubic.GEOMMTx.mappers.FMALiteMapper;
 /**
  * This is an example class for how to execute the annotation pipeline.
  * 
- * @author leon
+ * @author Leon
  */
 public class ExampleAnnotator {
-
-    /**
-     * 
-     * @param args
-     */
     public static void main( String[] args ) throws Exception {
         if ( args.length == 0 ) {
             System.out.println( "Usage: ExampleAnnotator \"text to be processed\"" );
@@ -52,6 +47,7 @@ public class ExampleAnnotator {
         }
         String outputFile = "example.rdf";
 
+        // clean up the text
         String text = args[0];
         text = text.replace( ')', ' ' );
         text = text.replace( '(', ' ' );
@@ -65,12 +61,13 @@ public class ExampleAnnotator {
         text2Owl.addMapper( new DiseaseOntologyMapper() );
 
         List<AbstractFilter> filters = new LinkedList<AbstractFilter>();
-        // requires spreadsheet evaluation
+        // requires spreadsheet evaluation files (locations in Annotator.properties)
         filters.add( new CUISUIFilter() );
         filters.add( new CUIIRIFilter() );
         // requires list of uninformative URIs
         filters.add( new UninformativeFilter() );
 
+        // make an empty RDF model
         Model model = ModelFactory.createDefaultModel();
         Resource root = model.createResource( "http://www.bioinformatics.ubca.ca/testing/example" );
 
@@ -83,5 +80,4 @@ public class ExampleAnnotator {
         fout.close();
         System.out.println( "RDF graph wrote to " + outputFile );
     }
-
 }

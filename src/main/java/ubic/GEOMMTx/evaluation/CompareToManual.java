@@ -37,6 +37,8 @@ import ubic.GEOMMTx.LabelLoader;
 import ubic.GEOMMTx.ParentFinder;
 import ubic.GEOMMTx.ProjectRDFModelTools;
 import ubic.GEOMMTx.SetupParameters;
+import ubic.GEOMMTx.filters.BIRNLexFMANullsFilter;
+import ubic.GEOMMTx.filters.UninformativeFilter;
 import ubic.GEOMMTx.gemmaDependent.ExpressionExperimentAnntotator;
 import ubic.GEOMMTx.mappers.BirnLexMapper;
 import ubic.GEOMMTx.mappers.DiseaseOntologyMapper;
@@ -142,6 +144,7 @@ public class CompareToManual extends AbstractSpringAwareCLI {
         // filename = "mergedRDF.rejected.removed.rdf"; //second run
         filename = "mergedRDFBirnLexUpdate.afterUseless.rdf"; // first run latest
 
+        filename = "mergedRDFBirnLexUpdate.afterUseless.axon4.filtered.rdf";
         // System.out.println(ProjectRDFModelTools.getMentionCount(filename));
 
         long totaltime = System.currentTimeMillis();
@@ -167,6 +170,10 @@ public class CompareToManual extends AbstractSpringAwareCLI {
         // writeExperimentTitles();
 
         printStats();
+
+        log.info( "HUMAN" );
+        countBadURIs( manualURLs );
+
         // print100Stats();
         // loadInFinalEvaluation();
         // print100Stats();
@@ -202,26 +209,26 @@ public class CompareToManual extends AbstractSpringAwareCLI {
 
         // getHumanMappingsFromServer();
 
-        // boolean evalSetOnly = false;
-        // filterAndPrint( "/owl/FMA#", evalSetOnly );
-        // filterAndPrint( "/owl/DOID#", evalSetOnly );
-        // filterAndPrint( "birnlex", evalSetOnly );
+        boolean evalSetOnly = false;
+        filterAndPrint( "/owl/FMA#", evalSetOnly );
+        filterAndPrint( "/owl/DOID#", evalSetOnly );
+        filterAndPrint( "birnlex", evalSetOnly );
 
         // printStats();
 
-//        examineSingleSource( "primaryReference/abstract" );
-//        examineSingleSource( "bioAssay/name" );
-//        examineSingleSource( "bioAssay/description" );
-//        examineSingleSource( "experiment/name" );
-//        examineSingleSource( "experiment/description" );
-//        examineSingleSource( "primaryReference/title" );
+        // examineSingleSource( "primaryReference/abstract" );
+        // examineSingleSource( "bioAssay/name" );
+        // examineSingleSource( "bioAssay/description" );
+        // examineSingleSource( "experiment/name" );
+        // examineSingleSource( "experiment/description" );
+        // examineSingleSource( "primaryReference/title" );
 
-        System.out.println( "two or more" );
-        loadMappings();
-        filterForTwoOrMoreSources();
-        printStats();
-        loadInFinalEvaluation();
-        print100Stats();
+        // System.out.println( "two or more" );
+        // loadMappings();
+        // filterForTwoOrMoreSources();
+        // printStats();
+        // loadInFinalEvaluation();
+        // print100Stats();
 
         // filterAndPrint( "/owl/DOID#", false );
         //        
@@ -345,6 +352,7 @@ public class CompareToManual extends AbstractSpringAwareCLI {
                 if ( url.contains( "owl/CHEBI" ) ) {
                     removeMe.add( url );
                 }
+                // TAXON REMOVE
                 // I didn't have this on the first run, so change it
                 if ( url.contains( "OrganismalTaxonomy" ) ) {
                     removeMe.add( url );
@@ -599,7 +607,8 @@ public class CompareToManual extends AbstractSpringAwareCLI {
     private void saveHumanMappingsToDisk() {
         log.info( "Saved mappings" );
         try {
-            ObjectOutputStream o = new ObjectOutputStream( new FileOutputStream( "annotator.mappings" ) );
+            ObjectOutputStream o = new ObjectOutputStream( new FileOutputStream( SetupParameters.config
+                    .getString( "gemma.annotator.cachedGemmaAnnotations" ) ) );
             o.writeObject( manualURLs );
             o.close();
 
@@ -657,8 +666,8 @@ public class CompareToManual extends AbstractSpringAwareCLI {
                     VocabCharacteristic vc = ( VocabCharacteristic ) ch;
                     currentURL.add( vc.getValueUri() );
 
-                    System.out.println( vc.getCategory() );
-                    System.out.println( vc.getCategoryUri() );
+                    // System.out.println( vc.getCategory() );
+                    // System.out.println( vc.getCategoryUri() );
                     // if ( specificLabels ) {
                     // labels.put( vc.getValueUri(), vc.getValue() + "[Gemma]" );
                     // } else {
@@ -818,6 +827,28 @@ public class CompareToManual extends AbstractSpringAwareCLI {
         for ( String line : outputList )
             result += line + "\n";
         return result;
+    }
+
+    public void countBadURIs( Map<String, Set<String>> experiments ) {
+        BIRNLexFMANullsFilter nullFilter = new BIRNLexFMANullsFilter();
+        UninformativeFilter unFilter = null;
+        try {
+            unFilter = new UninformativeFilter();
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+
+        int bad = 0;
+        for ( String exp : experiments.keySet() ) {
+            for ( String url : experiments.get( exp ) ) {
+                // if its rejected by either filter
+                if ( !nullFilter.accept( url ) || !unFilter.accept( url ) ) {
+                    bad++;
+                    log.info( exp + " BAD:" + url );
+                }
+            }
+        }
+        log.info( "Number of bad URLS:" + bad );
     }
 
     public void printForTagCloud( Map<String, Set<String>> experiments ) {

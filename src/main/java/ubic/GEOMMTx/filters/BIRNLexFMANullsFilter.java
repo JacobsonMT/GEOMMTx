@@ -34,7 +34,7 @@ import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
 
-public class BIRNLexFMANullsFilter extends AbstractFilter {
+public class BIRNLexFMANullsFilter extends AbstractFilter implements URIFilter {
     FMAOntologyService FMA;
     BirnLexOntologyService BIRN;
 
@@ -42,6 +42,16 @@ public class BIRNLexFMANullsFilter extends AbstractFilter {
         return "BIRNLex and FMA null mapping remover";
     }
 
+    public boolean accept( String URI ) {
+        // go into FMA and birnlex and check if it's missing
+        if ( URI.contains( "/owl/FMA#" ) && FMA.getTerm( URI ) == null ) {
+            return false;
+        }
+        if ( URI.contains( "birnlex" ) && BIRN.getTerm( URI ) == null ) {
+            return false;
+        }
+        return true;
+    }
 
     public BIRNLexFMANullsFilter() {
         // load FMA and birnlex
@@ -58,7 +68,6 @@ public class BIRNLexFMANullsFilter extends AbstractFilter {
         }
         log.info( "FMA and BIRNLex Ontologies loaded" );
     }
-    
 
     @Override
     public int filter( Model model ) {
@@ -83,22 +92,17 @@ public class BIRNLexFMANullsFilter extends AbstractFilter {
             String URI = urlR.getURI();
             // go into FMA and birnlex and check if it's missing
             // if its then add it to the set
-            if ( URI.contains( "/owl/FMA#" ) && FMA.getTerm( URI ) == null ) {
+            if ( accept( URI ) == false ) {
                 removeURIs.add( URI );
-                //log.info( URI );
-                count++;
-            }
-            if ( URI.contains( "birnlex" ) && BIRN.getTerm( URI ) == null ) {
-                removeURIs.add( URI );
-                //log.info( URI );
+                // log.info( URI );
                 count++;
             }
             // else its not FMA or birnlex
         }
-        //log.info( "number of null URL's:" + count );
+        // log.info( "number of null URL's:" + count );
         return removeMentionsURLs( model, removeURIs );
     }
-    
+
     public static void main( String args[] ) throws Exception {
         BIRNLexFMANullsFilter test = new BIRNLexFMANullsFilter();
     }

@@ -24,18 +24,24 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Converts a CUI into a URI using one or more mappers.
+ * 
+ * @author Leon
+ *
+ */
 public class CUItoURI {
     Collection<CUIMapper> mappers;
     Map<String, Set<UMLSSourceCode>> codeMap;
     GetUMLSCodes getUMLS;
 
-    public void CUItoURI() {
+    public CUItoURI() {
         getUMLS = new GetUMLSCodes();
         codeMap = getUMLS.getUMLSCodeMap();
         mappers = new ArrayList<CUIMapper>();
     }
 
-    public void CUItoURI( Collection<CUIMapper> mappers ) {
+    public CUItoURI( Collection<CUIMapper> mappers ) {
         this.mappers = mappers;
     }
 
