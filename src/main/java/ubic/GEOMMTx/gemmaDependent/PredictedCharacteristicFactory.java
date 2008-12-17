@@ -27,6 +27,12 @@ import ubic.gemma.ontology.MgedOntologyService;
 public class PredictedCharacteristicFactory {
     Map<String, String> labels;
 
+    
+    /**
+     * Constructor requires a label map in the format of URI -> label
+     * 
+     * @param labels
+     */
     public PredictedCharacteristicFactory( Map<String, String> labels ) {
         this.labels = labels;
     }
@@ -36,6 +42,7 @@ public class PredictedCharacteristicFactory {
         c.setValueUri( URI );
         c.setValue( labels.get( URI ) );
 
+        // infer the category
         String category = null;
         if ( URI.contains( "/owl/FMA#" ) || URI.contains( "BIRNLex-Anatomy" ) ) {
             category = "OrganismPart";
@@ -43,16 +50,18 @@ public class PredictedCharacteristicFactory {
         if ( URI.contains( "/owl/DOID#" ) ) {
             category = "DiseaseState";
         }
+
+        // set the category
         if ( category != null ) {
             c.setCategory( category );
             c.setCategory( MgedOntologyService.MGED_ONTO_BASE_URL + category );
         }
-        //System.out.println( "Predicted category:" + category );
+        // System.out.println( "Predicted category:" + category );
+        // set IEA go annotation
         c.setEvidenceCode( GOEvidenceCode.IEA );
 
         // audit trail?
         // experiment.getCharacteristics().add( c );
         return c;
     }
-
 }

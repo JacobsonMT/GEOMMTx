@@ -112,6 +112,7 @@ public class AnnotateExperimentPipeLine extends AbstractSpringAwareCLI {
 
         ExpressionExperimentAnntotator experimentAnn = new ExpressionExperimentAnntotator( e, text2Owl );
 
+        // go through each text source one by one
         try {
             log.info( "getName()" );
             experimentAnn.annotateName();
@@ -134,8 +135,10 @@ public class AnnotateExperimentPipeLine extends AbstractSpringAwareCLI {
             log.error( ee.getMessage() );
         }
 
+        // all the above calls for each text source builds a RDF model
         Model model = experimentAnn.getModel();
 
+        // apply the filters one by one
         for ( AbstractFilter filter : filters ) {
             // log.info( "Mentions:" + Text2OwlModelTools.getMentionCount( model ) );
             // log.info( "Running: " + filter.getName() );
@@ -144,7 +147,7 @@ public class AnnotateExperimentPipeLine extends AbstractSpringAwareCLI {
         }
         log.info( "Final Mentions:" + ProjectRDFModelTools.getMentionCount( model ) );
 
-        // write the file somewhere?
+        // write the file somewhere? we may also want to write the file before it's filtered
         try {
             experimentAnn.writeModel();
         } catch ( Exception ee ) {
@@ -153,13 +156,14 @@ public class AnnotateExperimentPipeLine extends AbstractSpringAwareCLI {
         }
         log.info( ( ( System.currentTimeMillis() - time ) / 1000 ) + "s for whole experiment" );
 
+        // convert the mentions into annotations using a sparql query
         finalAnnotations = ProjectRDFModelTools.getURLsFromSingle( model );
 
         return finalAnnotations;
     }
 
     /*
-     * clears the cache of the MMTx runner
+     * clears the cache of the MMTx runner, usefull for benchmarking multiple runs
      */
     public void clearMMTxCache() {
         text2Owl.clearCache();
@@ -175,46 +179,34 @@ public class AnnotateExperimentPipeLine extends AbstractSpringAwareCLI {
         ExpressionExperimentService ees = ( ExpressionExperimentService ) this.getBean( "expressionExperimentService" );
 
         long time = System.currentTimeMillis();
-        // text2Owl = null;
-
         time = System.currentTimeMillis();
 
-        // ExpressionExperiment experiment = ees.load( 620l );
+        // load the experiment based on it's ID, I think the normal CLI's don't do it this way
         ExpressionExperiment experiment = ees.load( Long.parseLong( getOptionValue( "e" ) ) );
         ees.thawLite( experiment );
 
+        // get the rdfs:labels for the URI's
         Map<String, String> labels = null;
         try {
             labels = LabelLoader.readLabels();
         } catch ( Exception e ) {
             log.warn( "Couldnt load labels" );
         }
+        // construct a factory for producing VocabCharacteristics
         PredictedCharacteristicFactory charGen = new PredictedCharacteristicFactory( labels );
 
-        // The call that does all the work
+        // The call that does all the work, it gets the predicted annotations
         Set<String> predictedAnnotations = getAnnotations( experiment );
 
+        // for each URI print it and it's label and get VocabCharacteristic to represent it
         for ( String URI : predictedAnnotations ) {
             System.out.println( labels.get( URI ) + " - " + URI );
 
             VocabCharacteristic c = charGen.getCharacteristic( URI );
 
+            // TODO: attach the Characterisitic to the experiment
         }
 
-        // System.out.println( "Time todo first:" + ( System.currentTimeMillis() - time ) );
-        //
-        // time = System.currentTimeMillis();
-        // // for(int i=0; i<50;i++) {
-        // // clearMMTxCache();
-        // // long singleTime = System.currentTimeMillis();
-        // // getAnnotations( experiment );
-        // // System.out.println( "Time "+i+":" + ( System.currentTimeMillis() - singleTime ) );
-        // // }
-        // System.out.println( "Time todo another 50:" + ( System.currentTimeMillis() - time ) );
-        //
-        // for ( String annotation : getAnnotations( experiment ) ) {
-        // System.out.println( labels.get( annotation ) + " - " + annotation );
-        // }
         System.out.println( "Total Time:" + ( System.currentTimeMillis() - time ) );
         return null;
     }
