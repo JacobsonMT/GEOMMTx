@@ -22,8 +22,6 @@ import gov.nih.nlm.kss.api.KSSRetrieverV5_0;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.PrintWriter;
 import java.rmi.Naming;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,22 +31,11 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * @author leon
+ * @version $Id$
+ */
 public class GetUMLSCodes {
-    private String location;
-    private Map<String, Set<UMLSSourceCode>> SABMap;
-
-    protected static Log log = LogFactory.getLog( GetUMLSCodes.class );
-
-    public GetUMLSCodes() {
-        this( SetupParameters.config.getString( "gemma.annotator.cui_code_loc" ) );
-    }
-
-    // location of MRCONSO.RRF
-    public GetUMLSCodes( String location ) {
-        this.location = location;
-        loadUMLSCodeMap();
-    }
-
     public static void main( String[] args ) throws Exception {
         GetUMLSCodes umlscodez = new GetUMLSCodes();
         Map<String, Set<UMLSSourceCode>> map = umlscodez.getUMLSCodeMap();
@@ -115,6 +102,26 @@ public class GetUMLSCodes {
 
     }
 
+    private String location;
+
+    private Map<String, Set<UMLSSourceCode>> SABMap;
+
+    protected static Log log = LogFactory.getLog( GetUMLSCodes.class );
+
+    public GetUMLSCodes() {
+        this( SetupParameters.config.getString( "gemma.annotator.cui_code_loc" ) );
+    }
+
+    // location of MRCONSO.RRF
+    public GetUMLSCodes( String location ) {
+        this.location = location;
+        loadUMLSCodeMap();
+    }
+
+    public Map<String, Set<UMLSSourceCode>> getUMLSCodeMap() {
+        return SABMap;
+    }
+
     public void loadUMLSCodeMap() {
         int noCodeCount = 0;
         SABMap = new HashMap<String, Set<UMLSSourceCode>>();
@@ -153,9 +160,5 @@ public class GetUMLSCodes {
             System.exit( 1 );
         }
         log.info( "Loaded UMLS Codes, nocode entries=" + noCodeCount );
-    }
-
-    public Map<String, Set<UMLSSourceCode>> getUMLSCodeMap() {
-        return SABMap;
     }
 }

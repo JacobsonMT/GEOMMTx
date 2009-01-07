@@ -18,8 +18,6 @@
  */
 package ubic.GEOMMTx.gemmaDependent;
 
-import java.io.IOException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -33,14 +31,6 @@ import ubic.gemma.util.AbstractSpringAwareCLI;
 
 public class ExpressionExperimentAnntotatorTester extends AbstractSpringAwareCLI {
     private Text2Owl text2Owl;
-
-    protected void processOptions() {
-        super.processOptions();
-    }
-
-    @Override
-    protected void buildOptions() {
-    }
 
     protected static Log log = LogFactory.getLog( ExpressionExperimentAnntotatorTester.class );
 
@@ -64,6 +54,10 @@ public class ExpressionExperimentAnntotatorTester extends AbstractSpringAwareCLI
 
     }
 
+    @Override
+    protected void buildOptions() {
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     protected Exception doWork( String[] args ) {
@@ -85,7 +79,7 @@ public class ExpressionExperimentAnntotatorTester extends AbstractSpringAwareCLI
 
         time = System.currentTimeMillis();
 
-        //ExpressionExperiment experiment = ees.load( 620l );
+        // ExpressionExperiment experiment = ees.load( 620l );
         ExpressionExperiment experiment = ees.load( 15l );
         ees.thawLite( experiment );
 
@@ -95,7 +89,7 @@ public class ExpressionExperimentAnntotatorTester extends AbstractSpringAwareCLI
             log.info( "getName()" );
             experimentAnn.annotateName();
             experimentAnn.writeModel();
-            
+
             log.info( "getDescription()" );
             experimentAnn.annotateDescription();
             experimentAnn.writeModel();
@@ -132,6 +126,11 @@ public class ExpressionExperimentAnntotatorTester extends AbstractSpringAwareCLI
             return e;
         }
         return null;
+    }
+
+    @Override
+    protected void processOptions() {
+        super.processOptions();
     }
 
 }

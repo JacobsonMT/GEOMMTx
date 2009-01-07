@@ -18,50 +18,23 @@
  */
 package ubic.GEOMMTx.gemmaDependent;
 
-import java.io.FileWriter;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
-import sun.nio.cs.ext.MacHebrew;
 import ubic.GEOMMTx.Text2Owl;
 import ubic.GEOMMTx.mappers.BirnLexMapper;
 import ubic.GEOMMTx.mappers.DiseaseOntologyMapper;
 import ubic.GEOMMTx.mappers.FMALiteMapper;
-import ubic.GEOMMTx.mappers.NullMapper;
-import ubic.gemma.model.common.description.BibliographicReference;
-import ubic.gemma.model.expression.bioAssay.BioAssay;
-import ubic.gemma.model.expression.experiment.ExperimentalDesign;
-import ubic.gemma.model.expression.experiment.ExperimentalFactor;
 import ubic.gemma.model.expression.experiment.ExpressionExperiment;
 import ubic.gemma.model.expression.experiment.ExpressionExperimentService;
-import ubic.gemma.persistence.PersisterHelper;
 import ubic.gemma.util.AbstractSpringAwareCLI;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Resource;
-
 /**
- * Runs though all experiments in Gemma and produces a RDF file for each.  Right now it does not use any filters on the resulting mentions.
+ * Runs though all experiments in Gemma and produces a RDF file for each. Right now it does not use any filters on the
+ * resulting mentions.
  * 
  * @author Leon
- *
  */
 public class RunAllGemmaExperiments extends AbstractSpringAwareCLI {
-
-    private Text2Owl text2Owl;
-
-    public RunAllGemmaExperiments() {
-    }
-
-    @Override
-    protected void buildOptions() {
-    }
 
     public static void main( String[] args ) {
         RunAllGemmaExperiments p = new RunAllGemmaExperiments();
@@ -78,7 +51,15 @@ public class RunAllGemmaExperiments extends AbstractSpringAwareCLI {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    private Text2Owl text2Owl;
+
+    public RunAllGemmaExperiments() {
+    }
+
+    @Override
+    protected void buildOptions() {
+    }
+
     @Override
     protected Exception doWork( String[] args ) {
         long totaltime = System.currentTimeMillis();
@@ -127,6 +108,11 @@ public class RunAllGemmaExperiments extends AbstractSpringAwareCLI {
         return null;
     }
 
+    @Override
+    protected void processOptions() {
+        super.processOptions();
+    }
+
     /**
      * Hopefully this resets the memory leaks in MMTx
      */
@@ -137,10 +123,5 @@ public class RunAllGemmaExperiments extends AbstractSpringAwareCLI {
         text2Owl.addMapper( new BirnLexMapper() );
         text2Owl.addMapper( new FMALiteMapper() );
         text2Owl.addMapper( new DiseaseOntologyMapper() );
-    }
-    
-
-    protected void processOptions() {
-        super.processOptions();
     }
 }

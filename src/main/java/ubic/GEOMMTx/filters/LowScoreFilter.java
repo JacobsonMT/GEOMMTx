@@ -31,10 +31,6 @@ public class LowScoreFilter extends AbstractFilter {
 
     int minScore;
 
-    public String getName() {
-        return "Low score remover";
-    }
-
     /**
      * Sets the minimum allowed mmtx score
      * 
@@ -59,5 +55,10 @@ public class LowScoreFilter extends AbstractFilter {
 
         ResultSet results = qexec.execSelect();
         return removeMentions( model, results );
+    }
+
+    @Override
+    public String getName() {
+        return "Low score remover";
     }
 }

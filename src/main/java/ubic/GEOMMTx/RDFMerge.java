@@ -22,27 +22,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import ubic.GEOMMTx.evaluation.CreateSpreadSheet;
 import ubic.GEOMMTx.evaluation.PhrasetoCUISpreadsheet;
-import ubic.gemma.ontology.OntologyTools;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
@@ -61,44 +46,42 @@ public class RDFMerge {
         }
     };
 
+    public static void excelAll() throws Exception {
+        File workingDir = new File( "." );
+        File[] files = workingDir.listFiles( RDFFileFilter );
+        PhrasetoCUISpreadsheet test = new PhrasetoCUISpreadsheet( "test.xls" );
+
+        for ( File file : files ) {
+            // log.info( "populating" );
+            if ( file.getName().contains( "merged" ) ) continue;
+            test.populate( file.getName() );
+            log.info( "Done " + file.getName() );
+        }
+    }
+
+    public static void main( String args[] ) throws Exception {
+        mergeWorkingDirRDF( "mergedRDF.rdf" );
+        // CreateSpreadSheet.main( null );
+        // excelAll();
+        // makeHistoGrams();
+    }
+
     public static void mergeRDFFiles( File output, File[] files ) throws Exception {
         Model oldModel = ModelFactory.createDefaultModel();
         int i = 0;
         for ( File file : files ) {
             Model current = ModelFactory.createDefaultModel();
-            log.info( file.toString() +" "+ (i++)+" of "+ files.length);
+            log.info( file.toString() + " " + ( i++ ) + " of " + files.length );
             current.read( new FileInputStream( file ), null );
-            Model newModel = oldModel.union(current);
+            Model newModel = oldModel.union( current );
             oldModel = newModel;
         }
         log.info( "Writing out" );
         oldModel.write( new FileOutputStream( output ) );
     }
 
-    public static void excelAll( ) throws Exception {
-        File workingDir = new File( "." );
-        File[] files = workingDir.listFiles( RDFFileFilter );
-        PhrasetoCUISpreadsheet test = new PhrasetoCUISpreadsheet( "test.xls" );
-        
-        for ( File file : files ) {
-            //log.info( "populating" );
-            if (file.getName().contains("merged")) continue;
-            test.populate(file.getName());
-            log.info( "Done "+file.getName() );
-        }
-    }
-
-    
     public static void mergeWorkingDirRDF( String outputfile ) throws Exception {
         File workingDir = new File( "." );
         mergeRDFFiles( new File( outputfile ), workingDir.listFiles( RDFFileFilter ) );
-    }
-
-
-    public static void main( String args[] ) throws Exception {
-        mergeWorkingDirRDF( "mergedRDF.rdf" );
-        //CreateSpreadSheet.main( null );
-        //excelAll();
-        //makeHistoGrams();
     }
 }

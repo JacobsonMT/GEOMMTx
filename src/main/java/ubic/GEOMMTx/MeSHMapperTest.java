@@ -33,22 +33,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 
-import com.sun.org.apache.bcel.internal.generic.NEW;
-
 import ubic.GEOMMTx.evaluation.CUISUIPair;
 import ubic.GEOMMTx.evaluation.EvaluatePhraseToCUISpreadsheet;
 import ubic.GEOMMTx.evaluation.ExcelUtil;
-import ubic.GEOMMTx.filters.CUISUIFilter;
-import ubic.gemma.ontology.MeshService;
 import ubic.gemma.util.CountingMap;
 import au.com.bytecode.opencsv.CSVReader;
 
 /**
- * 
  * Basically just a class that calls MMTx to get MeSH terms from free text
  * 
  * @author leon
- *
  */
 public class MeSHMapperTest {
     int predictedCount;
@@ -70,134 +64,6 @@ public class MeSHMapperTest {
             "--allow_concept_gaps" };
 
     static String[] TEXT_PARAMS = new String[] { "--an_derivational_variants", "--no_acros_abbrs" };
-
-    public MeSHMapperTest() {
-        this( PHRASE_PARAMS );
-    }
-
-    public MeSHMapperTest( String[] params ) {
-        mapper = new GetUMLSCodes();
-        sourceMap = mapper.getUMLSCodeMap();
-
-        mmtx = new MMTxRunner( 0, params );
-        log.info( "Done Init" );
-
-        resetCounters();
-        acceptedSemanticTypes = new HashSet<String>();
-        rejectedConcepts = new HashSet<String>();
-        semTypeMap = new CountingMap<String>();
-
-        try {
-            EvaluatePhraseToCUISpreadsheet evalSheet = new EvaluatePhraseToCUISpreadsheet();
-            rejectedCUISUIPairs = evalSheet.getRejectedSUIs();
-        } catch ( Exception e ) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public void printSemMap() {
-        System.out.println( semTypeMap.toString() );
-        for ( String text : semTypeMap.sortedKeyList() ) {
-            System.out.println( text + " -> " + semTypeMap.get( text ) );
-        }
-    }
-
-    public void setAcceptedSemanticTypes( Set<String> types ) {
-        acceptedSemanticTypes = types;
-    }
-
-    public void setRejectedConcepts( Set<String> concepts ) {
-        rejectedConcepts = concepts;
-    }
-
-    public void resetCounters() {
-        predictedCount = 0;
-        answerCount = 0;
-        matchedCount = 0;
-        atLeastOne = 0;
-    }
-
-    public int CUISUIrejects = 0;
-
-    public Set<String> getMeSHIDs( String text, boolean useSemTypes ) {
-        //log.info(text);
-        text = text.replace( ')', ' ' );
-        text = text.replace( '(', ' ' );
-        text = text.replace( '/', ' ' );
-        text = text.replace( '\r', ' ');
-        text = text.replace( '\n', ' ');
-        //log.info(text);
-        
-        String baseUMLS = "http://www.purl.org/umls/umls#";
-
-
-        Set<String> result = new HashSet<String>();
-        // log.info( text + " -> " );
-        for ( Phrase p : mmtx.getPhrases( text ) ) {
-
-            for ( Candidate c : mmtx.getConcepts( p ) ) {
-
-                if ( rejectedConcepts.contains( c.getUMLS_ConceptName() ) ) continue;
-
-                if ( rejectedCUISUIPairs.contains( new CUISUIPair( baseUMLS + c.getCUI(), baseUMLS + c.getSUI() ) ) ) {
-                    CUISUIrejects++;
-                    continue;
-                }
-
-                UMLS_SemanticTypePointer[] semTypes = c.getSemanticTypes();
-                boolean hasAcceptedSemanticType = !useSemTypes;
-
-                for ( UMLS_SemanticTypePointer semType : semTypes ) {
-                    // log.info( semType.getName() );
-                    semTypeMap.increment( semType.getName() );
-                    if ( acceptedSemanticTypes.contains( semType.getName() ) )
-                        hasAcceptedSemanticType = !useSemTypes || true;
-                }
-
-                // concept does not have accepted semantic type
-                if ( !hasAcceptedSemanticType ) continue;
-
-                // if it has a source vocab listing
-                if ( sourceMap.get( c.getCUI() ) != null ) {
-                    // then iterate them
-                    for ( UMLSSourceCode code : sourceMap.get( c.getCUI() ) ) {
-                        // if it's mesh then continue
-                        if ( code.getSource().startsWith( "MSH" ) ) {
-                            // if we havent seen it yet, print it
-                            // if ( !result.contains( code.getCode() ) ) {
-                            // log.info( c.getConcept().toString() + " -> " + code.getCode() + " SCORE:"
-                            // + c.getFinalScore() );
-                            // }
-                            result.add( p.getOriginalString() + "|" + c.getConcept().toString() + "|" + code.getCode()
-                                    + "|" + c.getFinalScore() );
-                        }
-                    }
-                }
-                // if it's MeSH than keep it
-            }
-        }
-
-        return result;
-    }
-
-    public void printStats() {
-        log.info( "Predicted:" + predictedCount );
-        log.info( "Number of inputs that had no predicted MeSH terms:" + zeroCalls );
-        log.info( "Gold standard:" + answerCount );
-        log.info( "Intersection:" + matchedCount );
-        log.info( "Number where predicted one:" + atLeastOne );
-    }
-
-    public void evaluate( String text, Set<String> answers ) {
-        Set<String> predictions = getMeSHIDs( text, true );
-        if ( predictions.size() == 0 ) zeroCalls++;
-        predictedCount += predictions.size();
-        answerCount += answers.size();
-        answers.retainAll( predictions );
-        matchedCount += answers.size();
-        if ( answers.size() >= 1 ) atLeastOne++;
-    }
 
     public static void main( String[] args ) throws Exception {
         MeSHMapperTest mapper = new MeSHMapperTest( PHRASE_PARAMS );
@@ -301,5 +167,132 @@ public class MeSHMapperTest {
         }
         log.info( "Descriptions seen:" + howMany );
         test.printStats();
+    }
+
+    public int CUISUIrejects = 0;
+
+    public MeSHMapperTest() {
+        this( PHRASE_PARAMS );
+    }
+
+    public MeSHMapperTest( String[] params ) {
+        mapper = new GetUMLSCodes();
+        sourceMap = mapper.getUMLSCodeMap();
+
+        mmtx = new MMTxRunner( 0, params );
+        log.info( "Done Init" );
+
+        resetCounters();
+        acceptedSemanticTypes = new HashSet<String>();
+        rejectedConcepts = new HashSet<String>();
+        semTypeMap = new CountingMap<String>();
+
+        try {
+            EvaluatePhraseToCUISpreadsheet evalSheet = new EvaluatePhraseToCUISpreadsheet();
+            rejectedCUISUIPairs = evalSheet.getRejectedSUIs();
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void evaluate( String text, Set<String> answers ) {
+        Set<String> predictions = getMeSHIDs( text, true );
+        if ( predictions.size() == 0 ) zeroCalls++;
+        predictedCount += predictions.size();
+        answerCount += answers.size();
+        answers.retainAll( predictions );
+        matchedCount += answers.size();
+        if ( answers.size() >= 1 ) atLeastOne++;
+    }
+
+    public Set<String> getMeSHIDs( String text, boolean useSemTypes ) {
+        // log.info(text);
+        text = text.replace( ')', ' ' );
+        text = text.replace( '(', ' ' );
+        text = text.replace( '/', ' ' );
+        text = text.replace( '\r', ' ' );
+        text = text.replace( '\n', ' ' );
+        // log.info(text);
+
+        String baseUMLS = "http://www.purl.org/umls/umls#";
+
+        Set<String> result = new HashSet<String>();
+        // log.info( text + " -> " );
+        for ( Phrase p : mmtx.getPhrases( text ) ) {
+
+            for ( Candidate c : mmtx.getConcepts( p ) ) {
+
+                if ( rejectedConcepts.contains( c.getUMLS_ConceptName() ) ) continue;
+
+                if ( rejectedCUISUIPairs.contains( new CUISUIPair( baseUMLS + c.getCUI(), baseUMLS + c.getSUI() ) ) ) {
+                    CUISUIrejects++;
+                    continue;
+                }
+
+                UMLS_SemanticTypePointer[] semTypes = c.getSemanticTypes();
+                boolean hasAcceptedSemanticType = !useSemTypes;
+
+                for ( UMLS_SemanticTypePointer semType : semTypes ) {
+                    // log.info( semType.getName() );
+                    semTypeMap.increment( semType.getName() );
+                    if ( acceptedSemanticTypes.contains( semType.getName() ) )
+                        hasAcceptedSemanticType = !useSemTypes || true;
+                }
+
+                // concept does not have accepted semantic type
+                if ( !hasAcceptedSemanticType ) continue;
+
+                // if it has a source vocab listing
+                if ( sourceMap.get( c.getCUI() ) != null ) {
+                    // then iterate them
+                    for ( UMLSSourceCode code : sourceMap.get( c.getCUI() ) ) {
+                        // if it's mesh then continue
+                        if ( code.getSource().startsWith( "MSH" ) ) {
+                            // if we havent seen it yet, print it
+                            // if ( !result.contains( code.getCode() ) ) {
+                            // log.info( c.getConcept().toString() + " -> " + code.getCode() + " SCORE:"
+                            // + c.getFinalScore() );
+                            // }
+                            result.add( p.getOriginalString() + "|" + c.getConcept().toString() + "|" + code.getCode()
+                                    + "|" + c.getFinalScore() );
+                        }
+                    }
+                }
+                // if it's MeSH than keep it
+            }
+        }
+
+        return result;
+    }
+
+    public void printSemMap() {
+        System.out.println( semTypeMap.toString() );
+        for ( String text : semTypeMap.sortedKeyList() ) {
+            System.out.println( text + " -> " + semTypeMap.get( text ) );
+        }
+    }
+
+    public void printStats() {
+        log.info( "Predicted:" + predictedCount );
+        log.info( "Number of inputs that had no predicted MeSH terms:" + zeroCalls );
+        log.info( "Gold standard:" + answerCount );
+        log.info( "Intersection:" + matchedCount );
+        log.info( "Number where predicted one:" + atLeastOne );
+    }
+
+    public void resetCounters() {
+        predictedCount = 0;
+        answerCount = 0;
+        matchedCount = 0;
+        atLeastOne = 0;
+    }
+
+    public void setAcceptedSemanticTypes( Set<String> types ) {
+        acceptedSemanticTypes = types;
+    }
+
+    public void setRejectedConcepts( Set<String> concepts ) {
+        rejectedConcepts = concepts;
     }
 }

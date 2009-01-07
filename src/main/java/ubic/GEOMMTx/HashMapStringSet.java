@@ -25,6 +25,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * @author leon
+ * @version $Id$
+ */
 public class HashMapStringSet extends HashMap<String, Set<String>> {
 
     public HashMapStringSet() {
@@ -34,29 +38,6 @@ public class HashMapStringSet extends HashMap<String, Set<String>> {
     public HashMapStringSet( Map<String, Set<String>> start ) {
         super();
         this.putAll( start );
-    }
-
-    public void put( String key, String value ) {
-        Set<String> valueSet = get( key );
-        if ( valueSet == null ) {
-            valueSet = new HashSet<String>();
-            put( key, valueSet );
-        }
-        valueSet.add( value );
-    }
-
-    public Set<String> whereIs( String value ) {
-        Set<String> keySet = new HashSet<String>();
-        for ( String key : keySet() ) {
-            if ( get( key ).contains( value ) ) keySet.add( key );
-        }
-        return keySet;
-    }
-
-    public int getSize( String key ) {
-        Set<String> valueSet = get( key );
-        if ( valueSet == null ) return 0;
-        return get( key ).size();
     }
 
     public int getExpandedSize() {
@@ -79,6 +60,21 @@ public class HashMapStringSet extends HashMap<String, Set<String>> {
         return result;
     }
 
+    public int getSize( String key ) {
+        Set<String> valueSet = get( key );
+        if ( valueSet == null ) return 0;
+        return get( key ).size();
+    }
+
+    public void put( String key, String value ) {
+        Set<String> valueSet = get( key );
+        if ( valueSet == null ) {
+            valueSet = new HashSet<String>();
+            put( key, valueSet );
+        }
+        valueSet.add( value );
+    }
+
     public String toPrettyString() {
         StringBuilder result = new StringBuilder();
         for ( String key : keySet() ) {
@@ -93,5 +89,13 @@ public class HashMapStringSet extends HashMap<String, Set<String>> {
             }
         }
         return result.toString();
+    }
+
+    public Set<String> whereIs( String value ) {
+        Set<String> keySet = new HashSet<String>();
+        for ( String key : keySet() ) {
+            if ( get( key ).contains( value ) ) keySet.add( key );
+        }
+        return keySet;
     }
 }

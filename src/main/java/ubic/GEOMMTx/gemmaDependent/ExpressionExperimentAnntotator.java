@@ -41,12 +41,17 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 public class ExpressionExperimentAnntotator {
     protected static Log log = LogFactory.getLog( ExpressionExperimentAnntotator.class );
 
+    public static void main( String[] args ) {
+
+    }
+
     private ExpressionExperiment experiment;
     private Model model;
     private Text2Owl text2Owl;
     private String ID;
-    private Resource root;
-    public static String gemmaNamespace = "http://bioinformatics.ubc.ca/Gemma/";;
+    private Resource root;;
+
+    public static String gemmaNamespace = "http://bioinformatics.ubc.ca/Gemma/";
 
     /**
      * Requires the experiment is thawed lite
@@ -59,33 +64,6 @@ public class ExpressionExperimentAnntotator {
         this.text2Owl = text2Owl;
         ID = "" + experiment.getId();
         clearModel();
-    }
-
-    public Model getModel() {
-        return model;
-    }
-
-    public void clearModel() {
-        model = ModelFactory.createDefaultModel();
-        String GEOObjectURI = gemmaNamespace + "experiment/" + ID;
-        root = model.createResource( GEOObjectURI );
-        root.addProperty( RDFS.label, experiment.getShortName() );
-    }
-
-    public void annotateName() {
-        // experiment then desc then name
-        doRDF( experiment.getName(), "experiment/" + ID + "/name" );
-
-    }
-
-    public void annotateDescription() {
-        String description = experiment.getDescription();
-        if ( experiment.getId() == 444 ) {
-            description = description.replace( "stroma", "stroma" );
-            log.info( "fixing 444" );
-        }
-
-        doRDF( description, "experiment/" + ID + "/description" );
     }
 
     public void annotateAll() {
@@ -125,8 +103,18 @@ public class ExpressionExperimentAnntotator {
                 doRDF( ba.getDescription(), nameSpaceBase + "description" );
             }
             // log.info(ba.getDescription());
-            //log.info( ba.getName().replace( "Expr(", "Expr " ) );
+            // log.info( ba.getName().replace( "Expr(", "Expr " ) );
         }
+    }
+
+    public void annotateDescription() {
+        String description = experiment.getDescription();
+        if ( experiment.getId() == 444 ) {
+            description = description.replace( "stroma", "stroma" );
+            log.info( "fixing 444" );
+        }
+
+        doRDF( description, "experiment/" + ID + "/description" );
     }
 
     public void annotateExperimentalDesign() {
@@ -167,15 +155,21 @@ public class ExpressionExperimentAnntotator {
         }
     }
 
+    public void annotateName() {
+        // experiment then desc then name
+        doRDF( experiment.getName(), "experiment/" + ID + "/name" );
+
+    }
+
     public void annotateReferences() {
         BibliographicReference ref = experiment.getPrimaryPublication();
         if ( ref != null ) {
             String nameSpaceBase = "primaryReference/" + ref.getId() + "/";
 
-            log.info("in title doRDF");
+            log.info( "in title doRDF" );
             doRDF( ref.getTitle(), nameSpaceBase + "title" );
             if ( ref.getAbstractText() != null ) {
-                log.info("in abstract doRDF");
+                log.info( "in abstract doRDF" );
                 doRDF( ref.getAbstractText(), nameSpaceBase + "abstract" );
             }
         }
@@ -194,10 +188,11 @@ public class ExpressionExperimentAnntotator {
         }
     }
 
-    public void writeModel() throws IOException {
-        FileWriter fout = new FileWriter( ID + ".rdf" );
-        model.write(  fout );
-        fout.close();
+    public void clearModel() {
+        model = ModelFactory.createDefaultModel();
+        String GEOObjectURI = gemmaNamespace + "experiment/" + ID;
+        root = model.createResource( GEOObjectURI );
+        root.addProperty( RDFS.label, experiment.getShortName() );
     }
 
     /**
@@ -225,8 +220,14 @@ public class ExpressionExperimentAnntotator {
         model = text2Owl.processText( text, thisResource );
     }
 
-    public static void main( String[] args ) {
+    public Model getModel() {
+        return model;
+    }
 
+    public void writeModel() throws IOException {
+        FileWriter fout = new FileWriter( ID + ".rdf" );
+        model.write( fout );
+        fout.close();
     }
 
 }

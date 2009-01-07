@@ -27,10 +27,6 @@ import com.hp.hpl.jena.rdf.model.Model;
 
 public class ExperimentalFactorFilter extends AbstractFilter {
 
-    public String getName() {
-        return "Experimental factor remover";
-    }
-
     @Override
     public int filter( Model model ) {
         String queryString = "PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>"
@@ -47,6 +43,11 @@ public class ExperimentalFactorFilter extends AbstractFilter {
 
         ResultSet results = qexec.execSelect();
         return removeMentions( model, results );
+    }
+
+    @Override
+    public String getName() {
+        return "Experimental factor remover";
     }
 
 }

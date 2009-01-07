@@ -37,7 +37,7 @@ public class ExecuteFilters {
      */
     public static void main( String argsp[] ) throws Exception {
         Model model = ProjectRDFModelTools.loadModel( "mergedRDFBirnLexUpdate.afterUseless.axon4.rdf" );
-        //Model model = ProjectRDFModelTools.loadModel( "mergedRDFBirnLexUpdate.afterrejected.testing.rdf" );
+        // Model model = ProjectRDFModelTools.loadModel( "mergedRDFBirnLexUpdate.afterrejected.testing.rdf" );
 
         // test
         List<AbstractFilter> filters = new LinkedList<AbstractFilter>();

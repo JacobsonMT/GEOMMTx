@@ -20,14 +20,21 @@ package ubic.GEOMMTx.gemmaDependent;
 
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ubic.gemma.model.association.GOEvidenceCode;
 import ubic.gemma.model.common.description.VocabCharacteristic;
 import ubic.gemma.ontology.MgedOntologyService;
 
+/**
+ * @author leon, paul
+ * @version $Id$
+ */
 public class PredictedCharacteristicFactory {
     Map<String, String> labels;
+    protected static Log log = LogFactory.getLog( PredictedCharacteristicFactory.class );
 
-    
     /**
      * Constructor requires a label map in the format of URI -> label
      * 
@@ -46,22 +53,17 @@ public class PredictedCharacteristicFactory {
         String category = null;
         if ( URI.contains( "/owl/FMA#" ) || URI.contains( "BIRNLex-Anatomy" ) ) {
             category = "OrganismPart";
-        }
-        if ( URI.contains( "/owl/DOID#" ) ) {
+        } else if ( URI.contains( "/owl/DOID#" ) ) {
             category = "DiseaseState";
+        } else {
+            log.info( "Could not infer category for : " + URI );
         }
 
-        // set the category
-        if ( category != null ) {
-            c.setCategory( category );
-            c.setCategory( MgedOntologyService.MGED_ONTO_BASE_URL + category );
-        }
-        // System.out.println( "Predicted category:" + category );
-        // set IEA go annotation
+        c.setCategory( category );
+        c.setCategory( MgedOntologyService.MGED_ONTO_BASE_URL + category );
+
         c.setEvidenceCode( GOEvidenceCode.IEA );
 
-        // audit trail?
-        // experiment.getCharacteristics().add( c );
         return c;
     }
 }

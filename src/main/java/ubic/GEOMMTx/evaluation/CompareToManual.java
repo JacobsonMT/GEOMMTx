@@ -34,7 +34,6 @@ import java.util.Map;
 import java.util.Set;
 
 import ubic.GEOMMTx.LabelLoader;
-import ubic.GEOMMTx.ParentFinder;
 import ubic.GEOMMTx.ProjectRDFModelTools;
 import ubic.GEOMMTx.SetupParameters;
 import ubic.GEOMMTx.filters.BIRNLexFMANullsFilter;
@@ -63,39 +62,118 @@ import com.hp.hpl.jena.vocabulary.DC;
 
 public class CompareToManual extends AbstractSpringAwareCLI {
 
+    public static Map<String, Integer> listToFrequencyMap( List<String> input ) {
+        Map<String, Integer> result = new HashMap<String, Integer>();
+        int i;
+        for ( String s : input ) {
+            Integer iO = result.get( s );
+            if ( iO == null )
+                i = 0;
+            else
+                i = iO.intValue();
+            result.put( s, i + 1 );
+        }
+        return result;
+    }
+
+    public static void main( String[] args ) {
+        CompareToManual p = new CompareToManual();
+
+        // DocumentRange t = null;
+
+        try {
+            Exception ex = p.doWork( args );
+            if ( ex != null ) {
+                ex.printStackTrace();
+            }
+        } catch ( Exception e ) {
+            throw new RuntimeException( e );
+        }
+    }
+
+    public static void printMap( Map<String, Integer> map ) {
+        int total = 0;
+        for ( String key : map.keySet() ) {
+            total += map.get( key );
+        }
+        for ( String key : map.keySet() ) {
+            System.out.println( key + " => " + map.get( key ) + "(" + ( float ) map.get( key ) / ( float ) total + ")" );
+        }
+    }
+
     Map<String, String> labels;
     Map<String, Set<String>> manualURLs;
     Map<String, Set<String>> mmtxURLs;
+
     HashSet<String> originalMMTxIDs;
+
     String filename;
+
     boolean specificLabels = false;
-
-    public Set<String> getIntersectExperiments() {
-        Set<String> intersect = new HashSet<String>( manualURLs.keySet() );
-        intersect.retainAll( mmtxURLs.keySet() );
-        return intersect;
-    }
-
-    public void makeSpreadSheet() throws Exception {
-        Map<String, Set<String>> newPredictions = new HashMap<String, Set<String>>();
-        for ( String dataset : originalMMTxIDs ) {
-            Set<String> machineURLs = new HashSet<String>( mmtxURLs.get( dataset ) );
-            Set<String> humanURLs = manualURLs.get( dataset );
-            machineURLs.removeAll( humanURLs );
-            newPredictions.put( dataset, machineURLs );
-        }
-
-        CheckHighLevelSpreadSheet spreadsheet = new CheckHighLevelSpreadSheet( "HighLevelPredictionsPlusOne2.xls" );
-        spreadsheet.populate( newPredictions, labels, 101 );
-        spreadsheet.save();
-    }
 
     public CompareToManual() {
         labels = new HashMap<String, String>();
     }
 
-    @Override
-    protected void buildOptions() {
+    /*
+     * Removes null URL's and also URL's from CHEBI Birnlex organismal taxonomy MGED Ontology
+     */
+    public void cleanURLs() {
+        Set<String> datasets = new HashSet<String>( mmtxURLs.keySet() );
+        datasets.addAll( manualURLs.keySet() );
+        for ( String dataset : datasets ) {
+            // Set<String> machineURLs = mmtxURLs.get( dataset );
+            Set<String> humanURLs = manualURLs.get( dataset );
+            humanURLs.remove( "null" );
+            humanURLs.remove( null );
+            humanURLs.remove( "" );
+
+            // get rid of MGED URL's
+            List<String> removeMe = new LinkedList<String>();
+            for ( String url : humanURLs ) {
+                if ( url.contains( "MGEDOntology.owl" ) ) {
+                    removeMe.add( url );
+                }
+                if ( url.contains( "owl/CHEBI" ) ) {
+                    removeMe.add( url );
+                }
+                // TAXON REMOVE
+                // I didn't have this on the first run, so change it
+                if ( url.contains( "OrganismalTaxonomy" ) ) {
+                    removeMe.add( url );
+                }
+            }
+            humanURLs.removeAll( removeMe );
+        }
+    }
+
+    public Set<String> convertURLsToLabels( Set<String> URLs ) {
+        Set<String> result = new HashSet<String>();
+        for ( String url : URLs )
+            result.add( labels.get( url ) );
+        return result;
+    }
+
+    public void countBadURIs( Map<String, Set<String>> experiments ) {
+        BIRNLexFMANullsFilter nullFilter = new BIRNLexFMANullsFilter();
+        UninformativeFilter unFilter = null;
+        try {
+            unFilter = new UninformativeFilter();
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+
+        int bad = 0;
+        for ( String exp : experiments.keySet() ) {
+            for ( String url : experiments.get( exp ) ) {
+                // if its rejected by either filter
+                if ( !nullFilter.accept( url ) || !unFilter.accept( url ) ) {
+                    bad++;
+                    log.info( exp + " BAD:" + url );
+                }
+            }
+        }
+        log.info( "Number of bad URLS:" + bad );
     }
 
     public int countMMTxHits( String URI ) {
@@ -113,19 +191,219 @@ public class CompareToManual extends AbstractSpringAwareCLI {
         return hits;
     }
 
-    public static void main( String[] args ) {
-        CompareToManual p = new CompareToManual();
+    public void examineSingleSource( String source ) {
+        loadMappings();
+        removeExceptOneSource( source );
+        System.out.println( "SOURCE = " + source + " ---------------" );
+        printStats();
+        System.out.println( "SOURCE 100 Stats= " + source + " ---------------" );
+        loadInFinalEvaluation();
+        print100Stats();
+        System.out.println( "========END= " + source + " ---------------" );
+    }
 
-        // DocumentRange t = null;
+    public void filterAllURLs( String keepString ) {
+        filter( keepString, manualURLs );
+        filter( keepString, mmtxURLs );
+    }
 
-        try {
-            Exception ex = p.doWork( args );
-            if ( ex != null ) {
-                ex.printStackTrace();
-            }
-        } catch ( Exception e ) {
-            throw new RuntimeException( e );
+    public void filterHumanURLs( String keepString ) {
+        filter( keepString, manualURLs );
+    }
+
+    public Set<String> getIntersectExperiments() {
+        Set<String> intersect = new HashSet<String>( manualURLs.keySet() );
+        intersect.retainAll( mmtxURLs.keySet() );
+        return intersect;
+    }
+
+    public Set<String> getIntersection( String dataset ) {
+        Set<String> machineURLs = mmtxURLs.get( dataset );
+        Set<String> humanURLs = manualURLs.get( dataset );
+        Set<String> intersect = new HashSet<String>( humanURLs );
+        intersect.retainAll( machineURLs );
+        return intersect;
+    }
+
+    public Set<String> getIntersectionByName( String dataset ) {
+        Set<String> machineLabels = convertURLsToLabels( mmtxURLs.get( dataset ) );
+        Set<String> humanLabels = convertURLsToLabels( manualURLs.get( dataset ) );
+        Set<String> intersect = new HashSet<String>( humanLabels );
+        intersect.retainAll( machineLabels );
+        return intersect;
+    }
+
+    public Set<String> getMissed( String dataset ) {
+        Set<String> machineURLs = mmtxURLs.get( dataset );
+        Set<String> humanURLs = manualURLs.get( dataset );
+        Set<String> missed = new HashSet<String>( humanURLs );
+        missed.removeAll( machineURLs );
+        return missed;
+    }
+
+    /*
+     * Finds out how many mappings we fail to have for the human predictions
+     */
+    public void howManyMissingMappings() {
+        Collection<String> result;
+
+        filterAndPrint( "/owl/FMA#", false );
+        FMALiteMapper fma = new FMALiteMapper();
+        result = removeFromHumanSeen( fma.getAllURLs() );
+        System.out.println( "Seen manual FMA URL's that we have no mapping to:" + result.size() );
+
+        filterAndPrint( "/owl/DOID#", false );
+        DiseaseOntologyMapper DO = new DiseaseOntologyMapper();
+        result = removeFromHumanSeen( DO.getAllURLs() );
+        System.out.println( "Seen manual DO URL's that we have no mapping to:" + result.size() );
+
+        filterAndPrint( "birnlex", false );
+        BirnLexMapper BIRN = new BirnLexMapper();
+        result = removeFromHumanSeen( BIRN.getAllURLs() );
+        System.out.println( "Seen manual BIRN URL's that we have no mapping to:" + result.size() );
+
+        loadMappings();
+    }
+
+    public String lineSpacedSet( Set<String> input ) {
+        List<String> outputList = new LinkedList<String>();
+        for ( String line : input ) {
+            outputList.add( labels.get( line ) + "->" + line );
         }
+        Collections.sort( outputList );
+
+        String result = "";
+        for ( String line : outputList )
+            result += line + "\n";
+        return result;
+    }
+
+    public void loadInFinalEvaluation() {
+        CheckHighLevelSpreadSheetReader reader = new CheckHighLevelSpreadSheetReader();
+        Map<String, Set<String>> accepted = null;
+        try {
+            accepted = reader.getRejectedAnnotations();
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+        for ( String exp : accepted.keySet() ) {
+            Set<String> anots = accepted.get( exp );
+            // add them all to the manual annotations
+            manualURLs.get( exp ).addAll( anots );
+        }
+    }
+
+    public void makeSpreadSheet() throws Exception {
+        Map<String, Set<String>> newPredictions = new HashMap<String, Set<String>>();
+        for ( String dataset : originalMMTxIDs ) {
+            Set<String> machineURLs = new HashSet<String>( mmtxURLs.get( dataset ) );
+            Set<String> humanURLs = manualURLs.get( dataset );
+            machineURLs.removeAll( humanURLs );
+            newPredictions.put( dataset, machineURLs );
+        }
+
+        CheckHighLevelSpreadSheet spreadsheet = new CheckHighLevelSpreadSheet( "HighLevelPredictionsPlusOne2.xls" );
+        spreadsheet.populate( newPredictions, labels, 101 );
+        spreadsheet.save();
+    }
+
+    public void print100Stats() {
+        setTo100EvalSet();
+        // the below expID's are the ones we choose for manual curation
+        printStats();
+    }
+
+    public void printForTagCloud( Map<String, Set<String>> experiments ) {
+        int nulls = 0;
+        for ( String exp : experiments.keySet() ) {
+            for ( String url : experiments.get( exp ) ) {
+                // System.out.print( url + "->" );
+                if ( labels.get( url ) == null ) {
+                    nulls++;
+                    // log.info(url);
+                    continue;
+                }
+                System.out.println( labels.get( url ).replace( " ", "~" ) );
+            }
+        }
+        log.info( "Number of null labels:" + nulls );
+    }
+
+    public void printHumanForTagCloud() {
+        System.out.println( "--------HUMAN----------" );
+        printForTagCloud( manualURLs );
+    }
+
+    public void printMissedForTagCloud() {
+        System.out.println( "--------MISSED----------" );
+        printForTagCloud( getMissedURLS() );
+    }
+
+    public void printMMTxForTagCloud() {
+        System.out.println( "--------MMTx----------" );
+        printForTagCloud( mmtxURLs );
+    }
+
+    public Collection<String> removeFromHumanSeen( Set<String> removeSet ) {
+        // List<String> seenHumanURLs = new LinkedList<String>();
+        Set<String> seenHumanURLs = new HashSet<String>();
+
+        for ( Set<String> seenURLs : manualURLs.values() ) {
+            seenHumanURLs.addAll( seenURLs );
+        }
+        seenHumanURLs.removeAll( removeSet );
+        return seenHumanURLs;
+    }
+
+    // if the dataset is not processed by humans or mmtx, then set its annotations to empty set
+    public void setNullstoEmpty() {
+        Set<String> datasets = new HashSet<String>( mmtxURLs.keySet() );
+        datasets.addAll( manualURLs.keySet() );
+        for ( String dataset : datasets ) {
+            if ( mmtxURLs.get( dataset ) == null ) {
+                mmtxURLs.put( dataset, new HashSet<String>() );
+            }
+            if ( manualURLs.get( dataset ) == null ) {
+                manualURLs.put( dataset, new HashSet<String>() );
+            }
+
+        }
+    }
+
+    public void setTo100EvalSet() {
+        String[] exps100 = new String[] { "107", "114", "129", "137", "140", "155", "159", "167", "198", "199", "2",
+                "20", "206", "211", "213", "216", "219", "221", "232", "241", "243", "245", "246", "257", "258", "26",
+                "265", "267", "268", "277", "288", "295", "299", "302", "319", "323", "35", "36", "363", "368", "369",
+                "374", "375", "380", "385", "389", "39", "403", "406", "446", "454", "455", "484", "49", "504", "510",
+                "522", "524", "528", "533", "535", "54", "544", "548", "559", "571", "579", "587", "588", "591", "595",
+                "596", "597", "6", "602", "606", "609", "613", "617", "619", "625", "627", "633", "639", "64", "647",
+                "651", "653", "657", "66", "663", "667", "672", "699", "74", "76", "79", "80", "90", "95" };
+        originalMMTxIDs = new HashSet<String>( Arrays.asList( exps100 ) );
+    }
+
+    public void showMe( String experimentID ) {
+        Set<String> machineURLs = new HashSet<String>( mmtxURLs.get( experimentID ) );
+        Set<String> humanURLs = new HashSet<String>( manualURLs.get( experimentID ) );
+        Set<String> intersect = getIntersection( experimentID );
+
+        machineURLs.removeAll( intersect );
+        humanURLs.removeAll( intersect );
+
+        System.out.println( "MMTx URLs:" );
+        System.out.println( lineSpacedSet( machineURLs ) );
+        System.out.println( "Human URLs:" );
+        System.out.println( lineSpacedSet( humanURLs ) );
+        if ( intersect.size() == 0 ) {
+            System.out.println( "No Intersection URLs" );
+        } else {
+
+            System.out.println( "Intersection URLs:" );
+            System.out.println( lineSpacedSet( intersect ) );
+        }
+    }
+
+    @Override
+    protected void buildOptions() {
     }
 
     @SuppressWarnings("unchecked")
@@ -271,104 +549,8 @@ public class CompareToManual extends AbstractSpringAwareCLI {
         return null;
     }
 
-    public void examineSingleSource( String source ) {
-        loadMappings();
-        removeExceptOneSource( source );
-        System.out.println( "SOURCE = " + source + " ---------------" );
-        printStats();
-        System.out.println( "SOURCE 100 Stats= " + source + " ---------------" );
-        loadInFinalEvaluation();
-        print100Stats();
-        System.out.println( "========END= " + source + " ---------------" );
-    }
-
-    private void filterAndPrint( String filterString, boolean evalSet ) {
-        loadMappings();
-        if ( evalSet ) {
-            setTo100EvalSet();
-            loadInFinalEvaluation();
-        }
-        log.info( filterString );
-        filterAllURLs( filterString );
-        printStats();
-    }
-
-    private void getMappings( String filename ) {
-        // get the human mappings
-        loadHumanMappings();
-
-        // get the labels
-        // LabelLoader labelLoader = new LabelLoader();
-        try {
-            labels = LabelLoader.readLabels();
-        } catch ( Exception e ) {
-            log.warn( "Couldnt load labels" );
-            e.printStackTrace();
-            System.exit( 1 );
-        }
-
-        mmtxURLs = ProjectRDFModelTools.getURLsExperiments( filename );
-
-        originalMMTxIDs = new HashSet<String>( mmtxURLs.keySet() );
-
-        log.info( "mmtx size=" + mmtxURLs.size() );
-        log.info( "gemma size=" + manualURLs.size() );
-    }
-
-    // if the dataset is not processed by humans or mmtx, then set its annotations to empty set
-    public void setNullstoEmpty() {
-        Set<String> datasets = new HashSet<String>( mmtxURLs.keySet() );
-        datasets.addAll( manualURLs.keySet() );
-        for ( String dataset : datasets ) {
-            if ( mmtxURLs.get( dataset ) == null ) {
-                mmtxURLs.put( dataset, new HashSet<String>() );
-            }
-            if ( manualURLs.get( dataset ) == null ) {
-                manualURLs.put( dataset, new HashSet<String>() );
-            }
-
-        }
-    }
-
-    /*
-     * Removes null URL's and also URL's from CHEBI Birnlex organismal taxonomy MGED Ontology
-     */
-    public void cleanURLs() {
-        Set<String> datasets = new HashSet<String>( mmtxURLs.keySet() );
-        datasets.addAll( manualURLs.keySet() );
-        for ( String dataset : datasets ) {
-            // Set<String> machineURLs = mmtxURLs.get( dataset );
-            Set<String> humanURLs = manualURLs.get( dataset );
-            humanURLs.remove( "null" );
-            humanURLs.remove( null );
-            humanURLs.remove( "" );
-
-            // get rid of MGED URL's
-            List<String> removeMe = new LinkedList<String>();
-            for ( String url : humanURLs ) {
-                if ( url.contains( "MGEDOntology.owl" ) ) {
-                    removeMe.add( url );
-                }
-                if ( url.contains( "owl/CHEBI" ) ) {
-                    removeMe.add( url );
-                }
-                // TAXON REMOVE
-                // I didn't have this on the first run, so change it
-                if ( url.contains( "OrganismalTaxonomy" ) ) {
-                    removeMe.add( url );
-                }
-            }
-            humanURLs.removeAll( removeMe );
-        }
-    }
-
-    public void filterHumanURLs( String keepString ) {
-        filter( keepString, manualURLs );
-    }
-
-    public void filterAllURLs( String keepString ) {
-        filter( keepString, manualURLs );
-        filter( keepString, mmtxURLs );
+    protected void processOptions() {
+        super.processOptions();
     }
 
     private void filter( String keepString, Map<String, Set<String>> map ) {
@@ -386,65 +568,26 @@ public class CompareToManual extends AbstractSpringAwareCLI {
         }
     }
 
-    public Set<String> getIntersection( String dataset ) {
-        Set<String> machineURLs = mmtxURLs.get( dataset );
-        Set<String> humanURLs = manualURLs.get( dataset );
-        Set<String> intersect = new HashSet<String>( humanURLs );
-        intersect.retainAll( machineURLs );
-        return intersect;
-    }
+    // return this.getClass().getName() + ".mappings";
 
-    public Set<String> getMissed( String dataset ) {
-        Set<String> machineURLs = mmtxURLs.get( dataset );
-        Set<String> humanURLs = manualURLs.get( dataset );
-        Set<String> missed = new HashSet<String>( humanURLs );
-        missed.removeAll( machineURLs );
-        return missed;
-    }
-
-    public Set<String> convertURLsToLabels( Set<String> URLs ) {
-        Set<String> result = new HashSet<String>();
-        for ( String url : URLs )
-            result.add( labels.get( url ) );
-        return result;
-    }
-
-    public Set<String> getIntersectionByName( String dataset ) {
-        Set<String> machineLabels = convertURLsToLabels( mmtxURLs.get( dataset ) );
-        Set<String> humanLabels = convertURLsToLabels( manualURLs.get( dataset ) );
-        Set<String> intersect = new HashSet<String>( humanLabels );
-        intersect.retainAll( machineLabels );
-        return intersect;
-    }
-
-    private void removeAbstractSource() {
-        DescriptionExtractor de = new DescriptionExtractor( filename );
-        for ( String dataset : originalMMTxIDs ) {
-            Set<String> machineURLs = mmtxURLs.get( dataset );
-            Set<String> oneSourceMachineURLs = new HashSet<String>();
-            for ( String URI : machineURLs ) {
-                if ( de.getDecriptionType( dataset, URI ).contains( "primaryReference/abstract" ) ) continue;
-                oneSourceMachineURLs.add( URI );
-            }
-            mmtxURLs.put( dataset, oneSourceMachineURLs );
+    private void filterAndPrint( String filterString, boolean evalSet ) {
+        loadMappings();
+        if ( evalSet ) {
+            setTo100EvalSet();
+            loadInFinalEvaluation();
         }
+        log.info( filterString );
+        filterAllURLs( filterString );
+        printStats();
     }
 
-    // primaryReference/abstract
-    // bioAssay/name
-    // bioAssay/description
-    // experiment/name
-    // experiment/description
-    // primaryReference/title
-    // primaryReference/abstract
-    private void removeExceptOneSource( String source ) {
+    private void filterForOneSource() {
         DescriptionExtractor de = new DescriptionExtractor( filename );
         for ( String dataset : originalMMTxIDs ) {
             Set<String> machineURLs = mmtxURLs.get( dataset );
             Set<String> oneSourceMachineURLs = new HashSet<String>();
             for ( String URI : machineURLs ) {
-                if ( de.getDecriptionType( dataset, URI ).contains( source )
-                        && de.getDecriptionType( dataset, URI ).size() == 1 ) continue;
+                if ( de.getDecriptionType( dataset, URI ).size() != 1 ) continue;
                 oneSourceMachineURLs.add( URI );
             }
             mmtxURLs.put( dataset, oneSourceMachineURLs );
@@ -464,135 +607,6 @@ public class CompareToManual extends AbstractSpringAwareCLI {
         }
     }
 
-    private void filterForOneSource() {
-        DescriptionExtractor de = new DescriptionExtractor( filename );
-        for ( String dataset : originalMMTxIDs ) {
-            Set<String> machineURLs = mmtxURLs.get( dataset );
-            Set<String> oneSourceMachineURLs = new HashSet<String>();
-            for ( String URI : machineURLs ) {
-                if ( de.getDecriptionType( dataset, URI ).size() != 1 ) continue;
-                oneSourceMachineURLs.add( URI );
-            }
-            mmtxURLs.put( dataset, oneSourceMachineURLs );
-        }
-    }
-
-    private void printSourceStats() {
-        List<String> allSources = new LinkedList<String>();
-        List<String> intersectSources = new LinkedList<String>();
-        DescriptionExtractor de = new DescriptionExtractor( filename );
-
-        for ( String dataset : originalMMTxIDs ) {
-            Set<String> machineURLs = mmtxURLs.get( dataset );
-            Set<String> intersect = getIntersection( dataset );
-
-            for ( String URI : machineURLs ) {
-                if ( de.getDecriptionType( dataset, URI ).size() != 1 ) continue;
-                allSources.addAll( de.getDecriptionType( dataset, URI ) );
-            }
-            // only look at those with one source
-            for ( String URI : intersect ) {
-                if ( de.getDecriptionType( dataset, URI ).size() != 1 ) continue;
-                intersectSources.addAll( de.getDecriptionType( dataset, URI ) );
-            }
-        }
-        // crunch them down to a hash
-        System.out.println( "== all MMTx predictions ==" );
-        printMap( listToFrequencyMap( allSources ) );
-
-        System.out.println( "== all MMTx predictions that matched existing ==" );
-        printMap( listToFrequencyMap( intersectSources ) );
-    }
-
-    public static void printMap( Map<String, Integer> map ) {
-        int total = 0;
-        for ( String key : map.keySet() ) {
-            total += map.get( key );
-        }
-        for ( String key : map.keySet() ) {
-            System.out.println( key + " => " + map.get( key ) + "(" + ( float ) map.get( key ) / ( float ) total + ")" );
-        }
-    }
-
-    public static Map<String, Integer> listToFrequencyMap( List<String> input ) {
-        Map<String, Integer> result = new HashMap<String, Integer>();
-        int i;
-        for ( String s : input ) {
-            Integer iO = result.get( s );
-            if ( iO == null )
-                i = 0;
-            else
-                i = iO.intValue();
-            result.put( s, i + 1 );
-        }
-        return result;
-    }
-
-    private void printStats() {
-        int totalHuman = 0, totalMachine = 0, totalIntersect = 0;
-        Set<String> uniqueHuman = new HashSet<String>();
-        Set<String> uniqueMachine = new HashSet<String>();
-        Set<String> uniqueIntersect = new HashSet<String>();
-        for ( String dataset : originalMMTxIDs ) {
-            Set<String> machineURLs = mmtxURLs.get( dataset );
-            Set<String> humanURLs = manualURLs.get( dataset );
-            Set<String> intersect = getIntersection( dataset );
-            uniqueHuman.addAll( humanURLs );
-            uniqueMachine.addAll( machineURLs );
-            uniqueIntersect.addAll( intersect );
-
-            totalMachine += machineURLs.size();
-            totalHuman += humanURLs.size();
-            totalIntersect += intersect.size();
-        }
-        System.out.println( "Human total:" + totalHuman + " Unique:" + uniqueHuman.size() + "  percent unique:"
-                + ( int ) ( 100.0 * uniqueHuman.size() / ( float ) totalHuman ) );
-        System.out.println( "Machine:" + totalMachine + " Unique:" + uniqueMachine.size() + "  percent unique:"
-                + ( int ) ( 100.0 * uniqueMachine.size() / ( float ) totalMachine ) );
-        System.out.println( "Intersect:" + totalIntersect + " Unique:" + uniqueIntersect.size() );
-        float recall = totalIntersect / ( float ) totalHuman;
-        System.out.println( "Recall:" + recall );
-        float precision = totalIntersect / ( float ) totalMachine;
-        System.out.println( "Precision:" + precision );
-        System.out.println( "F-measure:" + 2 * precision * recall / ( precision + recall ) );
-    }
-
-    private void printComparisonsCSV() {
-        System.out.println( "ID, machineURLs.size()" + "," + "humanURLs.size()" + "," + "intersect.size()" );
-        for ( String dataset : originalMMTxIDs ) {
-            Set<String> machineURLs = mmtxURLs.get( dataset );
-            Set<String> humanURLs = manualURLs.get( dataset );
-            Set<String> intersect = getIntersection( dataset );
-            System.out.println( dataset + "," + machineURLs.size() + "," + humanURLs.size() + "," + intersect.size() );
-        }
-    }
-
-    private Map<String, Set<String>> getMissedURLS() {
-        Map<String, Set<String>> result = new HashMap<String, Set<String>>();
-        for ( String dataset : originalMMTxIDs ) {
-            result.put( dataset, getMissed( dataset ) );
-        }
-        return result;
-    }
-
-    private void printMissedURLs() {
-        Map<String, Integer> missed = new HashMap<String, Integer>();
-        for ( Set<String> missedURLs : getMissedURLS().values() ) {
-            for ( String URI : missedURLs ) {
-                Integer i = missed.get( URI );
-                if ( i == null )
-                    i = 1;
-                else
-                    i++;
-                missed.put( URI, i );
-            }
-        }
-
-        for ( String URI : missed.keySet() ) {
-            System.out.println( labels.get( URI ) + "|" + URI + "|" + missed.get( URI ) );
-        }
-    }
-
     private Map<String, Set<String>> getHumanMappingsFromDisk() throws Exception {
         Map<String, Set<String>> result;
         ObjectInputStream o = new ObjectInputStream( new FileInputStream( SetupParameters.config
@@ -602,39 +616,6 @@ public class CompareToManual extends AbstractSpringAwareCLI {
 
         log.info( "Loaded Gemma annotations from local disk" );
         return result;
-    }
-
-    private void saveHumanMappingsToDisk() {
-        log.info( "Saved mappings" );
-        try {
-            ObjectOutputStream o = new ObjectOutputStream( new FileOutputStream( SetupParameters.config
-                    .getString( "gemma.annotator.cachedGemmaAnnotations" ) ) );
-            o.writeObject( manualURLs );
-            o.close();
-
-            // depreciated
-            // ObjectOutputStream o2 = new ObjectOutputStream( new FileOutputStream( "label.mappings" ) );
-            // o2.writeObject( labels );
-            // o2.close();
-
-            log.info( "Saved manual annotations" );
-        } catch ( Exception e ) {
-            log.info( "cannot save CUI mappings" );
-            e.printStackTrace();
-            System.exit( 1 );
-        }
-    }
-
-    // return this.getClass().getName() + ".mappings";
-
-    private void loadHumanMappings() {
-        try {
-            manualURLs = getHumanMappingsFromDisk();
-        } catch ( Exception e ) {
-            log.info( "gettings annotations from local cache failed, getting from server" );
-            manualURLs = getHumanMappingsFromServer();
-            saveHumanMappingsToDisk();
-        }
     }
 
     private Map<String, Set<String>> getHumanMappingsFromServer() {
@@ -680,33 +661,78 @@ public class CompareToManual extends AbstractSpringAwareCLI {
         return result;
     }
 
-    private void writeExperimentTitles() {
-        writeExperimentTitles( SetupParameters.config.getString( "gemma.annotator.gemmaTitles" ) );
+    private void getMappings( String filename ) {
+        // get the human mappings
+        loadHumanMappings();
+
+        // get the labels
+        // LabelLoader labelLoader = new LabelLoader();
+        try {
+            labels = LabelLoader.readLabels();
+        } catch ( Exception e ) {
+            log.warn( "Couldnt load labels" );
+            e.printStackTrace();
+            System.exit( 1 );
+        }
+
+        mmtxURLs = ProjectRDFModelTools.getURLsExperiments( filename );
+
+        originalMMTxIDs = new HashSet<String>( mmtxURLs.keySet() );
+
+        log.info( "mmtx size=" + mmtxURLs.size() );
+        log.info( "gemma size=" + manualURLs.size() );
     }
 
-    private void writeExperimentTitles( String filename ) {
-        ExpressionExperimentService ees = ( ExpressionExperimentService ) this.getBean( "expressionExperimentService" );
-        Collection<ExpressionExperiment> experiments = ees.loadAll();
-        Model model = ModelFactory.createDefaultModel();
-
-        int c = 0;
-        for ( ExpressionExperiment experiment : experiments ) {
-            c++;
-            // if (c == 30) break;
-            Long ID = experiment.getId();
-
-            log.info( "Experiment number:" + c + " of " + experiments.size() + " ID:" + experiment.getId() );
-
-            ees.thawLite( experiment );
-
-            String GEOObjectURI = ExpressionExperimentAnntotator.gemmaNamespace + "experiment/" + ID;
-            Resource expNode = model.createResource( GEOObjectURI );
-            expNode.addProperty( DC.title, experiment.getName() );
+    private Map<String, Set<String>> getMissedURLS() {
+        Map<String, Set<String>> result = new HashMap<String, Set<String>>();
+        for ( String dataset : originalMMTxIDs ) {
+            result.put( dataset, getMissed( dataset ) );
         }
+        return result;
+    }
+
+    private void loadHumanMappings() {
         try {
-            model.write( new FileWriter( filename ) );
+            manualURLs = getHumanMappingsFromDisk();
         } catch ( Exception e ) {
-            e.printStackTrace();
+            log.info( "gettings annotations from local cache failed, getting from server" );
+            manualURLs = getHumanMappingsFromServer();
+            saveHumanMappingsToDisk();
+        }
+    }
+
+    private void loadMappings() {
+        // Reset
+        getMappings( filename );
+        setNullstoEmpty();
+        cleanURLs();
+    }
+
+    private void printComparisonsCSV() {
+        System.out.println( "ID, machineURLs.size()" + "," + "humanURLs.size()" + "," + "intersect.size()" );
+        for ( String dataset : originalMMTxIDs ) {
+            Set<String> machineURLs = mmtxURLs.get( dataset );
+            Set<String> humanURLs = manualURLs.get( dataset );
+            Set<String> intersect = getIntersection( dataset );
+            System.out.println( dataset + "," + machineURLs.size() + "," + humanURLs.size() + "," + intersect.size() );
+        }
+    }
+
+    private void printMissedURLs() {
+        Map<String, Integer> missed = new HashMap<String, Integer>();
+        for ( Set<String> missedURLs : getMissedURLS().values() ) {
+            for ( String URI : missedURLs ) {
+                Integer i = missed.get( URI );
+                if ( i == null )
+                    i = 1;
+                else
+                    i++;
+                missed.put( URI, i );
+            }
+        }
+
+        for ( String URI : missed.keySet() ) {
+            System.out.println( labels.get( URI ) + "|" + URI + "|" + missed.get( URI ) );
         }
     }
 
@@ -795,169 +821,145 @@ public class CompareToManual extends AbstractSpringAwareCLI {
         }
     }
 
-    public void showMe( String experimentID ) {
-        Set<String> machineURLs = new HashSet<String>( mmtxURLs.get( experimentID ) );
-        Set<String> humanURLs = new HashSet<String>( manualURLs.get( experimentID ) );
-        Set<String> intersect = getIntersection( experimentID );
+    private void printSourceStats() {
+        List<String> allSources = new LinkedList<String>();
+        List<String> intersectSources = new LinkedList<String>();
+        DescriptionExtractor de = new DescriptionExtractor( filename );
 
-        machineURLs.removeAll( intersect );
-        humanURLs.removeAll( intersect );
+        for ( String dataset : originalMMTxIDs ) {
+            Set<String> machineURLs = mmtxURLs.get( dataset );
+            Set<String> intersect = getIntersection( dataset );
 
-        System.out.println( "MMTx URLs:" );
-        System.out.println( lineSpacedSet( machineURLs ) );
-        System.out.println( "Human URLs:" );
-        System.out.println( lineSpacedSet( humanURLs ) );
-        if ( intersect.size() == 0 ) {
-            System.out.println( "No Intersection URLs" );
-        } else {
+            for ( String URI : machineURLs ) {
+                if ( de.getDecriptionType( dataset, URI ).size() != 1 ) continue;
+                allSources.addAll( de.getDecriptionType( dataset, URI ) );
+            }
+            // only look at those with one source
+            for ( String URI : intersect ) {
+                if ( de.getDecriptionType( dataset, URI ).size() != 1 ) continue;
+                intersectSources.addAll( de.getDecriptionType( dataset, URI ) );
+            }
+        }
+        // crunch them down to a hash
+        System.out.println( "== all MMTx predictions ==" );
+        printMap( listToFrequencyMap( allSources ) );
 
-            System.out.println( "Intersection URLs:" );
-            System.out.println( lineSpacedSet( intersect ) );
+        System.out.println( "== all MMTx predictions that matched existing ==" );
+        printMap( listToFrequencyMap( intersectSources ) );
+    }
+
+    private void printStats() {
+        int totalHuman = 0, totalMachine = 0, totalIntersect = 0;
+        Set<String> uniqueHuman = new HashSet<String>();
+        Set<String> uniqueMachine = new HashSet<String>();
+        Set<String> uniqueIntersect = new HashSet<String>();
+        for ( String dataset : originalMMTxIDs ) {
+            Set<String> machineURLs = mmtxURLs.get( dataset );
+            Set<String> humanURLs = manualURLs.get( dataset );
+            Set<String> intersect = getIntersection( dataset );
+            uniqueHuman.addAll( humanURLs );
+            uniqueMachine.addAll( machineURLs );
+            uniqueIntersect.addAll( intersect );
+
+            totalMachine += machineURLs.size();
+            totalHuman += humanURLs.size();
+            totalIntersect += intersect.size();
+        }
+        System.out.println( "Human total:" + totalHuman + " Unique:" + uniqueHuman.size() + "  percent unique:"
+                + ( int ) ( 100.0 * uniqueHuman.size() / ( float ) totalHuman ) );
+        System.out.println( "Machine:" + totalMachine + " Unique:" + uniqueMachine.size() + "  percent unique:"
+                + ( int ) ( 100.0 * uniqueMachine.size() / ( float ) totalMachine ) );
+        System.out.println( "Intersect:" + totalIntersect + " Unique:" + uniqueIntersect.size() );
+        float recall = totalIntersect / ( float ) totalHuman;
+        System.out.println( "Recall:" + recall );
+        float precision = totalIntersect / ( float ) totalMachine;
+        System.out.println( "Precision:" + precision );
+        System.out.println( "F-measure:" + 2 * precision * recall / ( precision + recall ) );
+    }
+
+    private void removeAbstractSource() {
+        DescriptionExtractor de = new DescriptionExtractor( filename );
+        for ( String dataset : originalMMTxIDs ) {
+            Set<String> machineURLs = mmtxURLs.get( dataset );
+            Set<String> oneSourceMachineURLs = new HashSet<String>();
+            for ( String URI : machineURLs ) {
+                if ( de.getDecriptionType( dataset, URI ).contains( "primaryReference/abstract" ) ) continue;
+                oneSourceMachineURLs.add( URI );
+            }
+            mmtxURLs.put( dataset, oneSourceMachineURLs );
         }
     }
 
-    public String lineSpacedSet( Set<String> input ) {
-        List<String> outputList = new LinkedList<String>();
-        for ( String line : input ) {
-            outputList.add( labels.get( line ) + "->" + line );
+    // primaryReference/abstract
+    // bioAssay/name
+    // bioAssay/description
+    // experiment/name
+    // experiment/description
+    // primaryReference/title
+    // primaryReference/abstract
+    private void removeExceptOneSource( String source ) {
+        DescriptionExtractor de = new DescriptionExtractor( filename );
+        for ( String dataset : originalMMTxIDs ) {
+            Set<String> machineURLs = mmtxURLs.get( dataset );
+            Set<String> oneSourceMachineURLs = new HashSet<String>();
+            for ( String URI : machineURLs ) {
+                if ( de.getDecriptionType( dataset, URI ).contains( source )
+                        && de.getDecriptionType( dataset, URI ).size() == 1 ) continue;
+                oneSourceMachineURLs.add( URI );
+            }
+            mmtxURLs.put( dataset, oneSourceMachineURLs );
         }
-        Collections.sort( outputList );
-
-        String result = "";
-        for ( String line : outputList )
-            result += line + "\n";
-        return result;
     }
 
-    public void countBadURIs( Map<String, Set<String>> experiments ) {
-        BIRNLexFMANullsFilter nullFilter = new BIRNLexFMANullsFilter();
-        UninformativeFilter unFilter = null;
+    private void saveHumanMappingsToDisk() {
+        log.info( "Saved mappings" );
         try {
-            unFilter = new UninformativeFilter();
+            ObjectOutputStream o = new ObjectOutputStream( new FileOutputStream( SetupParameters.config
+                    .getString( "gemma.annotator.cachedGemmaAnnotations" ) ) );
+            o.writeObject( manualURLs );
+            o.close();
+
+            // depreciated
+            // ObjectOutputStream o2 = new ObjectOutputStream( new FileOutputStream( "label.mappings" ) );
+            // o2.writeObject( labels );
+            // o2.close();
+
+            log.info( "Saved manual annotations" );
+        } catch ( Exception e ) {
+            log.info( "cannot save CUI mappings" );
+            e.printStackTrace();
+            System.exit( 1 );
+        }
+    }
+
+    private void writeExperimentTitles() {
+        writeExperimentTitles( SetupParameters.config.getString( "gemma.annotator.gemmaTitles" ) );
+    }
+
+    private void writeExperimentTitles( String filename ) {
+        ExpressionExperimentService ees = ( ExpressionExperimentService ) this.getBean( "expressionExperimentService" );
+        Collection<ExpressionExperiment> experiments = ees.loadAll();
+        Model model = ModelFactory.createDefaultModel();
+
+        int c = 0;
+        for ( ExpressionExperiment experiment : experiments ) {
+            c++;
+            // if (c == 30) break;
+            Long ID = experiment.getId();
+
+            log.info( "Experiment number:" + c + " of " + experiments.size() + " ID:" + experiment.getId() );
+
+            ees.thawLite( experiment );
+
+            String GEOObjectURI = ExpressionExperimentAnntotator.gemmaNamespace + "experiment/" + ID;
+            Resource expNode = model.createResource( GEOObjectURI );
+            expNode.addProperty( DC.title, experiment.getName() );
+        }
+        try {
+            model.write( new FileWriter( filename ) );
         } catch ( Exception e ) {
             e.printStackTrace();
         }
-
-        int bad = 0;
-        for ( String exp : experiments.keySet() ) {
-            for ( String url : experiments.get( exp ) ) {
-                // if its rejected by either filter
-                if ( !nullFilter.accept( url ) || !unFilter.accept( url ) ) {
-                    bad++;
-                    log.info( exp + " BAD:" + url );
-                }
-            }
-        }
-        log.info( "Number of bad URLS:" + bad );
-    }
-
-    public void printForTagCloud( Map<String, Set<String>> experiments ) {
-        int nulls = 0;
-        for ( String exp : experiments.keySet() ) {
-            for ( String url : experiments.get( exp ) ) {
-                // System.out.print( url + "->" );
-                if ( labels.get( url ) == null ) {
-                    nulls++;
-                    // log.info(url);
-                    continue;
-                }
-                System.out.println( labels.get( url ).replace( " ", "~" ) );
-            }
-        }
-        log.info( "Number of null labels:" + nulls );
-    }
-
-    public void printMMTxForTagCloud() {
-        System.out.println( "--------MMTx----------" );
-        printForTagCloud( mmtxURLs );
-    }
-
-    public void printMissedForTagCloud() {
-        System.out.println( "--------MISSED----------" );
-        printForTagCloud( getMissedURLS() );
-    }
-
-    public void printHumanForTagCloud() {
-        System.out.println( "--------HUMAN----------" );
-        printForTagCloud( manualURLs );
-    }
-
-    protected void processOptions() {
-        super.processOptions();
-    }
-
-    public Collection<String> removeFromHumanSeen( Set<String> removeSet ) {
-        // List<String> seenHumanURLs = new LinkedList<String>();
-        Set<String> seenHumanURLs = new HashSet<String>();
-
-        for ( Set<String> seenURLs : manualURLs.values() ) {
-            seenHumanURLs.addAll( seenURLs );
-        }
-        seenHumanURLs.removeAll( removeSet );
-        return seenHumanURLs;
-    }
-
-    /*
-     * Finds out how many mappings we fail to have for the human predictions
-     */
-    public void howManyMissingMappings() {
-        Collection<String> result;
-
-        filterAndPrint( "/owl/FMA#", false );
-        FMALiteMapper fma = new FMALiteMapper();
-        result = removeFromHumanSeen( fma.getAllURLs() );
-        System.out.println( "Seen manual FMA URL's that we have no mapping to:" + result.size() );
-
-        filterAndPrint( "/owl/DOID#", false );
-        DiseaseOntologyMapper DO = new DiseaseOntologyMapper();
-        result = removeFromHumanSeen( DO.getAllURLs() );
-        System.out.println( "Seen manual DO URL's that we have no mapping to:" + result.size() );
-
-        filterAndPrint( "birnlex", false );
-        BirnLexMapper BIRN = new BirnLexMapper();
-        result = removeFromHumanSeen( BIRN.getAllURLs() );
-        System.out.println( "Seen manual BIRN URL's that we have no mapping to:" + result.size() );
-
-        loadMappings();
-    }
-
-    private void loadMappings() {
-        // Reset
-        getMappings( filename );
-        setNullstoEmpty();
-        cleanURLs();
-    }
-
-    public void setTo100EvalSet() {
-        String[] exps100 = new String[] { "107", "114", "129", "137", "140", "155", "159", "167", "198", "199", "2",
-                "20", "206", "211", "213", "216", "219", "221", "232", "241", "243", "245", "246", "257", "258", "26",
-                "265", "267", "268", "277", "288", "295", "299", "302", "319", "323", "35", "36", "363", "368", "369",
-                "374", "375", "380", "385", "389", "39", "403", "406", "446", "454", "455", "484", "49", "504", "510",
-                "522", "524", "528", "533", "535", "54", "544", "548", "559", "571", "579", "587", "588", "591", "595",
-                "596", "597", "6", "602", "606", "609", "613", "617", "619", "625", "627", "633", "639", "64", "647",
-                "651", "653", "657", "66", "663", "667", "672", "699", "74", "76", "79", "80", "90", "95" };
-        originalMMTxIDs = new HashSet<String>( Arrays.asList( exps100 ) );
-    }
-
-    public void loadInFinalEvaluation() {
-        CheckHighLevelSpreadSheetReader reader = new CheckHighLevelSpreadSheetReader();
-        Map<String, Set<String>> accepted = null;
-        try {
-            accepted = reader.getRejectedAnnotations();
-        } catch ( Exception e ) {
-            e.printStackTrace();
-        }
-        for ( String exp : accepted.keySet() ) {
-            Set<String> anots = accepted.get( exp );
-            // add them all to the manual annotations
-            manualURLs.get( exp ).addAll( anots );
-        }
-    }
-
-    public void print100Stats() {
-        setTo100EvalSet();
-        // the below expID's are the ones we choose for manual curation
-        printStats();
     }
 
 }

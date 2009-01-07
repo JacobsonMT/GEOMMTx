@@ -19,14 +19,9 @@
 package ubic.GEOMMTx.evaluation;
 
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
-import java.util.HashMap;
 import java.util.Map;
 
 import ubic.GEOMMTx.OntologyLabelLoader;
-import ubic.GEOMMTx.SetupParameters;
-import ubic.gemma.ontology.OntologyLoader;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -39,6 +34,20 @@ import com.hp.hpl.jena.rdf.model.Model;
  * old code, needs to be updated with new URL's
  */
 public class CUItoOntologySpreadsheet extends CreateSpreadSheet {
+    /**
+     * @param args
+     */
+    public static void main( String[] args ) throws Exception {
+        CUItoOntologySpreadsheet test = new CUItoOntologySpreadsheet( "tt.xls" );
+
+        // log.info( "populating" );
+        // test.populate( "mergedRDF.firstrun.rdf" );
+        // log.info( "saving.." );
+        // test.save();
+        // log.info( "Done!" );
+
+    }
+
     Model linkedOntologies;
 
     Model model;
@@ -48,9 +57,6 @@ public class CUItoOntologySpreadsheet extends CreateSpreadSheet {
         OntologyLabelLoader labels = new OntologyLabelLoader();
         model = labels.loadOntologies();
     }
-
-
-
 
     public void populate( String inputFile ) throws Exception {
         FileInputStream fi = new FileInputStream( inputFile );
@@ -108,19 +114,5 @@ public class CUItoOntologySpreadsheet extends CreateSpreadSheet {
         } finally {
             qexec.close();
         }
-    }
-
-    /**
-     * @param args
-     */
-    public static void main( String[] args ) throws Exception {
-        CUItoOntologySpreadsheet test = new CUItoOntologySpreadsheet( "tt.xls" );
-
-        // log.info( "populating" );
-        // test.populate( "mergedRDF.firstrun.rdf" );
-        // log.info( "saving.." );
-        // test.save();
-        // log.info( "Done!" );
-
     }
 }

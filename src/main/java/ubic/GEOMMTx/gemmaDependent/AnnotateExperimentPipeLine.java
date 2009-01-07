@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -38,10 +36,13 @@ import ubic.GEOMMTx.filters.UninformativeFilter;
 import ubic.GEOMMTx.mappers.BirnLexMapper;
 import ubic.GEOMMTx.mappers.DiseaseOntologyMapper;
 import ubic.GEOMMTx.mappers.FMALiteMapper;
+import ubic.gemma.apps.ExpressionExperimentManipulatingCLI;
+import ubic.gemma.model.common.description.Characteristic;
 import ubic.gemma.model.common.description.VocabCharacteristic;
+import ubic.gemma.model.expression.experiment.BioAssaySet;
 import ubic.gemma.model.expression.experiment.ExpressionExperiment;
 import ubic.gemma.model.expression.experiment.ExpressionExperimentService;
-import ubic.gemma.util.AbstractSpringAwareCLI;
+import ubic.gemma.ontology.OntologyService;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
@@ -50,25 +51,8 @@ import com.hp.hpl.jena.rdf.model.Model;
  * 
  * @author leon
  * @version $Id$
- * 
  */
-public class AnnotateExperimentPipeLine extends AbstractSpringAwareCLI {
-    private Text2Owl text2Owl;
-    protected static Log log = LogFactory.getLog( AnnotateExperimentPipeLine.class );
-    boolean loadOntologies = false;
-    private List<AbstractFilter> filters;
-
-    protected void processOptions() {
-        super.processOptions();
-    }
-
-    @Override
-    protected void buildOptions() {
-        Option expOption = OptionBuilder.hasArg().isRequired().withArgName( "Expression experiment identifier" )
-                .withDescription( "Expression experiment identifier." ).withLongOpt( "experiment" ).create( 'e' );
-        addOption( expOption );
-    }
-
+public class AnnotateExperimentPipeLine extends ExpressionExperimentManipulatingCLI {
     /**
      * @param args
      */
@@ -84,6 +68,12 @@ public class AnnotateExperimentPipeLine extends AbstractSpringAwareCLI {
             throw new RuntimeException( e );
         }
     }
+
+    private Text2Owl text2Owl;
+    protected static Log log = LogFactory.getLog( AnnotateExperimentPipeLine.class );
+    boolean loadOntologies = false;
+
+    private List<AbstractFilter> filters;
 
     public AnnotateExperimentPipeLine() {
         // init MMTx
@@ -103,6 +93,13 @@ public class AnnotateExperimentPipeLine extends AbstractSpringAwareCLI {
             e.printStackTrace();
             log.error( e.getMessage() );
         }
+    }
+
+    /*
+     * clears the cache of the MMTx runner, usefull for benchmarking multiple runs
+     */
+    public void clearMMTxCache() {
+        text2Owl.clearCache();
     }
 
     public Set<String> getAnnotations( ExpressionExperiment e ) {
@@ -162,14 +159,6 @@ public class AnnotateExperimentPipeLine extends AbstractSpringAwareCLI {
         return finalAnnotations;
     }
 
-    /*
-     * clears the cache of the MMTx runner, usefull for benchmarking multiple runs
-     */
-    public void clearMMTxCache() {
-        text2Owl.clearCache();
-    }
-
-    @SuppressWarnings("unchecked")
     @Override
     protected Exception doWork( String[] args ) {
 
@@ -177,38 +166,49 @@ public class AnnotateExperimentPipeLine extends AbstractSpringAwareCLI {
         if ( err != null ) return err;
 
         ExpressionExperimentService ees = ( ExpressionExperimentService ) this.getBean( "expressionExperimentService" );
+        OntologyService os = ( OntologyService ) this.getBean( "ontologyService" );
 
         long time = System.currentTimeMillis();
         time = System.currentTimeMillis();
 
-        // load the experiment based on it's ID, I think the normal CLI's don't do it this way
-        ExpressionExperiment experiment = ees.load( Long.parseLong( getOptionValue( "e" ) ) );
-        ees.thawLite( experiment );
+        for ( BioAssaySet bas : this.expressionExperiments ) {
 
-        // get the rdfs:labels for the URI's
-        Map<String, String> labels = null;
-        try {
-            labels = LabelLoader.readLabels();
-        } catch ( Exception e ) {
-            log.warn( "Couldnt load labels" );
+            log.info( "Processing: " + bas );
+
+            ExpressionExperiment experiment = ( ExpressionExperiment ) bas;
+            ees.thawLite( experiment );
+
+            // get the rdfs:labels for the URI's
+            Map<String, String> labels = null;
+            try {
+                labels = LabelLoader.readLabels();
+            } catch ( Exception e ) {
+                log.warn( "Couldnt load labels" );
+            }
+            // construct a factory for producing VocabCharacteristics
+            PredictedCharacteristicFactory charGen = new PredictedCharacteristicFactory( labels );
+
+            // The call that does all the work, it gets the predicted annotations
+            Set<String> predictedAnnotations = getAnnotations( experiment );
+
+            // for each URI print it and it's label and get VocabCharacteristic to represent it
+            for ( String URI : predictedAnnotations ) {
+                log.info( experiment + " -> " + labels.get( URI ) + " - " + URI );
+
+                Characteristic c = charGen.getCharacteristic( URI );
+
+                // attach the Characterisitic to the experiment
+//                os.saveExpressionExperimentStatement( c, experiment );
+
+            }
         }
-        // construct a factory for producing VocabCharacteristics
-        PredictedCharacteristicFactory charGen = new PredictedCharacteristicFactory( labels );
-
-        // The call that does all the work, it gets the predicted annotations
-        Set<String> predictedAnnotations = getAnnotations( experiment );
-
-        // for each URI print it and it's label and get VocabCharacteristic to represent it
-        for ( String URI : predictedAnnotations ) {
-            System.out.println( labels.get( URI ) + " - " + URI );
-
-            VocabCharacteristic c = charGen.getCharacteristic( URI );
-
-            // TODO: attach the Characterisitic to the experiment
-        }
-
         System.out.println( "Total Time:" + ( System.currentTimeMillis() - time ) );
         return null;
+    }
+
+    @Override
+    protected void processOptions() {
+        super.processOptions();
     }
 
 }

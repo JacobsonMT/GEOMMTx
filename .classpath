@@ -40,9 +40,9 @@
 	<classpathentry kind="var" path="M2_REPO/dom4j/dom4j/1.6.1/dom4j-1.6.1.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/directwebremoting/dwr/2.0.1/dwr-2.0.1.jar"/>
 	<classpathentry kind="var" path="M2_REPO/net/sf/ehcache/ehcache/1.5.0/ehcache-1.5.0.jar"/>
-	<classpathentry kind="var" path="M2_REPO/gemma/gemma-core/1.2.1-SNAPSHOT/gemma-core-1.2.1-SNAPSHOT.jar"/>
-	<classpathentry kind="var" path="M2_REPO/gemma/gemma-mda/1.2.1-SNAPSHOT/gemma-mda-1.2.1-SNAPSHOT.jar"/>
-	<classpathentry kind="var" path="M2_REPO/gemma/gemma-util/1.2.1-SNAPSHOT/gemma-util-1.2.1-SNAPSHOT.jar"/>
+	<classpathentry kind="var" path="M2_REPO/gemma/gemma-core/1.4-SNAPSHOT/gemma-core-1.4-SNAPSHOT.jar"/>
+	<classpathentry kind="var" path="M2_REPO/gemma/gemma-mda/1.4-SNAPSHOT/gemma-mda-1.4-SNAPSHOT.jar"/>
+	<classpathentry kind="var" path="M2_REPO/gemma/gemma-util/1.4-SNAPSHOT/gemma-util-1.4-SNAPSHOT.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/hibernate/hibernate/3.2.6.ga/hibernate-3.2.6.ga.jar"/>
 	<classpathentry kind="var" path="M2_REPO/com/ibm/icu/icu4j/3.4/icu4j-3.4.jar"/>
 	<classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/iri/0.5/iri-0.5.jar"/>
@@ -114,6 +114,5 @@
 	<classpathentry kind="var" path="M2_REPO/xalan/xalan/2.7.0/xalan-2.7.0.jar"/>
 	<classpathentry kind="var" path="M2_REPO/xerces/xmlParserAPIs/2.0.2/xmlParserAPIs-2.0.2.jar"/>
 	<classpathentry kind="var" path="M2_REPO/xom/xom/1.0/xom-1.0.jar"/>
-	<classpathentry kind="lib" path="mmtxProjectJS.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

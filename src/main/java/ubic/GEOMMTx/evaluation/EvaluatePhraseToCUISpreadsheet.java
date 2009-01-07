@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,18 +38,24 @@ import ubic.GEOMMTx.SetupParameters;
 public class EvaluatePhraseToCUISpreadsheet {
     protected static Log log = LogFactory.getLog( EvaluatePhraseToCUISpreadsheet.class );
 
+    /**
+     * @param args
+     */
+    public static void main( String[] args ) throws Exception {
+        // TODO Auto-generated method stub
+        EvaluatePhraseToCUISpreadsheet evaluator = new EvaluatePhraseToCUISpreadsheet();
+        // evaluator.runThroughFiles( "PtoCPaul.xls", "PtoCSuzanne.xls" );
+        // evaluator.runThroughFiles( "Paul", "Suzanne" );
+        System.out.println( evaluator.getRejectedSUIs() );
+        System.out.println( evaluator.getRejectedSUIs().size() );
+    }
+
     public EvaluatePhraseToCUISpreadsheet() {
 
     }
 
-    public Map<String, String> loadComments( HSSFSheet sheet ) {
-        Map<String, String> comments = new HashMap<String, String>();
-
-        return comments;
-    }
-
     public Set<CUISUIPair> getRejectedSUIs() throws Exception {
-        return getRejectedSUIs( SetupParameters.config.getString( "gemma.annotator.CUISUIEvaluationFile"));
+        return getRejectedSUIs( SetupParameters.config.getString( "gemma.annotator.CUISUIEvaluationFile" ) );
     }
 
     public Set<CUISUIPair> getRejectedSUIs( String file ) throws Exception {
@@ -73,13 +78,13 @@ public class EvaluatePhraseToCUISpreadsheet {
             String SUI = ExcelUtil.getValue( sheet, row, SUIPos );
             String reject = ExcelUtil.getValue( sheet, row, rejectPos );
 
-            //System.out.println( CUI );
+            // System.out.println( CUI );
             // System.out.println( BCUI );
             if ( CUI == null ) {
                 nullCount++;
             } else {
                 nullCount = 0;
-                all.add(new CUISUIPair( CUI, SUI ));
+                all.add( new CUISUIPair( CUI, SUI ) );
                 if ( reject.equals( "X" ) ) {
                     rejected.add( new CUISUIPair( CUI, SUI ) );
                     // delete all mentions that have this CUI and SUI combination
@@ -89,8 +94,14 @@ public class EvaluatePhraseToCUISpreadsheet {
         }
         // System.out.println( seen );
         // System.out.println( seen.size() );
-        log.info("All CUI SUI parings:" + all.size());
+        log.info( "All CUI SUI parings:" + all.size() );
         return rejected;
+    }
+
+    public Map<String, String> loadComments( HSSFSheet sheet ) {
+        Map<String, String> comments = new HashMap<String, String>();
+
+        return comments;
     }
 
     public void runThroughFiles( String file1, String file2 ) throws Exception {
@@ -184,18 +195,6 @@ public class EvaluatePhraseToCUISpreadsheet {
         System.out.println( file2 + " rejects and " + file1 + " accepts:" + confusion[0][1] );
         System.out.println( file1 + " rejects and " + file2 + " accepts:" + confusion[1][0] );
 
-    }
-
-    /**
-     * @param args
-     */
-    public static void main( String[] args ) throws Exception {
-        // TODO Auto-generated method stub
-        EvaluatePhraseToCUISpreadsheet evaluator = new EvaluatePhraseToCUISpreadsheet();
-        // evaluator.runThroughFiles( "PtoCPaul.xls", "PtoCSuzanne.xls" );
-        // evaluator.runThroughFiles( "Paul", "Suzanne" );
-        System.out.println(evaluator.getRejectedSUIs());
-        System.out.println(evaluator.getRejectedSUIs().size());
     }
 
 }

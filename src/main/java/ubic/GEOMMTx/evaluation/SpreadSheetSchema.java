@@ -18,7 +18,6 @@
  */
 package ubic.GEOMMTx.evaluation;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,15 +30,15 @@ import org.apache.commons.logging.LogFactory;
  * @author lfrench
  */
 public abstract class SpreadSheetSchema {
-    protected  Map<String, Integer> positions;
-    protected  Log log = LogFactory.getLog( SpreadSheetSchema.class );
+    protected Map<String, Integer> positions;
+    protected Log log = LogFactory.getLog( SpreadSheetSchema.class );
 
     // ?geoLabel ?description ?CUI ?SUI ?mapping ?phrase ?mentionLabel
     public SpreadSheetSchema() {
         positions = new HashMap<String, Integer>();
     }
 
-    public  String[] getHeaderRow() {
+    public String[] getHeaderRow() {
         String[] result = new String[positions.size()];
         for ( String key : positions.keySet() ) {
             result[positions.get( key )] = key;
@@ -47,7 +46,7 @@ public abstract class SpreadSheetSchema {
         return result;
     }
 
-    public  Integer getPosition( String varName ) {
+    public Integer getPosition( String varName ) {
         return positions.get( varName );
     }
 

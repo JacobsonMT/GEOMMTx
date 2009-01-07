@@ -18,10 +18,7 @@
  */
 package ubic.GEOMMTx.filters;
 
-import java.io.FileWriter;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -38,6 +35,10 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 public abstract class AbstractFilter {
     protected static Log log = LogFactory.getLog( AbstractFilter.class );
+
+    public abstract int filter( Model model );
+
+    public abstract String getName();
 
     /**
      * Remove mentions that have a mapped term corresponding to one of the given URL's
@@ -72,10 +73,5 @@ public abstract class AbstractFilter {
 
         return affectedMentions.size();
     }
-
-    public abstract int filter( Model model );
-
-    public abstract String getName();
-
 
 }

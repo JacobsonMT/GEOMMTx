@@ -38,6 +38,12 @@ import com.hp.hpl.jena.rdf.model.Model;
  * Given a GEOMMTx RDF mode, find out what descriptions in Gemma lead to a given annotation for a specific experiment 
  */
 public class DescriptionExtractor {
+    public static void main( String ar[] ) {
+        DescriptionExtractor de = new DescriptionExtractor( "mergedRDFBirnLexUpdate.afterUseless.rdf" );
+        System.out.println( de.getDecriptionURIs( "16", "http://purl.org/obo/owl/FMA#FMA_58301" ) );
+        System.out.println( de.getDecriptionType( "16", "http://purl.org/obo/owl/FMA#FMA_58301" ) );
+    }
+
     Model model;
 
     public DescriptionExtractor( Model model ) {
@@ -104,11 +110,5 @@ public class DescriptionExtractor {
             result.add( desc );
         }
         return result;
-    }
-
-    public static void main( String ar[] ) {
-        DescriptionExtractor de = new DescriptionExtractor( "mergedRDFBirnLexUpdate.afterUseless.rdf" );
-        System.out.println( de.getDecriptionURIs( "16", "http://purl.org/obo/owl/FMA#FMA_58301" ) );
-        System.out.println( de.getDecriptionType( "16", "http://purl.org/obo/owl/FMA#FMA_58301" ) );
     }
 }

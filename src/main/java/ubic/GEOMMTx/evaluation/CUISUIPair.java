@@ -27,22 +27,24 @@ public class CUISUIPair {
         this.SUI = SUI;
     }
 
-    public String toString() {
-        return CUI + " -> " + SUI;
-    }
-
-    public int hashCode() {
-        return this.toString().hashCode();
-     }
-    
     /*
-     * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals( Object o ) {
         if ( o instanceof CUISUIPair ) {
             return this.toString().equals( o.toString() );
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.toString().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return CUI + " -> " + SUI;
     }
 }

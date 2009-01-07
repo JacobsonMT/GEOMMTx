@@ -33,10 +33,6 @@ import com.hp.hpl.jena.rdf.model.Model;
 public class CUISUIFilter extends AbstractFilter {
     Set<CUISUIPair> rejectedCUISUIPairs;
 
-    public String getName() {
-        return "Rejected CUI SRI pair remover";
-    }
-
     public CUISUIFilter() throws Exception {
         // CUI -> SUI rejections
         EvaluatePhraseToCUISpreadsheet evalSheet = new EvaluatePhraseToCUISpreadsheet();
@@ -72,6 +68,11 @@ public class CUISUIFilter extends AbstractFilter {
             howMany += removeMentions( model, results );
         }
         return howMany;
+    }
+
+    @Override
+    public String getName() {
+        return "Rejected CUI SRI pair remover";
     }
 
 }

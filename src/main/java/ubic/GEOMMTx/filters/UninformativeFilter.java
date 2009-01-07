@@ -24,44 +24,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.plaf.UIResource;
-
 import ubic.GEOMMTx.LabelLoader;
 import ubic.GEOMMTx.SetupParameters;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
 public class UninformativeFilter extends AbstractFilter implements URIFilter {
-    Set<String> frequentURLs;
-
-    public String getName() {
-        return "Frequent URL/class/concept remover";
-    }
-
-    public boolean accept( String URI ) {
-        return !frequentURLs.contains( URI );
-    }
-
-    public Set<String> getFrequentURLs() {
-        return frequentURLs;
-    }
-
-    public UninformativeFilter() throws Exception {
-        frequentURLs = new HashSet<String>();
-        BufferedReader f = new BufferedReader( new FileReader( SetupParameters.config
-                .getString( "gemma.annotator.uselessFrequentURLsFile" ) ) );
-        String line;
-        while ( ( line = f.readLine() ) != null ) {
-            frequentURLs.add( line );
-        }
-        f.close();
-    }
-
-    @Override
-    public int filter( Model model ) {
-        return removeMentionsURLs( model, frequentURLs );
-    }
-
     /*
      * this main method prints out the labels of the uninformative URIs
      */
@@ -76,6 +44,37 @@ public class UninformativeFilter extends AbstractFilter implements URIFilter {
         }
         f.close();
 
+    }
+
+    Set<String> frequentURLs;
+
+    public UninformativeFilter() throws Exception {
+        frequentURLs = new HashSet<String>();
+        BufferedReader f = new BufferedReader( new FileReader( SetupParameters.config
+                .getString( "gemma.annotator.uselessFrequentURLsFile" ) ) );
+        String line;
+        while ( ( line = f.readLine() ) != null ) {
+            frequentURLs.add( line );
+        }
+        f.close();
+    }
+
+    public boolean accept( String URI ) {
+        return !frequentURLs.contains( URI );
+    }
+
+    @Override
+    public int filter( Model model ) {
+        return removeMentionsURLs( model, frequentURLs );
+    }
+
+    public Set<String> getFrequentURLs() {
+        return frequentURLs;
+    }
+
+    @Override
+    public String getName() {
+        return "Frequent URL/class/concept remover";
     }
 
 }

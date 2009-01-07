@@ -35,23 +35,13 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
 
 public class BIRNLexFMANullsFilter extends AbstractFilter implements URIFilter {
+    public static void main( String args[] ) throws Exception {
+        BIRNLexFMANullsFilter test = new BIRNLexFMANullsFilter();
+    }
+
     FMAOntologyService FMA;
+
     BirnLexOntologyService BIRN;
-
-    public String getName() {
-        return "BIRNLex and FMA null mapping remover";
-    }
-
-    public boolean accept( String URI ) {
-        // go into FMA and birnlex and check if it's missing
-        if ( URI.contains( "/owl/FMA#" ) && FMA.getTerm( URI ) == null ) {
-            return false;
-        }
-        if ( URI.contains( "birnlex" ) && BIRN.getTerm( URI ) == null ) {
-            return false;
-        }
-        return true;
-    }
 
     public BIRNLexFMANullsFilter() {
         // load FMA and birnlex
@@ -67,6 +57,17 @@ public class BIRNLexFMANullsFilter extends AbstractFilter implements URIFilter {
             }
         }
         log.info( "FMA and BIRNLex Ontologies loaded" );
+    }
+
+    public boolean accept( String URI ) {
+        // go into FMA and birnlex and check if it's missing
+        if ( URI.contains( "/owl/FMA#" ) && FMA.getTerm( URI ) == null ) {
+            return false;
+        }
+        if ( URI.contains( "birnlex" ) && BIRN.getTerm( URI ) == null ) {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -103,8 +104,9 @@ public class BIRNLexFMANullsFilter extends AbstractFilter implements URIFilter {
         return removeMentionsURLs( model, removeURIs );
     }
 
-    public static void main( String args[] ) throws Exception {
-        BIRNLexFMANullsFilter test = new BIRNLexFMANullsFilter();
+    @Override
+    public String getName() {
+        return "BIRNLex and FMA null mapping remover";
     }
 
 }

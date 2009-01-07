@@ -22,6 +22,13 @@ import java.util.Arrays;
 
 public class CUItoOntologySchema extends SpreadSheetSchema {
 
+    public static void main( String[] args ) {
+        // TODO Auto-generated method stub
+        CUItoOntologySchema test = new CUItoOntologySchema();
+        System.out.println( "Header:" + Arrays.asList( test.getHeaderRow() ).toString() );
+
+    }
+
     /**
      * @param args
      */
@@ -33,15 +40,6 @@ public class CUItoOntologySchema extends SpreadSheetSchema {
         positions.put( "Reject", 3 );
         positions.put( "mappedTermLabel", 4 );
         positions.put( "Comment", 5 );
-    }
-    
-    public static void main( String[] args ) {
-        // TODO Auto-generated method stub
-        CUItoOntologySchema test = new CUItoOntologySchema();
-        System.out.println( "Header:" + Arrays.asList(test.getHeaderRow()).toString() );
-        
-
-
     }
 
 }

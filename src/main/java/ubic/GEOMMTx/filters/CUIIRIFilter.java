@@ -39,10 +39,6 @@ public class CUIIRIFilter extends AbstractFilter {
         rejectedCUIIRIPairs = SetupParameters.rejectedCUIIRIPairs;
     }
 
-    public String getName() {
-        return "Rejected CUI IRI pair remover";
-    }
-
     @Override
     public int filter( Model model ) {
         String queryStringTemplate = "PREFIX gemmaAnn: <http://bioinformatics.ubc.ca/Gemma/ws/xml/gemmaAnnotations.owl#>\n"
@@ -69,6 +65,11 @@ public class CUIIRIFilter extends AbstractFilter {
         }
         return howMany;
 
+    }
+
+    @Override
+    public String getName() {
+        return "Rejected CUI IRI pair remover";
     }
 
 }

@@ -18,7 +18,6 @@
  */
 package ubic.GEOMMTx.evaluation;
 
-import java.io.File;
 import java.io.FileInputStream;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -29,7 +28,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 public class ExcelUtil {
-    
+
     public static HSSFSheet getSheetFromFile( String filename, String sheetName ) throws Exception {
         POIFSFileSystem fs = new POIFSFileSystem( new FileInputStream( filename ) );
         HSSFWorkbook wb = new HSSFWorkbook( fs );
@@ -65,11 +64,11 @@ public class ExcelUtil {
         return "";
     }
 
-    public static void setValue( HSSFSheet sheet, int row, int col, String value ) {
-        HSSFRow r = sheet.createRow( row );
-        HSSFCell c = r.createCell( ( short ) col );
-        c.setCellType( HSSFCell.CELL_TYPE_STRING );
-        c.setCellValue( new HSSFRichTextString( value ) );
+    public static void main( String args[] ) throws Exception {
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        HSSFSheet spreadsheet = workbook.createSheet();
+        ExcelUtil.setFormula( spreadsheet, 1, 1, "HYPERLINK(\"x\",\"x\")" );
+
     }
 
     public static void setFormula( HSSFSheet sheet, int row, int col, String value ) {
@@ -79,11 +78,11 @@ public class ExcelUtil {
         c.setCellFormula( value );
     }
 
-    public static void main( String args[] ) throws Exception {
-        HSSFWorkbook workbook = new HSSFWorkbook();
-        HSSFSheet spreadsheet = workbook.createSheet();
-        ExcelUtil.setFormula( spreadsheet, 1, 1, "HYPERLINK(\"x\",\"x\")" );
-
+    public static void setValue( HSSFSheet sheet, int row, int col, String value ) {
+        HSSFRow r = sheet.createRow( row );
+        HSSFCell c = r.createCell( ( short ) col );
+        c.setCellType( HSSFCell.CELL_TYPE_STRING );
+        c.setCellValue( new HSSFRichTextString( value ) );
     }
 
 }

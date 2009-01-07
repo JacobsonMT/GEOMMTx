@@ -29,7 +29,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import ubic.GEOMMTx.evaluation.CreateSpreadSheet;
-import ubic.GEOMMTx.filters.UninformativeFilter;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -42,13 +41,9 @@ import com.hp.hpl.jena.rdf.model.Model;
  * Gets the labels of the ontology classes and saves them to disk
  * 
  * @author leon
- * 
  */
 public class LabelLoader {
     protected static Log log = LogFactory.getLog( LabelLoader.class );
-
-    private LabelLoader() {
-    }
 
     public static Map<String, String> readLabels() throws Exception {
         try {
@@ -91,6 +86,9 @@ public class LabelLoader {
         o2.close();
         log.info( "Labels wrote" );
         return labels;
+    }
+
+    private LabelLoader() {
     }
 
 }

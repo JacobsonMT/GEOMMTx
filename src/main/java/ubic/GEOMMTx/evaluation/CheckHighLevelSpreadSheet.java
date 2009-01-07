@@ -25,11 +25,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-
-import ubic.GEOMMTx.HashMapStringSet;
-import ubic.GEOMMTx.SetupParameters;
-
 /*
  * Call this from CompareToManual.java
  */
@@ -78,6 +73,5 @@ public class CheckHighLevelSpreadSheet extends CreateSpreadSheet {
 
         }
     }
-
 
 }

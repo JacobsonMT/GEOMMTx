@@ -36,121 +36,116 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 public class MMTxRunner {
-	private static final long serialVersionUID = 1L;
-	
-	protected static Log log = LogFactory.getLog( MMTxRunner.class );
-	
-	private MMTxAPI MMTx;
+    private static final long serialVersionUID = 1L;
 
-	private int scoreThreshold;
+    protected static Log log = LogFactory.getLog( MMTxRunner.class );
 
-	public MMTxRunner() {
-		this(0,new String[] {});
-	}
-    
+    private MMTxAPI MMTx;
 
-//	public MMTxRunner(String[] options) {
-//		this(, options);
-//	}
+    private int scoreThreshold;
 
-	
-	private Cache memoryOnlyCache;
+    private Cache memoryOnlyCache;
 
-	public MMTxRunner(int scoreThreshold, String[] options) {
-		this.scoreThreshold = scoreThreshold;
-		CacheManager singletonManager = CacheManager.create();
-        
-        memoryOnlyCache = singletonManager.getCache("realCache");
-        if (memoryOnlyCache == null) {
-            memoryOnlyCache = new Cache("realCache", 25, false, false, 5000, 1500);
-            singletonManager.addCache(memoryOnlyCache);
+    // public MMTxRunner(String[] options) {
+    // this(, options);
+    // }
+
+    public MMTxRunner() {
+        this( 0, new String[] {} );
+    }
+
+    public MMTxRunner( int scoreThreshold, String[] options ) {
+        this.scoreThreshold = scoreThreshold;
+        CacheManager singletonManager = CacheManager.create();
+
+        memoryOnlyCache = singletonManager.getCache( "realCache" );
+        if ( memoryOnlyCache == null ) {
+            memoryOnlyCache = new Cache( "realCache", 25, false, false, 5000, 1500 );
+            singletonManager.addCache( memoryOnlyCache );
         }
 
-		try {
+        try {
             // try MMTxAPILite?
-			MMTx = new MMTxAPI(options);
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
-	}
-	
+            MMTx = new MMTxAPI( options );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            System.exit( 1 );
+        }
+    }
+
     public void clearCache() {
         memoryOnlyCache.removeAll();
     }
 
+    public Collection<Candidate> getConcepts( Phrase phrase ) {
+        Collection<Candidate> results = new ArrayList<Candidate>();
 
-	public List<Phrase> getPhrases(String text) {
-		// check to see if we done it before
-		Element element = memoryOnlyCache.get(text);
-		if (element != null) {
-			//log.info("using phrase cache");
-			return (List<Phrase>)(memoryOnlyCache.get(text).getObjectValue());
-		}
+        List finalMappings = phrase.getFinalMappings();
 
-		Document doc = null;
-		List<Phrase> results = new ArrayList<Phrase>();
+        // somtimes finalMappings is null, guess this happens when it can't find
+        // anything
+        if ( finalMappings == null ) return results;
 
-		// MMTX processing
-		try {
-			doc = MMTx.processDocument(text);
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
-        //doc.getSentences()
+        // go through the mappings
+        for ( Object mappingIterator : finalMappings ) {
+            FinalMapping aMapping = ( FinalMapping ) mappingIterator;
 
-		if (doc.getPhrases() == null)
-			return results;
+            // go through the concepts which are Candidates
+            for ( Object cObj : aMapping.getConcepts() ) {
+                Candidate concept = ( Candidate ) cObj;
+                if ( concept.getFinalScore() > scoreThreshold ) {
+                    results.add( concept );
+                }
+            } // end for
+        } // end for
+        return results;
+    }
 
-		for (Object phraseObj : doc.getPhrases()) {
-			results.add((Phrase) phraseObj);
-		} // end for
+    public Collection<Candidate> getConcepts( String text ) {
+        Document doc = null;
+        Collection<Candidate> results = new ArrayList<Candidate>();
 
-		memoryOnlyCache.put(new Element(text, results));
-		return results;
-	}
+        for ( Phrase p : getPhrases( text ) ) {
+            results.addAll( getConcepts( p ) );
+        } // end for
+        return results;
+    }
 
-	public Collection<Candidate> getConcepts(Phrase phrase) {
-		Collection<Candidate> results = new ArrayList<Candidate>();
+    public List<Phrase> getPhrases( String text ) {
+        // check to see if we done it before
+        Element element = memoryOnlyCache.get( text );
+        if ( element != null ) {
+            // log.info("using phrase cache");
+            return ( List<Phrase> ) ( memoryOnlyCache.get( text ).getObjectValue() );
+        }
 
-		List finalMappings = phrase.getFinalMappings();
+        Document doc = null;
+        List<Phrase> results = new ArrayList<Phrase>();
 
-		// somtimes finalMappings is null, guess this happens when it can't find
-		// anything
-		if (finalMappings == null)
-			return results;
+        // MMTX processing
+        try {
+            doc = MMTx.processDocument( text );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            System.exit( 1 );
+        }
+        // doc.getSentences()
 
-		// go through the mappings
-		for (Object mappingIterator : finalMappings) {
-			FinalMapping aMapping = (FinalMapping) mappingIterator;
+        if ( doc.getPhrases() == null ) return results;
 
-			// go through the concepts which are Candidates
-			for (Object cObj : aMapping.getConcepts()) {
-				Candidate concept = (Candidate) cObj;
-				if (concept.getFinalScore() > scoreThreshold) {
-					results.add(concept);
-				}
-			} // end for
-		} // end for
-		return results;
-	}
+        for ( Object phraseObj : doc.getPhrases() ) {
+            results.add( ( Phrase ) phraseObj );
+        } // end for
 
-	public Collection<Candidate> getConcepts(String text) {
-		Document doc = null;
-		Collection<Candidate> results = new ArrayList<Candidate>();
+        memoryOnlyCache.put( new Element( text, results ) );
+        return results;
+    }
 
-		for (Phrase p : getPhrases(text)) {
-			results.addAll(getConcepts(p));
-		} // end for
-		return results;
-	}
+    public int getScoreThreshold() {
+        return scoreThreshold;
+    }
 
-	public int getScoreThreshold() {
-		return scoreThreshold;
-	}
-
-	public void setScoreThreshold(int scoreThreshold) {
-		this.scoreThreshold = scoreThreshold;
-	}
+    public void setScoreThreshold( int scoreThreshold ) {
+        this.scoreThreshold = scoreThreshold;
+    }
 }

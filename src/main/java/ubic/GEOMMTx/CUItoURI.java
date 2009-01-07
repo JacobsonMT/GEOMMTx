@@ -28,7 +28,6 @@ import java.util.Set;
  * Converts a CUI into a URI using one or more mappers.
  * 
  * @author Leon
- *
  */
 public class CUItoURI {
     Collection<CUIMapper> mappers;

@@ -21,7 +21,6 @@ package ubic.GEOMMTx;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import ubic.GEOMMTx.evaluation.CreateSpreadSheet;
 import ubic.gemma.ontology.OntologyLoader;
 
 import com.hp.hpl.jena.ontology.OntModel;
@@ -41,15 +40,12 @@ public class OntologyLabelLoader {
         RDFNode nullNode = null;
         Selector labelSelector = new SimpleSelector( null, RDFS.label, nullNode );
 
-
-        
         OntModel birnLex = OntologyLoader.loadMemoryModel( "http://purl.org/nbirn/birnlex/ontology/birnlex.owl" );
         log.info( "loaded birnLex..." );
         model.add( birnLex.listStatements( labelSelector ) );
         log.info( "Done merging Birnlex..." );
         birnLex.close();
 
-        
         OntModel FMAlite = OntologyLoader
                 .loadMemoryModel( "http://www.berkeleybop.org/ontologies/obo-all/fma_lite/fma_lite.owl" );
         log.info( "loaded FMA" );

@@ -31,12 +31,22 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 public class PhrasetoCUISpreadsheet extends CreateSpreadSheet {
 
-    
-    public PhrasetoCUISpreadsheet(String filename) throws Exception {
-        super(filename, new PhraseToCUISchema());
+    /**
+     * @param args
+     */
+    public static void main( String[] args ) throws Exception {
+        PhrasetoCUISpreadsheet test = new PhrasetoCUISpreadsheet( "test.xls" );
+        log.info( "populating" );
+        test.populate( "mergedRDF.rdf" );
+        log.info( "saving.." );
+        test.save();
+        log.info( "Done!" );
     }
-    
-    
+
+    public PhrasetoCUISpreadsheet( String filename ) throws Exception {
+        super( filename, new PhraseToCUISchema() );
+    }
+
     public void populate( String inputFile ) throws Exception {
         Model model = ModelFactory.createDefaultModel();
         FileInputStream fi = new FileInputStream( inputFile );
@@ -97,17 +107,5 @@ public class PhrasetoCUISpreadsheet extends CreateSpreadSheet {
             qexec.close();
         }
 
-    }
-    
-    /**
-     * @param args
-     */
-    public static void main( String[] args ) throws Exception {
-        PhrasetoCUISpreadsheet test = new PhrasetoCUISpreadsheet( "test.xls" );
-        log.info( "populating" );
-        test.populate( "mergedRDF.rdf" );
-        log.info( "saving.." );
-        test.save();
-        log.info( "Done!" );
     }
 }

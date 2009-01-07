@@ -27,7 +27,6 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import ubic.GEOMMTx.filters.AbstractFilter;
 import ubic.gemma.ontology.OntologyTools;
 
 import com.hp.hpl.jena.query.Query;
@@ -44,49 +43,6 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 public class ProjectRDFModelTools {
     protected static Log log = LogFactory.getLog( ProjectRDFModelTools.class );
-
-    static public void removeMentions( Model model, Set<Resource> affectedMentions ) {
-        Set<Resource> affectedPhrases = new HashSet<Resource>();
-        // remove all the links from the mention to its properties
-        for ( Resource mention : affectedMentions ) {
-            // mention.addLiteral( isRejected, true );
-            // remove all of its properties (leaves a blank mention behind)
-            mention.removeProperties();
-
-            // get its phrase, assume it only has one
-            ResIterator iterator = model.listResourcesWithProperty( Vocabulary.hasMention, mention );
-            Resource phrase = ( Resource ) iterator.next();
-
-            affectedPhrases.add( phrase );
-            model.remove( model.createStatement( phrase, Vocabulary.hasMention, mention ) );
-        }
-
-        // this leaves behind some orphan phrases
-        // remove them
-        for ( Resource phrase : affectedPhrases ) {
-            // make sure it has no mentions
-            if ( model.listStatements( phrase, Vocabulary.hasMention, ( RDFNode ) null ).hasNext() == false ) {
-                // log.info( phrase.listProperties(RDFS.label).toSet() );
-                phrase.removeProperties();
-
-                // remove the triple pointing to that phrase
-                model.remove( model.listStatements( null, Vocabulary.hasPhrase, phrase ) );
-            }
-        }
-    }
-
-    public static Model loadModel( String file ) {
-        Model model = ModelFactory.createDefaultModel();
-        try {
-            FileInputStream fi = new FileInputStream( file );
-            model.read( fi, null );
-            fi.close();
-        } catch ( Exception e ) {
-            e.printStackTrace();
-            System.exit( 1 );
-        }
-        return model;
-    }
 
     public static int getMentionCount( Model model ) {
         int count = 0;
@@ -110,23 +66,11 @@ public class ProjectRDFModelTools {
         return count;
     }
 
-    public static void main( String args[] ) {
-        System.out.println( ProjectRDFModelTools.getMentionCount( "mergedRDFBirnLexUpdate.afterUseless.rdf" ) );
-    }
-
-    public static Map<String, Set<String>> getURLsExperiments( String filename ) {
+    static public int getMentionCount( String filename ) {
         Model model = ProjectRDFModelTools.loadModel( filename );
-        Map<String, Set<String>> result = getURLsExperiments( model );
+        int count = getMentionCount( model );
         model.close();
-        return result;
-    }
-
-    public static Set<String> getURLsFromSingle( Model model ) {
-        Map<String, Set<String>> result = getURLsExperiments( model );
-        if ( result.size() != 1 ) {
-            log.warn( "More than one experiment, expected only one, returning annotations of one" );
-        }
-        return result.values().iterator().next();
+        return count;
     }
 
     /**
@@ -184,11 +128,66 @@ public class ProjectRDFModelTools {
         return result;
     }
 
-    static public int getMentionCount( String filename ) {
+    public static Map<String, Set<String>> getURLsExperiments( String filename ) {
         Model model = ProjectRDFModelTools.loadModel( filename );
-        int count = getMentionCount( model );
+        Map<String, Set<String>> result = getURLsExperiments( model );
         model.close();
-        return count;
+        return result;
+    }
+
+    public static Set<String> getURLsFromSingle( Model model ) {
+        Map<String, Set<String>> result = getURLsExperiments( model );
+        if ( result.size() != 1 ) {
+            log.warn( "More than one experiment, expected only one, returning annotations of one" );
+        }
+        return result.values().iterator().next();
+    }
+
+    public static Model loadModel( String file ) {
+        Model model = ModelFactory.createDefaultModel();
+        try {
+            FileInputStream fi = new FileInputStream( file );
+            model.read( fi, null );
+            fi.close();
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            System.exit( 1 );
+        }
+        return model;
+    }
+
+    public static void main( String args[] ) {
+        System.out.println( ProjectRDFModelTools.getMentionCount( "mergedRDFBirnLexUpdate.afterUseless.rdf" ) );
+    }
+
+    static public void removeMentions( Model model, Set<Resource> affectedMentions ) {
+        Set<Resource> affectedPhrases = new HashSet<Resource>();
+        // remove all the links from the mention to its properties
+        for ( Resource mention : affectedMentions ) {
+            // mention.addLiteral( isRejected, true );
+            // remove all of its properties (leaves a blank mention behind)
+            mention.removeProperties();
+
+            // get its phrase, assume it only has one
+            ResIterator iterator = model.listResourcesWithProperty( Vocabulary.hasMention, mention );
+            Resource phrase = ( Resource ) iterator.next();
+
+            affectedPhrases.add( phrase );
+            model.remove( model.createStatement( phrase, Vocabulary.hasMention, mention ) );
+        }
+
+        // this leaves behind some orphan phrases
+        // remove them
+        for ( Resource phrase : affectedPhrases ) {
+            // make sure it has no mentions
+            if ( model.listStatements( phrase, Vocabulary.hasMention, ( RDFNode ) null ).hasNext() == false ) {
+                // log.info( phrase.listProperties(RDFS.label).toSet() );
+                phrase.removeProperties();
+
+                // remove the triple pointing to that phrase
+                model.remove( model.listStatements( null, Vocabulary.hasPhrase, phrase ) );
+            }
+        }
     }
 
 }

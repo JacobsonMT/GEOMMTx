@@ -56,6 +56,15 @@ public class MakeHistogramData {
         if ( value != null ) current.add( value );
     }
 
+    // make a string for R read.table
+    public static String arrayToRString( Object[] array ) {
+        String result = Arrays.asList( array ).toString();
+        result = result.replaceAll( "[,]", "" );
+        result = result.replaceAll( "\\[", "" );
+        result = result.replaceAll( "\\]", "" );
+        return result;
+    }
+
     // convert a hash of sets to an vector of the set sizes
     public static Integer[] getCounts( Map<String, Set<String>> hash ) {
         List<Integer> l = new LinkedList<Integer>();
@@ -63,6 +72,11 @@ public class MakeHistogramData {
             l.add( hash.get( key ).size() );
         }
         return l.toArray( new Integer[0] );
+    }
+
+    public static void main( String[] args ) throws Exception {
+        makeHistoGrams( "mergedRDFBirnLexUpdate.afterUseless.rdf" );
+        // makeHistoGrams( "mergedRDF.rejected.removed.rdf" );
     }
 
     // so we get all the experiment to concept pairings that have mapped terms and then make a vector
@@ -219,6 +233,13 @@ public class MakeHistogramData {
         System.out.println( "Matrix wrote" );
     }
 
+    public static void printMapSizes( Map<String, Set<String>> map ) {
+        for ( String key : map.keySet() ) {
+            // System.out.println("\""+key +"\","+ map.get( key ).size() );
+            System.out.println( key + "|" + map.get( key ).size() );
+        }
+    }
+
     public static void writeRTable( String filename, DoubleMatrix<String, String> matrix ) throws Exception {
         // write it out for R
         FileWriter fOut = new FileWriter( filename );
@@ -227,26 +248,5 @@ public class MakeHistogramData {
         matWriter.setTopLeft( "" );
         matWriter.writeMatrix( matrix, true );
         fOut.close();
-    }
-
-    public static void printMapSizes( Map<String, Set<String>> map ) {
-        for ( String key : map.keySet() ) {
-            // System.out.println("\""+key +"\","+ map.get( key ).size() );
-            System.out.println( key + "|" + map.get( key ).size() );
-        }
-    }
-
-    // make a string for R read.table
-    public static String arrayToRString( Object[] array ) {
-        String result = Arrays.asList( array ).toString();
-        result = result.replaceAll( "[,]", "" );
-        result = result.replaceAll( "\\[", "" );
-        result = result.replaceAll( "\\]", "" );
-        return result;
-    }
-
-    public static void main( String[] args ) throws Exception {
-        makeHistoGrams( "mergedRDFBirnLexUpdate.afterUseless.rdf" );
-        // makeHistoGrams( "mergedRDF.rejected.removed.rdf" );
     }
 }

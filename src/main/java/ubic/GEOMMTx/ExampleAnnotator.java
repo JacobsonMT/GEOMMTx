@@ -22,10 +22,6 @@ import java.io.FileWriter;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Resource;
-
 import ubic.GEOMMTx.filters.AbstractFilter;
 import ubic.GEOMMTx.filters.CUIIRIFilter;
 import ubic.GEOMMTx.filters.CUISUIFilter;
@@ -33,6 +29,10 @@ import ubic.GEOMMTx.filters.UninformativeFilter;
 import ubic.GEOMMTx.mappers.BirnLexMapper;
 import ubic.GEOMMTx.mappers.DiseaseOntologyMapper;
 import ubic.GEOMMTx.mappers.FMALiteMapper;
+
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
  * This is an example class for how to execute the annotation pipeline.

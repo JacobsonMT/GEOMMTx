@@ -39,16 +39,29 @@ import com.hp.hpl.jena.query.ResultSet;
  *      - update for a URL having more than one linked CUI
  */
 public class BirnLexMapper extends AbstractToUMLSMapper implements CUIMapper {
-    private OntModel birnLex;
+    public static void main( String args[] ) {
+        BirnLexMapper test = new BirnLexMapper();
+        test.loadFromOntology();
+        test.save();
+        // test.bonfire();
+        System.out.println( "CUI's that have more that one URI:" + test.countOnetoMany() );
 
-    public String getMainURL() {
-        return "http://purl.org/nbirn/birnlex/ontology/birnlex.owl";
+        System.out.println( "All urls size:" + test.getAllURLs().size() );
+
     }
+
+    private OntModel birnLex;
 
     public BirnLexMapper() {
         super();
     }
 
+    @Override
+    public String getMainURL() {
+        return "http://purl.org/nbirn/birnlex/ontology/birnlex.owl";
+    }
+
+    @Override
     public void loadFromOntology() {
         CUIMap = new HashMap<String, Set<String>>();
 
@@ -97,17 +110,6 @@ public class BirnLexMapper extends AbstractToUMLSMapper implements CUIMapper {
         } finally {
             qexec.close();
         }
-
-    }
-
-    public static void main( String args[] ) {
-        BirnLexMapper test = new BirnLexMapper();
-        test.loadFromOntology();
-        test.save();
-        // test.bonfire();
-        System.out.println( "CUI's that have more that one URI:" + test.countOnetoMany() );
-        
-        System.out.println("All urls size:"+ test.getAllURLs().size() );
 
     }
 

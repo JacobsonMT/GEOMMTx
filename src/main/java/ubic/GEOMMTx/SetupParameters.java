@@ -24,8 +24,6 @@ import java.util.Iterator;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
-import com.ibm.icu.text.Normalizer;
-
 import ubic.GEOMMTx.evaluation.CUIIRIPair;
 
 public class SetupParameters {

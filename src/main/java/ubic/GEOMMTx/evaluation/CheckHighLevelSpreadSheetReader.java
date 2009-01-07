@@ -18,7 +18,6 @@
  */
 package ubic.GEOMMTx.evaluation;
 
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -31,8 +30,13 @@ import ubic.GEOMMTx.SetupParameters;
 import ubic.GEOMMTx.filters.UninformativeFilter;
 
 public class CheckHighLevelSpreadSheetReader {
-    public Map<String, Set<String>> getRejectedAnnotations() throws Exception {
-        return getAcceptedAnnotations( SetupParameters.config.getString( "gemma.annotator.highLevelSpreadsheetFile" ) );
+    /**
+     * @param args
+     */
+    public static void main( String[] args ) throws Exception {
+        CheckHighLevelSpreadSheetReader test = new CheckHighLevelSpreadSheetReader();
+
+        Map<String, Set<String>> acceptedAnnotations = test.getRejectedAnnotations();
     }
 
     public Map<String, Set<String>> getAcceptedAnnotations( String file ) throws Exception {
@@ -92,6 +96,10 @@ public class CheckHighLevelSpreadSheetReader {
         return accepted;
     }
 
+    public Map<String, Set<String>> getRejectedAnnotations() throws Exception {
+        return getAcceptedAnnotations( SetupParameters.config.getString( "gemma.annotator.highLevelSpreadsheetFile" ) );
+    }
+
     public void printSourceStats( Map<String, Set<String>> annotations, String filename ) {
         DescriptionExtractor de = new DescriptionExtractor( filename );
 
@@ -103,15 +111,6 @@ public class CheckHighLevelSpreadSheetReader {
 
         System.out.println( "== rejects ==" );
         CompareToManual.printMap( CompareToManual.listToFrequencyMap( sources ) );
-    }
-
-    /**
-     * @param args
-     */
-    public static void main( String[] args ) throws Exception {
-        CheckHighLevelSpreadSheetReader test = new CheckHighLevelSpreadSheetReader();
-
-        Map<String, Set<String>> acceptedAnnotations = test.getRejectedAnnotations();
     }
 
 }

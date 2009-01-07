@@ -62,17 +62,6 @@ public abstract class AbstractToUMLSMapper implements CUIMapper {
         }
     }
 
-    public void loadFromDisk() throws Exception {
-        ObjectInputStream o = new ObjectInputStream( new FileInputStream( getFileName() ) );
-        CUIMap = ( Map<String, Set<String>> ) o.readObject();
-        o.close();
-
-    }
-
-    abstract void loadFromOntology();
-
-    abstract String getMainURL();
-
     /**
      * Converts a UMLS concept into a set of URI's for a specific ontology
      * 
@@ -81,10 +70,6 @@ public abstract class AbstractToUMLSMapper implements CUIMapper {
      */
     public Set<String> convert( String CUI, Collection<UMLSSourceCode> sourceCodes ) {
         return CUIMap.get( CUI );
-    }
-
-    public String getFileName() {
-        return this.getClass().getName() + ".mappings";
     }
 
     public int countOnetoMany() {
@@ -105,6 +90,17 @@ public abstract class AbstractToUMLSMapper implements CUIMapper {
         return result;
     }
 
+    public String getFileName() {
+        return this.getClass().getName() + ".mappings";
+    }
+
+    public void loadFromDisk() throws Exception {
+        ObjectInputStream o = new ObjectInputStream( new FileInputStream( getFileName() ) );
+        CUIMap = ( Map<String, Set<String>> ) o.readObject();
+        o.close();
+
+    }
+
     public void save() {
         try {
             ObjectOutputStream o = new ObjectOutputStream( new FileOutputStream( getFileName() ) );
@@ -115,4 +111,8 @@ public abstract class AbstractToUMLSMapper implements CUIMapper {
             e.printStackTrace();
         }
     }
+
+    abstract String getMainURL();
+
+    abstract void loadFromOntology();
 }
