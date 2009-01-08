@@ -29,41 +29,43 @@ import ubic.gemma.ontology.MgedOntologyService;
 
 /**
  * @author leon, paul
- * @version $Id$
+ * @version $Id: PredictedCharacteristicFactory.java,v 1.3 2009/01/07 18:06:04
+ *          paul Exp $
  */
 public class PredictedCharacteristicFactory {
-    Map<String, String> labels;
-    protected static Log log = LogFactory.getLog( PredictedCharacteristicFactory.class );
+	Map<String, String> labels;
+	protected static Log log = LogFactory
+			.getLog(PredictedCharacteristicFactory.class);
 
-    /**
-     * Constructor requires a label map in the format of URI -> label
-     * 
-     * @param labels
-     */
-    public PredictedCharacteristicFactory( Map<String, String> labels ) {
-        this.labels = labels;
-    }
+	/**
+	 * Constructor requires a label map in the format of URI -> label
+	 * 
+	 * @param labels
+	 */
+	public PredictedCharacteristicFactory(Map<String, String> labels) {
+		this.labels = labels;
+	}
 
-    public VocabCharacteristic getCharacteristic( String URI ) {
-        VocabCharacteristic c = VocabCharacteristic.Factory.newInstance();
-        c.setValueUri( URI );
-        c.setValue( labels.get( URI ) );
+	public VocabCharacteristic getCharacteristic(String URI) {
+		VocabCharacteristic c = VocabCharacteristic.Factory.newInstance();
+		c.setValueUri(URI);
+		c.setValue(labels.get(URI));
 
-        // infer the category
-        String category = null;
-        if ( URI.contains( "/owl/FMA#" ) || URI.contains( "BIRNLex-Anatomy" ) ) {
-            category = "OrganismPart";
-        } else if ( URI.contains( "/owl/DOID#" ) ) {
-            category = "DiseaseState";
-        } else {
-            log.info( "Could not infer category for : " + URI );
-        }
+		// infer the category
+		String category = null;
+		if (URI.contains("/owl/FMA#") || URI.contains("BIRNLex-Anatomy")) {
+			category = "OrganismPart";
+		} else if (URI.contains("/owl/DOID#")) {
+			category = "DiseaseState";
+		} else {
+			log.debug("Could not infer category for : " + URI);
+		}
 
-        c.setCategory( category );
-        c.setCategory( MgedOntologyService.MGED_ONTO_BASE_URL + category );
+		c.setCategory(category);
+		c.setCategory(MgedOntologyService.MGED_ONTO_BASE_URL + category);
 
-        c.setEvidenceCode( GOEvidenceCode.IEA );
+		c.setEvidenceCode(GOEvidenceCode.IEA);
 
-        return c;
-    }
+		return c;
+	}
 }

@@ -4,3 +4,6 @@ example.rdf
 ubic.GEOMMTx.mappers.BirnLexMapper.mappings
 ubic.GEOMMTx.mappers.DiseaseOntologyMapper.mappings
 mmtxProjectJS.jar
+*.rdf
+*.mappings
+null
