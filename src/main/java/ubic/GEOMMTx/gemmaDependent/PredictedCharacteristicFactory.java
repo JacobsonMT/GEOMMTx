@@ -62,7 +62,8 @@ public class PredictedCharacteristicFactory {
 		}
 
 		c.setCategory(category);
-		c.setCategory(MgedOntologyService.MGED_ONTO_BASE_URL + category);
+		c.setCategoryUri(MgedOntologyService.MGED_ONTO_BASE_URL + "#"
+				+ category);
 
 		c.setEvidenceCode(GOEvidenceCode.IEA);
 

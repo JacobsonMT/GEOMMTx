@@ -187,6 +187,14 @@ public class AnnotateExperimentPipeLine extends
 		long time = System.currentTimeMillis();
 		time = System.currentTimeMillis();
 
+		// get the rdfs:labels for the URI's
+		Map<String, String> labels = null;
+		try {
+			labels = LabelLoader.readLabels();
+		} catch (Exception e) {
+			return e;
+		}
+
 		for (BioAssaySet bas : this.expressionExperiments) {
 
 			log.info("Processing: " + bas);
@@ -194,13 +202,6 @@ public class AnnotateExperimentPipeLine extends
 			ExpressionExperiment experiment = (ExpressionExperiment) bas;
 			ees.thawLite(experiment);
 
-			// get the rdfs:labels for the URI's
-			Map<String, String> labels = null;
-			try {
-				labels = LabelLoader.readLabels();
-			} catch (Exception e) {
-				log.warn("Couldnt load labels");
-			}
 			// construct a factory for producing VocabCharacteristics
 			PredictedCharacteristicFactory charGen = new PredictedCharacteristicFactory(
 					labels);
@@ -222,6 +223,7 @@ public class AnnotateExperimentPipeLine extends
 
 			// for each URI print it and it's label and get VocabCharacteristic
 			// to represent it
+			Collection<Characteristic> newChars = new HashSet<Characteristic>();
 			for (String URI : predictedAnnotations) {
 
 				if (alreadyHas.contains(URI)) {
@@ -244,12 +246,14 @@ public class AnnotateExperimentPipeLine extends
 
 				log.info(experiment + " -> " + labels.get(URI) + " - " + URI);
 
-				// attach the Characteristic to the experiment
-				os.saveExpressionExperimentStatement(c, experiment);
+				newChars.add(c);
 
 			}
+			// attach the Characteristic to the experiment
+			log.info("Saving " + newChars.size());
+			os.saveExpressionExperimentStatements(newChars, experiment);
 		}
-		System.out.println("Total Time:" + (System.currentTimeMillis() - time));
+		log.info("Total Time:" + (System.currentTimeMillis() - time) + "ms");
 		return null;
 	}
 
