@@ -282,7 +282,7 @@ public class CompareToManual extends AbstractSpringAwareCLI {
         CheckHighLevelSpreadSheetReader reader = new CheckHighLevelSpreadSheetReader();
         Map<String, Set<String>> accepted = null;
         try {
-            accepted = reader.getRejectedAnnotations();
+            accepted = reader.getAcceptedAnnotations();
         } catch ( Exception e ) {
             e.printStackTrace();
         }

@@ -36,7 +36,7 @@ public class CheckHighLevelSpreadSheetReader {
     public static void main( String[] args ) throws Exception {
         CheckHighLevelSpreadSheetReader test = new CheckHighLevelSpreadSheetReader();
 
-        Map<String, Set<String>> acceptedAnnotations = test.getRejectedAnnotations();
+        Map<String, Set<String>> acceptedAnnotations = test.getAcceptedAnnotations();
     }
 
     public Map<String, Set<String>> getAcceptedAnnotations( String file ) throws Exception {
@@ -57,7 +57,7 @@ public class CheckHighLevelSpreadSheetReader {
         // both reject is 13
         // both agree is 14
         // agreement is 8
-        int rejectPos = 7;
+        int acceptPos = 7;
         HashMapStringSet accepted = new HashMapStringSet();
         HashMapStringSet all = new HashMapStringSet();
 
@@ -65,7 +65,7 @@ public class CheckHighLevelSpreadSheetReader {
         while ( nullCount == 0 ) {
             String dataset = ExcelUtil.getValue( sheet, row, datasetPos );
             String URI = ExcelUtil.getValue( sheet, row, URIPos );
-            String finalDecision = ExcelUtil.getValue( sheet, row, rejectPos );
+            String finalDecision = ExcelUtil.getValue( sheet, row, acceptPos );
 
             // System.out.println( CUI );
             // System.out.println( BCUI );
@@ -96,7 +96,7 @@ public class CheckHighLevelSpreadSheetReader {
         return accepted;
     }
 
-    public Map<String, Set<String>> getRejectedAnnotations() throws Exception {
+    public Map<String, Set<String>> getAcceptedAnnotations() throws Exception {
         return getAcceptedAnnotations( SetupParameters.config.getString( "gemma.annotator.highLevelSpreadsheetFile" ) );
     }
 
