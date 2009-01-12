@@ -37,9 +37,14 @@ public class CheckHighLevelSpreadSheetReader {
         CheckHighLevelSpreadSheetReader test = new CheckHighLevelSpreadSheetReader();
 
         Map<String, Set<String>> acceptedAnnotations = test.getAcceptedAnnotations();
+        System.out.println(acceptedAnnotations.size());
+        Map<String, Set<String>> rejectedAnnotations = test.getRejectedAnnotations();
+        System.out.println(rejectedAnnotations.size());
+        
+        System.out.println(rejectedAnnotations.get(((long)295)+""));
     }
 
-    public Map<String, Set<String>> getAcceptedAnnotations( String file ) throws Exception {
+    public Map<String, Set<String>> getAnnotations( String file, String decision ) throws Exception {
         // CheckHighLevelSchema schema = new CheckHighLevelSchema();
         UninformativeFilter f = new UninformativeFilter();
 
@@ -58,7 +63,7 @@ public class CheckHighLevelSpreadSheetReader {
         // both agree is 14
         // agreement is 8
         int acceptPos = 7;
-        HashMapStringSet accepted = new HashMapStringSet();
+        HashMapStringSet matchesDecision = new HashMapStringSet();
         HashMapStringSet all = new HashMapStringSet();
 
         // if we get a blank lines in a row, then exit
@@ -77,11 +82,11 @@ public class CheckHighLevelSpreadSheetReader {
                 dataset = dataset.substring( dataset.lastIndexOf( "?id=" ) + 4, dataset.lastIndexOf( "\"," ) );
                 nullCount = 0;
                 all.put( dataset, URI );
-                // if the final decision is to accept
-                if ( finalDecision != null && finalDecision.equals( "1.0" ) ) {
+                // if the final decision matches input parameter
+                if ( finalDecision != null && finalDecision.equals( decision ) ) {
                     // if its not deemed uninformative/too frequent
                     if ( !f.getFrequentURLs().contains( URI ) ) {
-                        accepted.put( dataset, URI );
+                        matchesDecision.put( dataset, URI );
                     }
                 }
             }
@@ -93,11 +98,20 @@ public class CheckHighLevelSpreadSheetReader {
         // System.out.println( all.toPrettyString() );
         // System.out.println( all.getExpandedSize() );
         // System.out.println( "Number of accepted annotations:"+accepted.getExpandedSize() );
-        return accepted;
+        return matchesDecision;
     }
 
     public Map<String, Set<String>> getAcceptedAnnotations() throws Exception {
         return getAcceptedAnnotations( SetupParameters.config.getString( "gemma.annotator.highLevelSpreadsheetFile" ) );
+    }
+
+    public Map<String, Set<String>> getAcceptedAnnotations( String file ) throws Exception {
+        // 1.0 for accept
+        return getAnnotations( file, "1.0" );
+    }
+
+    public Map<String, Set<String>> getRejectedAnnotations() throws Exception {
+        return getAnnotations( SetupParameters.config.getString( "gemma.annotator.highLevelSpreadsheetFile" ), "0.0" );
     }
 
     public void printSourceStats( Map<String, Set<String>> annotations, String filename ) {
