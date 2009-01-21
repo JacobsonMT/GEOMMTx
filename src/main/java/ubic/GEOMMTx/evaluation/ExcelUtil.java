@@ -19,6 +19,8 @@
 package ubic.GEOMMTx.evaluation;
 
 import java.io.FileInputStream;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
@@ -83,6 +85,46 @@ public class ExcelUtil {
         HSSFCell c = r.createCell( ( short ) col );
         c.setCellType( HSSFCell.CELL_TYPE_STRING );
         c.setCellValue( new HSSFRichTextString( value ) );
+    }
+
+    public static Set<String> grabColumnValues( HSSFSheet sheet, int column, boolean header, boolean clean ) {
+        return grabColumnValues( sheet, column, header, clean, new SpreadSheetFilter() {
+            public boolean accept( HSSFSheet sheet, int row ) {
+                return true;
+            }
+        } );
+    }
+
+    /**
+     * 
+     * Gets all the strings from a column, possibly exlcuding header and possibly triming and lowercasing
+     * 
+     * @param sheet
+     * @param column
+     * @param header true if it has a header
+     * @param clean if true it will trim and lowercase the strings
+     * @return
+     */
+    public static Set<String> grabColumnValues( HSSFSheet sheet, int column, boolean header, boolean clean,
+            SpreadSheetFilter f ) {
+        Set<String> result = new HashSet<String>();
+        int row;
+        if ( header )
+            row = 0; // header is row = 0
+        else
+            row = -1;
+
+        while ( true ) {
+            row++;
+            String term = ExcelUtil.getValue( sheet, row, column );
+            if ( term == null ) break;
+            // System.out.println( term );
+            if ( f.accept( sheet, row ) ) {
+                if ( clean ) term = term.trim().toLowerCase();
+                result.add( term );
+            }
+        }
+        return result;
     }
 
 }
