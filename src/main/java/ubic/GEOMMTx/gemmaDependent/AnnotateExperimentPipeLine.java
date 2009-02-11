@@ -41,11 +41,11 @@ import ubic.GEOMMTx.mappers.BirnLexMapper;
 import ubic.GEOMMTx.mappers.DiseaseOntologyMapper;
 import ubic.GEOMMTx.mappers.FMALiteMapper;
 import ubic.gemma.apps.ExpressionExperimentManipulatingCLI;
+import ubic.gemma.model.common.auditAndSecurity.eventType.AutomatedAnnotationEvent;
 import ubic.gemma.model.common.description.Characteristic;
 import ubic.gemma.model.common.description.VocabCharacteristic;
 import ubic.gemma.model.expression.experiment.BioAssaySet;
 import ubic.gemma.model.expression.experiment.ExpressionExperiment;
-import ubic.gemma.model.expression.experiment.ExpressionExperimentService;
 import ubic.gemma.ontology.OntologyService;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -115,19 +115,19 @@ public class AnnotateExperimentPipeLine extends ExpressionExperimentManipulating
 
         // go through each text source one by one
         try {
-            log.info( "getName()" );
+            // ///// log.info( "getName()" );
             experimentAnn.annotateName();
             // experimentAnn.writeModel();
 
-            log.info( "getDescription()" );
+            // / log.info( "getDescription()" );
             experimentAnn.annotateDescription();
             // experimentAnn.writeModel();
 
-            log.info( "Publications" );
+            // log.info( "Publications" );
             experimentAnn.annotateReferences();
             // experimentAnn.writeModel();
 
-            log.info( "iterate BioAssays" );
+            // //// log.info( "Processing " + e.getBioAssays().size() + " bioassays ..." );
             experimentAnn.annotateBioAssays();
             // experimentAnn.writeModel();
 
@@ -145,7 +145,7 @@ public class AnnotateExperimentPipeLine extends ExpressionExperimentManipulating
             // ) );
             // log.info( "Running: " + filter.getName() );
             int result = filter.filter( model );
-            // log.info( "Removed: " + result );
+            log.debug( "Removed: " + result );
         }
         log.info( "Final Mentions:" + ProjectRDFModelTools.getMentionCount( model ) );
 
@@ -171,7 +171,6 @@ public class AnnotateExperimentPipeLine extends ExpressionExperimentManipulating
         Exception err = processCommandLine( "Expression experiment annotator pipeline", args );
         if ( err != null ) return err;
 
-        ExpressionExperimentService ees = ( ExpressionExperimentService ) this.getBean( "expressionExperimentService" );
         OntologyService os = ( OntologyService ) this.getBean( "ontologyService" );
 
         long time = System.currentTimeMillis();
@@ -194,13 +193,34 @@ public class AnnotateExperimentPipeLine extends ExpressionExperimentManipulating
             return e;
         }
 
+        // Integer[] eesToRedo = new Integer[] { 107, 114, 129, 137, 140, 155, 159, 167, 198, 199, 2, 20, 206, 211, 213,
+        // 216, 219, 221, 232, 241, 243, 245, 246, 257, 258, 26, 265, 267, 268, 277, 288, 295, 299, 302, 319, 323,
+        // 35, 36, 363, 368, 369, 374, 375, 380, 385, 389, 39, 403, 406, 446, 454, 455, 484, 49, 504, 510, 522,
+        // 524, 528, 533, 535, 54, 544, 548, 559, 571, 579, 587, 588, 591, 595, 596, 597, 6, 602, 606, 609, 613,
+        // 617, 619, 625, 627, 633, 639, 64, 647, 651, 653, 657, 66, 663, 667, 672, 699, 74, 76, 79, 80, 90, 95 };
+
+        // for ( Integer eeidi : eesToRedo ) {
+        // Long eeid = eeidi.longValue();
+        // ExpressionExperiment experiment = this.eeService.load( eeid );
+        // }
+        //
         for ( BioAssaySet bas : this.expressionExperiments ) {
 
-            log.info( "Processing: " + bas );
-
             ExpressionExperiment experiment = ( ExpressionExperiment ) bas;
-            ees.thawLite( experiment );
 
+            // if ( experiment.getId() <= 892 ) {
+            // continue;
+            // }
+
+            boolean needToRun = this.needToRun( experiment, AutomatedAnnotationEvent.class );
+
+            if ( !needToRun ) {
+                log.info( "Skipping " + experiment + ", no need to run" );
+                continue;
+            }
+
+            // ees.thawLite( experiment );
+            log.info( "Processing: " + experiment );
             // construct a factory for producing VocabCharacteristics
             PredictedCharacteristicFactory charGen = new PredictedCharacteristicFactory( labels );
 
@@ -236,8 +256,8 @@ public class AnnotateExperimentPipeLine extends ExpressionExperimentManipulating
                 }
 
                 if ( rejectedBy100Eval != null && rejectedBy100Eval.contains( URI ) ) {
-                    log.info( "Tag was Rejected by previous review of 100 experiments " + labels.get( URI )
-                            + " "+ URI + ", skipping" );
+                    log.info( "Tag was Rejected by previous review of 100 experiments " + labels.get( URI ) + " " + URI
+                            + ", skipping" );
                     continue;
                 }
 
@@ -253,12 +273,20 @@ public class AnnotateExperimentPipeLine extends ExpressionExperimentManipulating
                 newChars.add( c );
 
             }
-            // attach the Characteristic to the experiment
-            log.info( "Saving " + newChars.size() );
-            // os.saveExpressionExperimentStatements(newChars, experiment);
+
+            // attach the Characteristic to the experiment. Comment out these lines if you don't want to save the
+            // results to the database
+            log.info( "Saving " + newChars.size() + " new annotations for " + experiment );
+            os.saveExpressionExperimentStatements( newChars, experiment.getId() );
+            audit( experiment );
+            // end database writing.
         }
         log.info( "Total Time:" + ( System.currentTimeMillis() - time ) + "ms" );
         return null;
+    }
+
+    private void audit( ExpressionExperiment experiment ) {
+        this.auditTrailService.addUpdateEvent( experiment, AutomatedAnnotationEvent.Factory.newInstance(), "" );
     }
 
     @Override
