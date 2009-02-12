@@ -78,8 +78,10 @@ public class AnnotateExperimentPipeLine extends ExpressionExperimentManipulating
     boolean loadOntologies = false;
 
     private List<AbstractFilter> filters;
+    OntologyService BIRNLexFMAOS;
 
     public AnnotateExperimentPipeLine() {
+        BIRNLexFMAOS = null;
         // init MMTx
         text2Owl = new Text2Owl();
         text2Owl.addMapper( new BirnLexMapper() );
@@ -87,10 +89,15 @@ public class AnnotateExperimentPipeLine extends ExpressionExperimentManipulating
         text2Owl.addMapper( new DiseaseOntologyMapper() );
 
         try {
+            // order matters for these filters
             filters = new LinkedList<AbstractFilter>();
             filters.add( new CUISUIFilter() );
             filters.add( new CUIIRIFilter() );
-            filters.add( new BIRNLexFMANullsFilter() );
+
+            BIRNLexFMANullsFilter birnFMANull = new BIRNLexFMANullsFilter();
+            filters.add( birnFMANull );
+            BIRNLexFMAOS = birnFMANull.getOntologyService();
+
             filters.add( new UninformativeFilter() );
         } catch ( Exception e ) {
             // TODO
@@ -222,7 +229,8 @@ public class AnnotateExperimentPipeLine extends ExpressionExperimentManipulating
             // ees.thawLite( experiment );
             log.info( "Processing: " + experiment );
             // construct a factory for producing VocabCharacteristics
-            PredictedCharacteristicFactory charGen = new PredictedCharacteristicFactory( labels );
+            // params are labels and Ontology service that has birnlex and fma loaded
+            PredictedCharacteristicFactory charGen = new PredictedCharacteristicFactory( labels, BIRNLexFMAOS );
 
             // The call that does all the work, it gets the predicted
             // annotations
@@ -268,7 +276,7 @@ public class AnnotateExperimentPipeLine extends ExpressionExperimentManipulating
                     continue;
                 }
 
-                log.info( experiment + " -> " + labels.get( URI ) + " - " + URI );
+                log.info( experiment + " " + c.getCategory() + " -> " + labels.get( URI ) + " - " + URI );
 
                 newChars.add( c );
 
