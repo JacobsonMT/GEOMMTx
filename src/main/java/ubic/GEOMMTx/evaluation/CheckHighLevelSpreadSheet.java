@@ -34,6 +34,10 @@ public class CheckHighLevelSpreadSheet extends CreateSpreadSheet {
         super( filename, new CheckHighLevelSchema() );
     }
 
+    public void populate( Map<String, Set<String>> newPredictions, Map<String, String> labels ) throws Exception {
+        populate( newPredictions, labels, newPredictions.size() );
+    }
+
     public void populate( Map<String, Set<String>> newPredictions, Map<String, String> labels, int size )
             throws Exception {
 
@@ -58,7 +62,6 @@ public class CheckHighLevelSpreadSheet extends CreateSpreadSheet {
 
             // if its empty don't do it
             if ( newPredictions.get( dataset ).isEmpty() ) {
-                size++;
                 row--;
             }
             for ( String URL : newPredictions.get( dataset ) ) {
