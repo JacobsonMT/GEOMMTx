@@ -24,6 +24,8 @@ import java.util.Set;
 import ubic.GEOMMTx.Vocabulary;
 import ubic.gemma.ontology.BirnLexOntologyService;
 import ubic.gemma.ontology.FMAOntologyService;
+import ubic.gemma.ontology.OntologyService;
+import ubic.gemma.ontology.OntologyTerm;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -39,14 +41,16 @@ public class BIRNLexFMANullsFilter extends AbstractFilter implements URIFilter {
         BIRNLexFMANullsFilter test = new BIRNLexFMANullsFilter();
     }
 
-    FMAOntologyService FMA;
+    OntologyService ontService;
 
-    BirnLexOntologyService BIRN;
-
+//    public BIRNLexFMANullsFilter(OntologyService ontService) {
+//        this.ontService = ontService;
+//    }
+    
     public BIRNLexFMANullsFilter() {
         // load FMA and birnlex
-        FMA = new FMAOntologyService();
-        BIRN = new BirnLexOntologyService();
+        FMAOntologyService FMA = new FMAOntologyService();
+        BirnLexOntologyService BIRN = new BirnLexOntologyService();
         FMA.init( true );
         BIRN.init( true );
         while ( !( FMA.isOntologyLoaded() && BIRN.isOntologyLoaded() ) ) {
@@ -56,15 +60,23 @@ public class BIRNLexFMANullsFilter extends AbstractFilter implements URIFilter {
                 e.printStackTrace();
             }
         }
+        ontService = new OntologyService();
+        ontService.setBirnLexOntologyService( BIRN ) ;
+        ontService.setFmaOntologyService( FMA );        
         log.info( "FMA and BIRNLex Ontologies loaded" );
     }
 
+    public OntologyService getOntologyService() {
+        return ontService;
+    }
+
     public boolean accept( String URI ) {
+        OntologyTerm term = ontService.getTerm( URI );
         // go into FMA and birnlex and check if it's missing
-        if ( URI.contains( "/owl/FMA#" ) && FMA.getTerm( URI ) == null ) {
+        if ( URI.contains( "/owl/FMA#" ) && term == null ) {
             return false;
         }
-        if ( URI.contains( "birnlex" ) && BIRN.getTerm( URI ) == null ) {
+        if ( URI.contains( "birnlex" ) && term == null ) {
             return false;
         }
         return true;
