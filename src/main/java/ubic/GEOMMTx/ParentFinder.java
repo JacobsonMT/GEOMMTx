@@ -27,7 +27,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import ubic.gemma.ontology.AbstractOntologyService;
-import ubic.gemma.ontology.HumanDiseaseOntologyService;
+import ubic.gemma.ontology.BirnLexOntologyService;
 import ubic.gemma.ontology.OntologyTerm;
 
 public class ParentFinder {
@@ -77,10 +77,11 @@ public class ParentFinder {
     }
 
     public void init() throws Exception {
-        // BirnLexOntologyService hd = new BirnLexOntologyService();
+         BirnLexOntologyService hd = new BirnLexOntologyService();
 
-        HumanDiseaseOntologyService hd = new HumanDiseaseOntologyService();
+        //HumanDiseaseOntologyService hd = new HumanDiseaseOntologyService();
         // FMAOntologyService hd = new FMAOntologyService();
+        
         hd.init( true );
         while ( !hd.isOntologyLoaded() ) {
             Thread.sleep( 5000 );
@@ -129,13 +130,21 @@ public class ParentFinder {
     }
 
     public void test() {
-        OntologyTerm t = getTerm( "http://purl.org/nbirn/birnlex/ontology/BIRNLex-Anatomy.owl#birnlex_721" );
-        System.out.println( t.getLabel() );
+        //OntologyTerm t = getTerm( "http://purl.org/nbirn/birnlex/ontology/BIRNLex-Anatomy.owl#birnlex_721" );
+        //birnlex_4
+        OntologyTerm t = getTerm( "http://purl.org/nbirn/birnlex/ontology/BIRNLex-OBO-UBO.owl#birnlex_4" );
+        
+        System.out.println( "Using:" + t.getLabel() );
         for ( OntologyTerm tt : t.getParents( false ) ) {
             System.out.println( tt.getLabel() );
             System.out.println( tt.getUri() );
         }
         System.out.println( "----------" );
+        for ( OntologyTerm tt : t.getParents( true ) ) {
+            System.out.println( tt.getLabel() );
+            System.out.println( tt.getUri() );
+        }
+        System.out.println( "----------Children" );
         for ( OntologyTerm tt : t.getParents( true ) ) {
             System.out.println( tt.getLabel() );
             System.out.println( tt.getUri() );
