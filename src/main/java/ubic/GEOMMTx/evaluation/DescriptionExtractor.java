@@ -1,5 +1,5 @@
 /*
- * The Gemma project
+ * The GEOMMTx project
  * 
  * Copyright (c) 2007 University of British Columbia
  * 
@@ -18,13 +18,14 @@
  */
 package ubic.GEOMMTx.evaluation;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import ubic.GEOMMTx.OntologyTools;
 import ubic.GEOMMTx.ProjectRDFModelTools;
-import ubic.gemma.ontology.OntologyTools;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -38,7 +39,7 @@ import com.hp.hpl.jena.rdf.model.Model;
  * Given a GEOMMTx RDF mode, find out what descriptions in Gemma lead to a given annotation for a specific experiment 
  */
 public class DescriptionExtractor {
-    public static void main( String ar[] ) {
+    public static void main( String ar[] ) throws Exception {
         DescriptionExtractor de = new DescriptionExtractor( "mergedRDFBirnLexUpdate.afterUseless.rdf" );
         System.out.println( de.getDecriptionURIs( "16", "http://purl.org/obo/owl/FMA#FMA_58301" ) );
         System.out.println( de.getDecriptionType( "16", "http://purl.org/obo/owl/FMA#FMA_58301" ) );
@@ -50,7 +51,7 @@ public class DescriptionExtractor {
         this.model = model;
     }
 
-    public DescriptionExtractor( String filename ) {
+    public DescriptionExtractor( String filename ) throws IOException {
         this.model = ProjectRDFModelTools.loadModel( filename );
     }
 

@@ -1,5 +1,5 @@
 /*
- * The Gemma project
+ * The GEOMMTx project
  * 
  * Copyright (c) 2007 University of British Columbia
  * 
@@ -22,9 +22,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import ubic.GEOMMTx.CUIMapper;
-import ubic.gemma.ontology.OntologyLoader;
-import ubic.gemma.ontology.OntologyTools;
+import ubic.GEOMMTx.OntologyTools;
+import ubic.basecode.ontology.OntologyLoader;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.query.Query;
@@ -34,7 +33,13 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 
-public class DiseaseOntologyMapper extends AbstractToUMLSMapper implements CUIMapper {
+/**
+ * TODO document me
+ * 
+ * @author lfrench
+ * @version $Id$
+ */
+public class DiseaseOntologyMapper extends AbstractToUMLSMapper {
 
     public static void main( String args[] ) {
         DiseaseOntologyMapper test = new DiseaseOntologyMapper();
@@ -61,14 +66,7 @@ public class DiseaseOntologyMapper extends AbstractToUMLSMapper implements CUIMa
     @Override
     public void loadFromOntology() {
         CUIMap = new HashMap<String, Set<String>>();
-
-        // load the ontology model
-        try {
-            model = OntologyLoader.loadMemoryModel( getMainURL() );
-        } catch ( Exception e ) {
-            e.printStackTrace();
-            System.exit( 1 );
-        }
+        model = OntologyLoader.loadMemoryModel( getMainURL() );
 
         String queryString = "PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>                                                    \r\n"
                 + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>                                                    \r\n"

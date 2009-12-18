@@ -1,5 +1,5 @@
 /*
- * The Gemma project
+ * The GEOMMTx project
  * 
  * Copyright (c) 2007 University of British Columbia
  * 

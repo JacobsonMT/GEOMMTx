@@ -1,5 +1,5 @@
 /*
- * The Gemma project
+ * The GEOMMTx project
  * 
  * Copyright (c) 2007 University of British Columbia
  * 
@@ -19,6 +19,7 @@
 package ubic.GEOMMTx;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -26,8 +27,6 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import ubic.gemma.ontology.OntologyTools;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -41,6 +40,12 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.Resource;
 
+/**
+ * TODO Document Me
+ * 
+ * @author paul
+ * @version $Id$
+ */
 public class ProjectRDFModelTools {
     protected static Log log = LogFactory.getLog( ProjectRDFModelTools.class );
 
@@ -66,7 +71,7 @@ public class ProjectRDFModelTools {
         return count;
     }
 
-    static public int getMentionCount( String filename ) {
+    static public int getMentionCount( String filename ) throws IOException {
         Model model = ProjectRDFModelTools.loadModel( filename );
         int count = getMentionCount( model );
         model.close();
@@ -128,7 +133,7 @@ public class ProjectRDFModelTools {
         return result;
     }
 
-    public static Map<String, Set<String>> getURLsExperiments( String filename ) {
+    public static Map<String, Set<String>> getURLsExperiments( String filename ) throws IOException {
         Model model = ProjectRDFModelTools.loadModel( filename );
         Map<String, Set<String>> result = getURLsExperiments( model );
         model.close();
@@ -143,21 +148,12 @@ public class ProjectRDFModelTools {
         return result.values().iterator().next();
     }
 
-    public static Model loadModel( String file ) {
+    public static Model loadModel( String file ) throws IOException {
         Model model = ModelFactory.createDefaultModel();
-        try {
-            FileInputStream fi = new FileInputStream( file );
-            model.read( fi, null );
-            fi.close();
-        } catch ( Exception e ) {
-            e.printStackTrace();
-            System.exit( 1 );
-        }
+        FileInputStream fi = new FileInputStream( file );
+        model.read( fi, null );
+        fi.close();
         return model;
-    }
-
-    public static void main( String args[] ) {
-        System.out.println( ProjectRDFModelTools.getMentionCount( "mergedRDFBirnLexUpdate.afterUseless.rdf" ) );
     }
 
     static public void removeMentions( Model model, Set<Resource> affectedMentions ) {
@@ -170,7 +166,7 @@ public class ProjectRDFModelTools {
 
             // get its phrase, assume it only has one
             ResIterator iterator = model.listResourcesWithProperty( Vocabulary.hasMention, mention );
-            Resource phrase = ( Resource ) iterator.next();
+            Resource phrase = iterator.next();
 
             affectedPhrases.add( phrase );
             model.remove( model.createStatement( phrase, Vocabulary.hasMention, mention ) );

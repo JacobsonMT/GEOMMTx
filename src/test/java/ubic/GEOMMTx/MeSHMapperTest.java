@@ -1,5 +1,5 @@
 /*
- * The Gemma project
+ * The GEOMMTx project
  * 
  * Copyright (c) 2007 University of British Columbia
  * 
@@ -32,11 +32,14 @@ import java.util.StringTokenizer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import ubic.GEOMMTx.evaluation.CUISUIPair;
 import ubic.GEOMMTx.evaluation.EvaluatePhraseToCUISpreadsheet;
-import ubic.GEOMMTx.evaluation.ExcelUtil;
-import ubic.gemma.util.CountingMap;
+import ubic.basecode.dataStructure.CountingMap;
+import ubic.basecode.io.excel.ExcelUtil;
 import au.com.bytecode.opencsv.CSVReader;
 
 /**
@@ -45,42 +48,59 @@ import au.com.bytecode.opencsv.CSVReader;
  * @author leon
  */
 public class MeSHMapperTest {
-    int predictedCount;
-    int answerCount;
-    int matchedCount;
-    int atLeastOne;
-    int zeroCalls;
 
     protected static Log log = LogFactory.getLog( MeSHMapperTest.class );
-    GetUMLSCodes mapper;
-    Map<String, Set<UMLSSourceCode>> sourceMap;
-    CountingMap<String> semTypeMap;
-    MMTxRunner mmtx;
-    Set<String> acceptedSemanticTypes;
-    Set<String> rejectedConcepts;
-    Set<CUISUIPair> rejectedCUISUIPairs;
-
     static String[] PHRASE_PARAMS = new String[] { "--no_acros_abbrs", "--term_processing", "--ignore_word_order",
             "--allow_concept_gaps" };
-
     static String[] TEXT_PARAMS = new String[] { "--an_derivational_variants", "--no_acros_abbrs" };
+    public int CUISUIrejects = 0;
+    Set<String> acceptedSemanticTypes;
 
-    public static void main( String[] args ) throws Exception {
-        MeSHMapperTest mapper = new MeSHMapperTest( PHRASE_PARAMS );
-        CSVReader reader = new CSVReader( new FileReader( "/home/leon/Desktop/firefox downloads/LMD-FEATURES.txt" ),
-                ',', '"' );
+    int answerCount;
+    int atLeastOne;
+    static GetUMLSCodes mapper;
+    int matchedCount;
+    static MMTxRunner mmtx;
+    int predictedCount;
+    Set<String> rejectedConcepts;
+    static Set<CUISUIPair> rejectedCUISUIPairs;
+
+    CountingMap<String> semTypeMap;
+
+    static Map<String, Set<UMLSSourceCode>> sourceMap;
+
+    int zeroCalls;
+
+    @BeforeClass
+    public static void setupOnce() throws Exception {
+        mmtx = new MMTxRunner( null, 0, PHRASE_PARAMS );
+        mapper = new GetUMLSCodes();
+        sourceMap = mapper.getUMLSCodeMap();
+        EvaluatePhraseToCUISpreadsheet evalSheet = new EvaluatePhraseToCUISpreadsheet();
+        rejectedCUISUIPairs = evalSheet.getRejectedSUIs();
+    }
+
+    @Before
+    public void setup() throws Exception {
+        acceptedSemanticTypes = new HashSet<String>();
+        rejectedConcepts = new HashSet<String>();
+        semTypeMap = new CountingMap<String>();
+        resetCounters();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testPredictions() throws Exception {
+
+        CSVReader reader = new CSVReader( new FileReader( "/testdata/LMD-FEATURES.txt" ), ',', '"' );
         List<String[]> lines = reader.readAll();
         reader.close();
-        int zeroCalls = 0;
-        int predictedCount = 0;
 
         for ( String[] line : lines ) {
-            // System.out.println( line[0] + " " + line[2] + " " + line[3] );
             String ID = line[0];
             String name = line[2];
-            String desc = line[3];
 
-            Set<String> predictions = mapper.getMeSHIDs( name, false );
+            Set<String> predictions = getMeSHIDs( name, false );
             for ( String prediction : predictions ) {
                 System.out.println( ID + "|name|" + prediction );
             }
@@ -90,22 +110,19 @@ public class MeSHMapperTest {
             // if ( predictedCount > 10 ) break;
         }
         // mapper.printSemMap();
-        System.out.println( "Rejected anot:" + mapper.CUISUIrejects );
+        System.out.println( "Rejected anot:" + CUISUIrejects );
         System.out.println( "predictedCount:" + predictedCount );
         System.out.println( "zeroCalls:" + zeroCalls );
 
-        mapper = new MeSHMapperTest( TEXT_PARAMS );
         for ( String[] line : lines ) {
-            // System.out.println( line[0] + " " + line[2] + " " + line[3] );
             String ID = line[0];
-            String name = line[2];
             String desc = line[3];
             if ( desc.trim().equals( "" ) ) {
                 zeroCalls++;
                 continue;
             }
 
-            Set<String> predictions = mapper.getMeSHIDs( desc, false );
+            Set<String> predictions = getMeSHIDs( desc, false );
             for ( String prediction : predictions ) {
                 System.out.println( ID + "|desc|" + prediction );
             }
@@ -113,29 +130,28 @@ public class MeSHMapperTest {
             if ( predictions.size() == 0 ) zeroCalls++;
             predictedCount += predictions.size();
         }
-        System.out.println( "Rejected anot:" + mapper.CUISUIrejects );
-        System.out.println( "predictedCount:" + predictedCount );
-        System.out.println( "zeroCalls:" + zeroCalls );
+        log.info( "Rejected anot:" + CUISUIrejects );
+        log.info( "predictedCount:" + predictedCount );
+        log.info( "zeroCalls:" + zeroCalls );
 
     }
 
-    public static void OMIMMESH( String[] args ) throws Exception {
-        // TODO Auto-generated method stub
-        MeSHMapperTest test = new MeSHMapperTest();
+    @Test
+    public void testOmimMesh() throws Exception {
 
-        HashSet<String> acceptedSemanticTypes = new HashSet<String>();
+        acceptedSemanticTypes = new HashSet<String>();
         acceptedSemanticTypes.add( "Congenital Abnormality" );
         acceptedSemanticTypes.add( "Disease or Syndrome" );
         acceptedSemanticTypes.add( "Neoplastic Process" );
-        test.setAcceptedSemanticTypes( acceptedSemanticTypes );
+        setAcceptedSemanticTypes( acceptedSemanticTypes );
 
-        HashSet<String> rejectedConcepts = new HashSet<String>();
+        rejectedConcepts = new HashSet<String>();
         rejectedConcepts.add( "Disease" );
         rejectedConcepts.add( "Syndrome" );
         rejectedConcepts.add( "Carcinoma" );
-        test.setRejectedConcepts( rejectedConcepts );
+        setRejectedConcepts( rejectedConcepts );
 
-        log.info( test.getMeSHIDs( "Juvenile Myoclonic Epilepsy", true ) );
+        log.info( getMeSHIDs( "Juvenile Myoclonic Epilepsy", true ) );
         // read in spreadsheet
         int howMany = 0;
         HSSFSheet sheet = ExcelUtil.getSheetFromFile( "/media/disk/SPOMIMtoMeSH.xls", "Sheet1" );
@@ -148,11 +164,14 @@ public class MeSHMapperTest {
             }
 
             // the excel file denotes OMIM entries
-            if ( ExcelUtil.getValue( sheet, i, 0 ).equals( "OMIM" ) )
-            ;
+            if ( ExcelUtil.getValue( sheet, i, 0 ).equals( "OMIM" ) ) {
+                // ??
+            }
 
             // skip swissprot
-            if ( ExcelUtil.getValue( sheet, i, 0 ).equals( "SP" ) ) continue;
+            if ( ExcelUtil.getValue( sheet, i, 0 ).equals( "SP" ) ) {
+                continue;
+            }
 
             log.info( ExcelUtil.getValue( sheet, i, 1 ) );
 
@@ -161,42 +180,15 @@ public class MeSHMapperTest {
             String text = ExcelUtil.getValue( sheet, i, 2 );
             if ( text != null && text.trim().length() != 0 ) {
                 howMany++;
-                test.evaluate( text, answers );
+                evaluate( text, answers );
             }
 
         }
         log.info( "Descriptions seen:" + howMany );
-        test.printStats();
+        printStats();
     }
 
-    public int CUISUIrejects = 0;
-
-    public MeSHMapperTest() {
-        this( PHRASE_PARAMS );
-    }
-
-    public MeSHMapperTest( String[] params ) {
-        mapper = new GetUMLSCodes();
-        sourceMap = mapper.getUMLSCodeMap();
-
-        mmtx = new MMTxRunner( 0, params );
-        log.info( "Done Init" );
-
-        resetCounters();
-        acceptedSemanticTypes = new HashSet<String>();
-        rejectedConcepts = new HashSet<String>();
-        semTypeMap = new CountingMap<String>();
-
-        try {
-            EvaluatePhraseToCUISpreadsheet evalSheet = new EvaluatePhraseToCUISpreadsheet();
-            rejectedCUISUIPairs = evalSheet.getRejectedSUIs();
-        } catch ( Exception e ) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public void evaluate( String text, Set<String> answers ) {
+    private void evaluate( String text, Set<String> answers ) {
         Set<String> predictions = getMeSHIDs( text, true );
         if ( predictions.size() == 0 ) zeroCalls++;
         predictedCount += predictions.size();
@@ -206,7 +198,12 @@ public class MeSHMapperTest {
         if ( answers.size() >= 1 ) atLeastOne++;
     }
 
-    public Set<String> getMeSHIDs( String text, boolean useSemTypes ) {
+    /**
+     * @param text
+     * @param useSemTypes
+     * @return
+     */
+    private Set<String> getMeSHIDs( String text, boolean useSemTypes ) {
         // log.info(text);
         text = text.replace( ')', ' ' );
         text = text.replace( '(', ' ' );
@@ -266,14 +263,7 @@ public class MeSHMapperTest {
         return result;
     }
 
-    public void printSemMap() {
-        System.out.println( semTypeMap.toString() );
-        for ( String text : semTypeMap.sortedKeyList() ) {
-            System.out.println( text + " -> " + semTypeMap.get( text ) );
-        }
-    }
-
-    public void printStats() {
+    private void printStats() {
         log.info( "Predicted:" + predictedCount );
         log.info( "Number of inputs that had no predicted MeSH terms:" + zeroCalls );
         log.info( "Gold standard:" + answerCount );
@@ -281,18 +271,18 @@ public class MeSHMapperTest {
         log.info( "Number where predicted one:" + atLeastOne );
     }
 
-    public void resetCounters() {
+    private void resetCounters() {
         predictedCount = 0;
         answerCount = 0;
         matchedCount = 0;
         atLeastOne = 0;
     }
 
-    public void setAcceptedSemanticTypes( Set<String> types ) {
+    private void setAcceptedSemanticTypes( Set<String> types ) {
         acceptedSemanticTypes = types;
     }
 
-    public void setRejectedConcepts( Set<String> concepts ) {
+    private void setRejectedConcepts( Set<String> concepts ) {
         rejectedConcepts = concepts;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * The Gemma project
+ * The GEOMMTx project
  * 
  * Copyright (c) 2007 University of British Columbia
  * 
@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+
+import ubic.basecode.io.excel.ExcelUtil;
 
 /*
  * Call this from CompareToManual.java

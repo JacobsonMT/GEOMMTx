@@ -1,5 +1,5 @@
 /*
- * The Gemma project
+ * The GEOMMTx project
  * 
  * Copyright (c) 2007 University of British Columbia
  * 
@@ -23,8 +23,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import ubic.GEOMMTx.CUIMapper;
-import ubic.gemma.ontology.OntologyLoader;
-import ubic.gemma.ontology.OntologyTools;
+import ubic.GEOMMTx.OntologyTools;
+import ubic.basecode.ontology.OntologyLoader;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.query.Query;
@@ -34,21 +34,13 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 
-/*
- * TODO - update for new owl files ( <obo_annot:UmlsCui> )
- *      - update for a URL having more than one linked CUI
+/**
+ * TODO update for new owl files ( <obo_annot:UmlsCui> ) - update for a URL having more than one linked CUI
+ * 
+ * @author lfrench
+ * @version $Id$
  */
 public class BirnLexMapper extends AbstractToUMLSMapper implements CUIMapper {
-    public static void main( String args[] ) {
-        BirnLexMapper test = new BirnLexMapper();
-        test.loadFromOntology();
-        test.save();
-        // test.bonfire();
-        System.out.println( "CUI's that have more that one URI:" + test.countOnetoMany() );
-
-        System.out.println( "All urls size:" + test.getAllURLs().size() );
-
-    }
 
     private OntModel birnLex;
 

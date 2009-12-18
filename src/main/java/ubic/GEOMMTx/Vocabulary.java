@@ -1,5 +1,5 @@
 /*
- * The Gemma project
+ * The GEOMMTx project
  * 
  * Copyright (c) 2007 University of British Columbia
  * 
@@ -22,6 +22,12 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
 
+/**
+ * TODO document me
+ * 
+ * @author lfrench
+ * @version $Id$
+ */
 public class Vocabulary {
     public static Property spanStart;
     public static Property spanEnd;

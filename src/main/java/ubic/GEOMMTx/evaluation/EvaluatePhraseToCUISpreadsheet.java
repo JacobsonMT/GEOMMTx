@@ -1,5 +1,5 @@
 /*
- * The Gemma project
+ * The GEOMMTx project
  * 
  * Copyright (c) 2007 University of British Columbia
  * 
@@ -18,6 +18,7 @@
  */
 package ubic.GEOMMTx.evaluation;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -27,7 +28,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 
-import ubic.GEOMMTx.SetupParameters;
+import ubic.GEOMMTx.util.SetupParameters;
+import ubic.basecode.io.excel.ExcelUtil;
 
 /**
  * This class loads in the excel files that were checked by annotators. It gathers the responses and computes precision
@@ -41,8 +43,7 @@ public class EvaluatePhraseToCUISpreadsheet {
     /**
      * @param args
      */
-    public static void main( String[] args ) throws Exception {
-        // TODO Auto-generated method stub
+    public static void main( String[] args ) {
         EvaluatePhraseToCUISpreadsheet evaluator = new EvaluatePhraseToCUISpreadsheet();
         // evaluator.runThroughFiles( "PtoCPaul.xls", "PtoCSuzanne.xls" );
         // evaluator.runThroughFiles( "Paul", "Suzanne" );
@@ -54,13 +55,18 @@ public class EvaluatePhraseToCUISpreadsheet {
 
     }
 
-    public Set<CUISUIPair> getRejectedSUIs() throws Exception {
-        return getRejectedSUIs( SetupParameters.config.getString( "gemma.annotator.CUISUIEvaluationFile" ) );
+    public Set<CUISUIPair> getRejectedSUIs() {
+        return getRejectedSUIs( SetupParameters.getString( "geommtx.annotator.CUISUIEvaluationFile" ) );
     }
 
-    public Set<CUISUIPair> getRejectedSUIs( String file ) throws Exception {
+    public Set<CUISUIPair> getRejectedSUIs( String file ) {
         PhraseToCUISchema schema = new PhraseToCUISchema();
-        HSSFSheet sheet = ExcelUtil.getSheetFromFile( file, "Sheet0" );
+        HSSFSheet sheet;
+        try {
+            sheet = ExcelUtil.getSheetFromFile( file, "Sheet0" );
+        } catch ( IOException e ) {
+            throw new RuntimeException( e );
+        }
 
         // start at one, skip the header
         int row = 1;
@@ -98,7 +104,11 @@ public class EvaluatePhraseToCUISpreadsheet {
         return rejected;
     }
 
-    public Map<String, String> loadComments( HSSFSheet sheet ) {
+    /**
+     * @param sheet
+     * @return
+     */
+    public Map<String, String> loadFomments( HSSFSheet sheet ) {
         Map<String, String> comments = new HashMap<String, String>();
 
         return comments;
@@ -134,9 +144,8 @@ public class EvaluatePhraseToCUISpreadsheet {
                 nullCount++;
             } else {
                 nullCount = 0;
-                if ( !ACUI.equals( BCUI ) ) {
-                    System.out.println( "non matching CUI's" );
-                    System.exit( 1 );
+                if ( ACUI == null || BCUI == null || !ACUI.equals( BCUI ) ) {
+                    throw new IllegalStateException( "non matching CUI's: " + ACUI + " " + BCUI );
                 }
                 // so we have matching CUI's
                 // start going through the block

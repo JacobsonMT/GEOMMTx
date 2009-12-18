@@ -1,5 +1,5 @@
 /*
- * The Gemma project
+ * The GEOMMTx project
  * 
  * Copyright (c) 2007 University of British Columbia
  * 
@@ -18,6 +18,12 @@
  */
 package ubic.GEOMMTx;
 
+/**
+ * TODO document me
+ * 
+ * @author lfrench
+ * @version $Id$
+ */
 public class UMLSSourceCode {
     private String source;
     private String code;

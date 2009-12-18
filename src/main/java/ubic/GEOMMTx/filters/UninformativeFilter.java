@@ -1,5 +1,5 @@
 /*
- * The Gemma project
+ * The GEOMMTx project
  * 
  * Copyright (c) 2007 University of British Columbia
  * 
@@ -19,44 +19,41 @@
 package ubic.GEOMMTx.filters;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
-import ubic.GEOMMTx.LabelLoader;
-import ubic.GEOMMTx.SetupParameters;
+import ubic.GEOMMTx.util.SetupParameters;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
+/**
+ * TODO document me
+ * 
+ * @author lfrench
+ * @version $Id$
+ */
 public class UninformativeFilter extends AbstractFilter implements URIFilter {
-    /*
-     * this main method prints out the labels of the uninformative URIs
-     */
-    public static void main( String args[] ) throws Exception {
-        Map<String, String> labels = LabelLoader.readLabels();
-
-        BufferedReader f = new BufferedReader( new FileReader( SetupParameters.config
-                .getString( "gemma.annotator.uselessFrequentURLsFile" ) ) );
-        String line;
-        while ( ( line = f.readLine() ) != null ) {
-            System.out.println( labels.get( line ) + " -> " + line );
-        }
-        f.close();
-
-    }
 
     Set<String> frequentURLs;
 
-    public UninformativeFilter() throws Exception {
+    public UninformativeFilter() {
         frequentURLs = new HashSet<String>();
-        BufferedReader f = new BufferedReader( new FileReader( SetupParameters.config
-                .getString( "gemma.annotator.uselessFrequentURLsFile" ) ) );
-        String line;
-        while ( ( line = f.readLine() ) != null ) {
-            frequentURLs.add( line );
+        try {
+            String uselessurlsFilePath = SetupParameters.getString( "geommtx.annotator.uselessFrequentURLsFile" );
+            BufferedReader f = new BufferedReader( new FileReader( uselessurlsFilePath ) );
+            String line;
+            while ( ( line = f.readLine() ) != null ) {
+                frequentURLs.add( line );
+            }
+            f.close();
+        } catch ( FileNotFoundException e ) {
+            throw new RuntimeException( e );
+        } catch ( IOException e ) {
+            throw new RuntimeException( e );
         }
-        f.close();
     }
 
     public boolean accept( String URI ) {

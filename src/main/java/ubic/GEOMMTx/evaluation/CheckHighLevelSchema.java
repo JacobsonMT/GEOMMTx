@@ -1,5 +1,5 @@
 /*
- * The Gemma project
+ * The GEOMMTx project
  * 
  * Copyright (c) 2007 University of British Columbia
  * 
@@ -18,14 +18,14 @@
  */
 package ubic.GEOMMTx.evaluation;
 
-import java.util.Arrays;
 
+/**
+ * TODO Document Me
+ * 
+ * @author lfrench
+ * @version $Id$
+ */
 public class CheckHighLevelSchema extends SpreadSheetSchema {
-    public static void main( String[] args ) {
-        // TODO Auto-generated method stub
-        CheckHighLevelSchema test = new CheckHighLevelSchema();
-        System.out.println( "Header:" + Arrays.asList( test.getHeaderRow() ).toString() );
-    }
 
     public CheckHighLevelSchema() {
         super();

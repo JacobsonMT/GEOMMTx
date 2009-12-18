@@ -18,12 +18,35 @@
  */
 package ubic.GEOMMTx.filters;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.Map;
+
+import org.junit.Test;
+
+import ubic.GEOMMTx.LabelLoader;
+import ubic.GEOMMTx.util.SetupParameters;
+
 /**
- * TODO document me
+ * TODO Document Me
  * 
- * @author lfrench
+ * @author paul
  * @version $Id$
  */
-public interface URIFilter {
-    public boolean accept( String URI );
+public class TestUninformativeFilter {
+
+    @Test
+    public void test() throws Exception {
+        Map<String, String> labels = LabelLoader.readLabels();
+
+        BufferedReader f = new BufferedReader( new FileReader( SetupParameters
+                .getString( "geommtx.annotator.uselessFrequentURLsFile" ) ) );
+        String line;
+        while ( ( line = f.readLine() ) != null ) {
+            System.out.println( labels.get( line ) + " -> " + line );
+        }
+        f.close();
+
+    }
+
 }

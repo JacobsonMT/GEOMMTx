@@ -1,5 +1,5 @@
 /*
- * The Gemma project
+ * The GEOMMTx project
  * 
  * Copyright (c) 2007 University of British Columbia
  * 
@@ -21,6 +21,12 @@ package ubic.GEOMMTx;
 import java.util.Collection;
 import java.util.Set;
 
+/**
+ * TODO document me
+ * 
+ * @author lfrench
+ * @version $Id$
+ */
 public interface CUIMapper {
     /**
      * Given a CUI, and UMLS codes and sources attatched to it, return its URIs

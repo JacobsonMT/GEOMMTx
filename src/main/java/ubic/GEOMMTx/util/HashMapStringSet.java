@@ -1,5 +1,5 @@
 /*
- * The Gemma project
+ * The GEOMMTx project
  * 
  * Copyright (c) 2007 University of British Columbia
  * 
@@ -16,7 +16,7 @@
  * limitations under the License.
  *
  */
-package ubic.GEOMMTx;
+package ubic.GEOMMTx.util;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,6 +26,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * TODO documentme
+ * 
  * @author leon
  * @version $Id$
  */

@@ -1,5 +1,5 @@
 /*
- * The Gemma project
+ * The GEOMMTx project
  * 
  * Copyright (c) 2007 University of British Columbia
  * 
@@ -16,7 +16,7 @@
  * limitations under the License.
  *
  */
-package ubic.GEOMMTx;
+package ubic.GEOMMTx.util;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,6 +46,9 @@ public class RDFMerge {
         }
     };
 
+    /**
+     * @throws Exception
+     */
     public static void excelAll() throws Exception {
         File workingDir = new File( "." );
         File[] files = workingDir.listFiles( RDFFileFilter );
@@ -59,13 +62,11 @@ public class RDFMerge {
         }
     }
 
-    public static void main( String args[] ) throws Exception {
-        mergeWorkingDirRDF( "mergedRDF.rdf" );
-        // CreateSpreadSheet.main( null );
-        // excelAll();
-        // makeHistoGrams();
-    }
-
+    /**
+     * @param output
+     * @param files
+     * @throws Exception
+     */
     public static void mergeRDFFiles( File output, File[] files ) throws Exception {
         Model oldModel = ModelFactory.createDefaultModel();
         int i = 0;

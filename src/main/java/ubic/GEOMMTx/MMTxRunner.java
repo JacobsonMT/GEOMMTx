@@ -1,5 +1,5 @@
 /*
- * The Gemma project
+ * The GEOMMTx project
  * 
  * Copyright (c) 2007 University of British Columbia
  * 
@@ -35,6 +35,12 @@ import net.sf.ehcache.Element;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * TODO Document Me
+ * 
+ * @author lfrench
+ * @version $Id$
+ */
 public class MMTxRunner {
     private static final long serialVersionUID = 1L;
 
@@ -46,41 +52,48 @@ public class MMTxRunner {
 
     private Cache memoryOnlyCache;
 
-    // public MMTxRunner(String[] options) {
-    // this(, options);
-    // }
+    private CacheManager cacheManager;
 
-    public MMTxRunner() {
-        this( 0, new String[] {} );
-    }
-
-    public MMTxRunner( int scoreThreshold, String[] options ) {
+    /**
+     * @param scoreThreshold
+     * @param options
+     */
+    public MMTxRunner( CacheManager cacheManager, int scoreThreshold, String[] options ) {
         this.scoreThreshold = scoreThreshold;
-        CacheManager singletonManager = CacheManager.create();
 
-        memoryOnlyCache = singletonManager.getCache( "realCache" );
-        if ( memoryOnlyCache == null ) {
-            memoryOnlyCache = new Cache( "realCache", 25, false, false, 5000, 1500 );
-            singletonManager.addCache( memoryOnlyCache );
+        if ( cacheManager != null ) {
+            this.cacheManager = cacheManager;
+        } else {
+            this.cacheManager = CacheManager.create();
         }
 
+        memoryOnlyCache = this.cacheManager.getCache( "mmtxCache" );
+        if ( memoryOnlyCache == null ) {
+            memoryOnlyCache = new Cache( "mmtxCache", 25, false, false, 5000, 1500 );
+            this.cacheManager.addCache( memoryOnlyCache );
+        }
+
+        // try MMTxAPILite?
         try {
-            // try MMTxAPILite?
             MMTx = new MMTxAPI( options );
         } catch ( Exception e ) {
-            e.printStackTrace();
-            System.exit( 1 );
+            throw new RuntimeException( e );
         }
+
     }
 
     public void clearCache() {
         memoryOnlyCache.removeAll();
     }
 
+    /**
+     * @param phrase
+     * @return
+     */
     public Collection<Candidate> getConcepts( Phrase phrase ) {
         Collection<Candidate> results = new ArrayList<Candidate>();
 
-        List finalMappings = phrase.getFinalMappings();
+        List<?> finalMappings = phrase.getFinalMappings();
 
         // somtimes finalMappings is null, guess this happens when it can't find
         // anything
@@ -101,8 +114,11 @@ public class MMTxRunner {
         return results;
     }
 
+    /**
+     * @param text
+     * @return
+     */
     public Collection<Candidate> getConcepts( String text ) {
-        Document doc = null;
         Collection<Candidate> results = new ArrayList<Candidate>();
 
         for ( Phrase p : getPhrases( text ) ) {
@@ -111,6 +127,10 @@ public class MMTxRunner {
         return results;
     }
 
+    /**
+     * @param text
+     * @return
+     */
     public List<Phrase> getPhrases( String text ) {
         // check to see if we done it before
         Element element = memoryOnlyCache.get( text );
@@ -126,8 +146,7 @@ public class MMTxRunner {
         try {
             doc = MMTx.processDocument( text );
         } catch ( Exception e ) {
-            e.printStackTrace();
-            System.exit( 1 );
+            throw new RuntimeException( e );
         }
         // doc.getSentences()
 

@@ -1,5 +1,5 @@
 /*
- * The Gemma project
+ * The GEOMMTx project
  * 
  * Copyright (c) 2007 University of British Columbia
  * 
@@ -26,9 +26,17 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import ubic.GEOMMTx.ProjectRDFModelTools;
+import ubic.basecode.ontology.providers.BirnLexOntologyService;
+import ubic.basecode.ontology.providers.FMAOntologyService;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
+/**
+ * TODO document me
+ * 
+ * @author lfrench
+ * @version $Id$
+ */
 public class ExecuteFilters {
     protected static Log log = LogFactory.getLog( ExecuteFilters.class );
 
@@ -44,7 +52,7 @@ public class ExecuteFilters {
         filters.add( new ExperimentalFactorFilter() );
         filters.add( new CUISUIFilter() );
         filters.add( new CUIIRIFilter() );
-        filters.add( new BIRNLexFMANullsFilter() );
+        filters.add( new BIRNLexFMANullsFilter( new FMAOntologyService(), new BirnLexOntologyService() ) );
         filters.add( new UninformativeFilter() );
         // low score filter not used
 

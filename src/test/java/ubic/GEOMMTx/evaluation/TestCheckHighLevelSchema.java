@@ -1,7 +1,7 @@
 /*
  * The GEOMMTx project
  * 
- * Copyright (c) 2007 University of British Columbia
+ * Copyright (c) 2009 University of British Columbia
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,20 +18,19 @@
  */
 package ubic.GEOMMTx.evaluation;
 
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
 /**
- * TODO document me
- * 
- * @author lfrench
+ * @author paul
  * @version $Id$
  */
-public class PhraseToCUISchema extends SpreadSheetSchema {
-    public PhraseToCUISchema() {
-        super();
-        positions.put( "CUI", 0 );
-        positions.put( "SUI", 1 );
-        positions.put( "phraseLabel", 2 );
-        positions.put( "Reject", 3 );
-        positions.put( "mentionLabel", 4 );
-        positions.put( "Comment", 5 );
+public class TestCheckHighLevelSchema {
+
+    @Test
+    public void test() throws Exception {
+        CheckHighLevelSchema test = new CheckHighLevelSchema();
+        assertTrue( test.getHeaderRow().length > 0 );
     }
 }

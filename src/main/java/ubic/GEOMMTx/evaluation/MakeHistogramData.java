@@ -1,5 +1,5 @@
 /*
- * The Gemma project
+ * The GEOMMTx project
  * 
  * Copyright (c) 2007 University of British Columbia
  * 
@@ -30,11 +30,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import ubic.GEOMMTx.SetupParameters;
+import ubic.GEOMMTx.OntologyTools;
+import ubic.GEOMMTx.util.SetupParameters;
 import ubic.basecode.dataStructure.matrix.DenseDoubleMatrix;
 import ubic.basecode.dataStructure.matrix.DoubleMatrix;
 import ubic.basecode.io.writer.MatrixWriter;
-import ubic.gemma.ontology.OntologyTools;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -45,6 +45,12 @@ import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
+/**
+ * TODO Document Me
+ * 
+ * @author lfrench
+ * @version $Id$
+ */
 public class MakeHistogramData {
     // needs refactor -maybe its own class
     public static void addToSetMap( Map<String, Set<String>> hash, String key, String value ) {
@@ -89,7 +95,7 @@ public class MakeHistogramData {
 
         Model model = ModelFactory.createDefaultModel();
         model.read( new FileInputStream( file ), null );
-        model.read( new FileInputStream( SetupParameters.config.getString( "gemma.annotator.gemmaTitles" ) ), null );
+        model.read( new FileInputStream( SetupParameters.getString( "geommtx.annotator.gemmaTitles" ) ), null );
 
         String queryString = "PREFIX gemmaAnn: <http://bioinformatics.ubc.ca/Gemma/ws/xml/gemmaAnnotations.owl#>                                            \n"
                 + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>                                     \n"

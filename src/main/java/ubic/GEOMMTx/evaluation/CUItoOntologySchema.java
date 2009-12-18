@@ -1,5 +1,5 @@
 /*
- * The Gemma project
+ * The GEOMMTx project
  * 
  * Copyright (c) 2007 University of British Columbia
  * 
@@ -20,6 +20,12 @@ package ubic.GEOMMTx.evaluation;
 
 import java.util.Arrays;
 
+/**
+ * TODO Document Me
+ * 
+ * @author lfrench
+ * @version $Id$
+ */
 public class CUItoOntologySchema extends SpreadSheetSchema {
 
     public static void main( String[] args ) {

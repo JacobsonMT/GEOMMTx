@@ -1,5 +1,5 @@
 /*
- * The Gemma project
+ * The GEOMMTx project
  * 
  * Copyright (c) 2007 University of British Columbia
  * 
@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.util.Map;
 
 import ubic.GEOMMTx.OntologyLabelLoader;
+import ubic.basecode.io.excel.ExcelUtil;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -30,8 +31,11 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
 
-/*
+/**
  * old code, needs to be updated with new URL's
+ * 
+ * @author lfrench
+ * @version $Id$
  */
 public class CUItoOntologySpreadsheet extends CreateSpreadSheet {
     /**

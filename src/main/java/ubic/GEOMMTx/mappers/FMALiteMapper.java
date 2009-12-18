@@ -1,5 +1,5 @@
 /*
- * The Gemma project
+ * The GEOMMTx project
  * 
  * Copyright (c) 2007 University of British Columbia
  * 
@@ -26,28 +26,16 @@ import ubic.GEOMMTx.CUIMapper;
 import ubic.GEOMMTx.GetUMLSCodes;
 import ubic.GEOMMTx.UMLSSourceCode;
 
+/**
+ * TODO document me
+ * 
+ * @author lfrench
+ * @version $Id$
+ */
 public class FMALiteMapper implements CUIMapper {
     private final static String MAIN_URL = "http://purl.org/obo/owl/FMA#FMA_";
 
-    public static void main( String args[] ) {
-        GetUMLSCodes codes = new GetUMLSCodes();
-        FMALiteMapper fma = new FMALiteMapper();
-        Set<UMLSSourceCode> map = codes.getUMLSCodeMap().get( "C0024109" );
-        System.out.println( map );
-        Set<String> URL = fma.convert( "C0024109", codes.getUMLSCodeMap().get( "C0024109" ) );
-        System.out.println( URL );
-
-        int count = 0;
-        for ( String concept : codes.getUMLSCodeMap().keySet() ) {
-            URL = fma.convert( concept, codes.getUMLSCodeMap().get( concept ) );
-            if ( URL != null ) count++;// =URL.size();
-        }
-        System.out.println( "number of FMA references:" + count );
-
-        // URL = fma.convert( "C0006104", codes.getUMLSCodeMap().get( "C0006104" ) );
-        // System.out.println( URL );
-        // System.out.println( fma.getAllURLs().size() );
-    }
+  
 
     /*
      * Should probably refactor as this does not use the CUI parameter for anything (non-Javadoc)

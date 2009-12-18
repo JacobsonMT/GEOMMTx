@@ -1,5 +1,5 @@
 /*
- * The Gemma project
+ * The GEOMMTx project
  * 
  * Copyright (c) 2007 University of British Columbia
  * 
@@ -18,8 +18,11 @@
  */
 package ubic.GEOMMTx;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
@@ -29,6 +32,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import ubic.GEOMMTx.evaluation.CreateSpreadSheet;
+import ubic.GEOMMTx.util.SetupParameters;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -41,24 +45,44 @@ import com.hp.hpl.jena.rdf.model.Model;
  * Gets the labels of the ontology classes and saves them to disk
  * 
  * @author leon
+ * @version $Id$
  */
 public class LabelLoader {
+
+    private static final String LABEL_FILE_LOCATION_KEY = "geommtx.annotator.cachedLabels";
+
     protected static Log log = LogFactory.getLog( LabelLoader.class );
 
-    public static Map<String, String> readLabels() throws Exception {
+    /**
+     * @return label map
+     */
+    @SuppressWarnings("unchecked")
+    public static Map<String, String> readLabels() {
         try {
-            ObjectInputStream o2 = new ObjectInputStream( new FileInputStream( SetupParameters.config
-                    .getString( "gemma.annotator.cachedLabels" ) ) );
+            String labelFilePath = getLabelFilePath();
+
+            File labelFile = new File( labelFilePath );
+            if ( !labelFile.canRead() ) {
+                return writeLabels();
+            }
+
+            ObjectInputStream o2 = new ObjectInputStream( new FileInputStream( labelFilePath ) );
             Map<String, String> labels = ( Map<String, String> ) o2.readObject();
             o2.close();
             return labels;
         } catch ( Exception e ) {
-            log.error( "Problem loading cached labels, loading from internet" );
+            log.error( "Problem loading cached labels, reloading [" + e.getMessage() + "]" );
             return writeLabels();
         }
     }
 
-    public static Map<String, String> writeLabels() throws Exception {
+    /**
+     * @return label map
+     */
+    private static Map<String, String> writeLabels() {
+
+        log.info( "Initializing the label cache..." );
+
         OntologyLabelLoader labelLoader = new OntologyLabelLoader();
         Model model = labelLoader.loadOntologies();
 
@@ -73,19 +97,28 @@ public class LabelLoader {
         ResultSet results = qexec.execSelect();
         while ( results.hasNext() ) {
             Map<String, String> solutionMap = CreateSpreadSheet.mapQuerySolution( results.nextSolution() );
-            // System.out.println( solutionMap.get( "URI" ) + "->" + solutionMap.get( "label" ) );
             // a bad way to get rid of anonymous nodes
             if ( solutionMap.get( "URI" ).contains( "http" ) ) {
                 labels.put( solutionMap.get( "URI" ), solutionMap.get( "label" ) );
             }
         }
 
-        ObjectOutputStream o2 = new ObjectOutputStream( new FileOutputStream( SetupParameters.config
-                .getString( "gemma.annotator.cachedLabels" ) ) );
-        o2.writeObject( labels );
-        o2.close();
-        log.info( "Labels wrote" );
+        try {
+            ObjectOutputStream o2 = new ObjectOutputStream( new FileOutputStream( getLabelFilePath() ) );
+            o2.writeObject( labels );
+            o2.close();
+        } catch ( FileNotFoundException e ) {
+            throw new RuntimeException( e );
+        } catch ( IOException e ) {
+            throw new RuntimeException( e );
+        }
+        log.info( "Labels written" );
         return labels;
+    }
+
+    private static String getLabelFilePath() {
+        String path = SetupParameters.getString( LABEL_FILE_LOCATION_KEY );
+        return path;
     }
 
     private LabelLoader() {

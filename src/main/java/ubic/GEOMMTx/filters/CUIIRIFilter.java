@@ -1,5 +1,5 @@
 /*
- * The Gemma project
+ * The GEOMMTx project
  * 
  * Copyright (c) 2007 University of British Columbia
  * 
@@ -20,9 +20,9 @@ package ubic.GEOMMTx.filters;
 
 import java.util.Set;
 
-import ubic.GEOMMTx.SetupParameters;
 import ubic.GEOMMTx.Vocabulary;
 import ubic.GEOMMTx.evaluation.CUIIRIPair;
+import ubic.GEOMMTx.util.SetupParameters;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -31,6 +31,12 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
 
+/**
+ * TODO document me
+ * 
+ * @author lfrench
+ * @version $Id$
+ */
 public class CUIIRIFilter extends AbstractFilter {
     Set<CUIIRIPair> rejectedCUIIRIPairs;
 

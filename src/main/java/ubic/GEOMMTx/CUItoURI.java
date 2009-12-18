@@ -1,5 +1,5 @@
 /*
- * The Gemma project
+ * The GEOMMTx project
  * 
  * Copyright (c) 2007 University of British Columbia
  * 
@@ -28,11 +28,12 @@ import java.util.Set;
  * Converts a CUI into a URI using one or more mappers.
  * 
  * @author Leon
+ * @version $Id$
  */
 public class CUItoURI {
-    Collection<CUIMapper> mappers;
-    Map<String, Set<UMLSSourceCode>> codeMap;
-    GetUMLSCodes getUMLS;
+    private Collection<CUIMapper> mappers;
+    private Map<String, Set<UMLSSourceCode>> codeMap;
+    private GetUMLSCodes getUMLS;
 
     public CUItoURI() {
         getUMLS = new GetUMLSCodes();

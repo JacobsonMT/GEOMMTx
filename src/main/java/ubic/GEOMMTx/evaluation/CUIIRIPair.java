@@ -1,5 +1,5 @@
 /*
- * The Gemma project
+ * The GEOMMTx project
  * 
  * Copyright (c) 2007 University of British Columbia
  * 
@@ -18,6 +18,12 @@
  */
 package ubic.GEOMMTx.evaluation;
 
+/**
+ * TODO document me
+ * 
+ * @author lfrench
+ * @version $Id$
+ */
 public class CUIIRIPair {
     public String IRI;
     public String CUI;

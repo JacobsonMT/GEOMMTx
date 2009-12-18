@@ -1,5 +1,5 @@
 /*
- * The Gemma project
+ * The GEOMMTx project
  * 
  * Copyright (c) 2007 University of British Columbia
  * 
@@ -30,10 +30,16 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
 
+/**
+ * TODO document me
+ * 
+ * @author lfrench
+ * @version $Id$
+ */
 public class CUISUIFilter extends AbstractFilter {
     Set<CUISUIPair> rejectedCUISUIPairs;
 
-    public CUISUIFilter() throws Exception {
+    public CUISUIFilter() {
         // CUI -> SUI rejections
         EvaluatePhraseToCUISpreadsheet evalSheet = new EvaluatePhraseToCUISpreadsheet();
         rejectedCUISUIPairs = evalSheet.getRejectedSUIs();

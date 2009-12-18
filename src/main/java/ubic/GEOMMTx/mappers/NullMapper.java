@@ -1,5 +1,5 @@
 /*
- * The Gemma project
+ * The GEOMMTx project
  * 
  * Copyright (c) 2007 University of British Columbia
  * 
@@ -24,6 +24,12 @@ import java.util.Set;
 import ubic.GEOMMTx.CUIMapper;
 import ubic.GEOMMTx.UMLSSourceCode;
 
+/**
+ * TODO document me
+ * 
+ * @author lfrench
+ * @version $Id$
+ */
 public class NullMapper implements CUIMapper {
 
     public Set<String> convert( String CUI, Collection<UMLSSourceCode> sourceCodes ) {

@@ -1,5 +1,5 @@
 /*
- * The Gemma project
+ * The GEOMMTx project
  * 
  * Copyright (c) 2007 University of British Columbia
  * 
@@ -21,6 +21,8 @@ package ubic.GEOMMTx.evaluation;
 import java.io.FileInputStream;
 import java.util.Map;
 
+import ubic.basecode.io.excel.ExcelUtil;
+
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
@@ -29,6 +31,12 @@ import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
+/**
+ * TODO document me
+ * 
+ * @author lfrench
+ * @version $Id$
+ */
 public class PhrasetoCUISpreadsheet extends CreateSpreadSheet {
 
     /**

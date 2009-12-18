@@ -1,5 +1,5 @@
 /*
- * The Gemma project
+ * The GEOMMTx project
  * 
  * Copyright (c) 2007 University of British Columbia
  * 
@@ -29,10 +29,17 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
-import ubic.gemma.ontology.OntologyTools;
+import ubic.GEOMMTx.OntologyTools;
+import ubic.basecode.io.excel.ExcelUtil;
 
 import com.hp.hpl.jena.query.QuerySolution;
 
+/**
+ * TODO document me
+ * 
+ * @author lfrench
+ * @version $Id$
+ */
 public abstract class CreateSpreadSheet {
     protected static Log log = LogFactory.getLog( CreateSpreadSheet.class );
 
@@ -45,15 +52,9 @@ public abstract class CreateSpreadSheet {
     public static Map<String, String> mapQuerySolution( QuerySolution soln ) {
         Map<String, String> map = new HashMap<String, String>();
         String varName = "";
-        for ( Iterator i = soln.varNames(); i.hasNext(); ) {
-            try {
-                varName = ( String ) i.next();
-                map.put( varName, OntologyTools.varToString( varName, soln ) );
-            } catch ( Exception e ) {
-                System.err.println( "error on:" + varName );
-                e.printStackTrace();
-                System.exit( 1 );
-            }
+        for ( Iterator<String> i = soln.varNames(); i.hasNext(); ) {
+            varName = i.next();
+            map.put( varName, OntologyTools.varToString( varName, soln ) );
         }
         return map;
     }
@@ -72,13 +73,8 @@ public abstract class CreateSpreadSheet {
             // throw new Exception( "please delete previous file to prevent overwrite" );
         }
         this.filename = filename;
-        try {
-            workbook = new HSSFWorkbook();
-            spreadsheet = workbook.createSheet();
-        } catch ( Exception e ) {
-            e.printStackTrace();
-            System.exit( 1 );
-        }
+        workbook = new HSSFWorkbook();
+        spreadsheet = workbook.createSheet();
         // make the header
         this.schema = schema;
         createHeader();
