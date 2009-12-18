@@ -149,7 +149,7 @@
 		</dependency>
 		<dependency>
 			<groupId>umls</groupId>
-			<artifactId>kss-api</artifactId>
+			<artifactId>kss-api-strip</artifactId>
 			<version>5.0</version>
 		</dependency>
 		<dependency>

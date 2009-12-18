@@ -46,6 +46,10 @@ public class BIRNLexFMANullsFilter extends AbstractFilter implements URIFilter {
     FMAOntologyService FMA;
     BirnLexOntologyService BIRN;
 
+    /**
+     * @param fma
+     * @param birn
+     */
     public BIRNLexFMANullsFilter( FMAOntologyService fma, BirnLexOntologyService birn ) {
 
         this.FMA = fma;
@@ -73,10 +77,12 @@ public class BIRNLexFMANullsFilter extends AbstractFilter implements URIFilter {
                 }
             }
         }
-
-        log.info( "FMA and BIRNLex Ontologies loaded" );
     }
 
+    /*
+     * (non-Javadoc)
+     * @see ubic.GEOMMTx.filters.URIFilter#accept(java.lang.String)
+     */
     public boolean accept( String URI ) {
         OntologyTerm term = getTerm( URI );
         // go into FMA and birnlex and check if it's missing
@@ -89,6 +95,10 @@ public class BIRNLexFMANullsFilter extends AbstractFilter implements URIFilter {
         return true;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see ubic.GEOMMTx.filters.AbstractFilter#filter(com.hp.hpl.jena.rdf.model.Model)
+     */
     @Override
     public int filter( Model model ) {
         // need a list of all the appearing URL's
@@ -123,11 +133,19 @@ public class BIRNLexFMANullsFilter extends AbstractFilter implements URIFilter {
         return removeMentionsURLs( model, removeURIs );
     }
 
+    /*
+     * (non-Javadoc)
+     * @see ubic.GEOMMTx.filters.AbstractFilter#getName()
+     */
     @Override
     public String getName() {
         return "BIRNLex and FMA null mapping remover";
     }
 
+    /**
+     * @param uri
+     * @return
+     */
     private OntologyTerm getTerm( String uri ) {
         OntologyTerm term = FMA.getTerm( uri );
         if ( term != null ) return term;
