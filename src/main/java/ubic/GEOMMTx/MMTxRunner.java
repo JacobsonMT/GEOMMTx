@@ -32,6 +32,7 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -42,17 +43,20 @@ import org.apache.commons.logging.LogFactory;
  * @version $Id$
  */
 public class MMTxRunner {
-    private static final long serialVersionUID = 1L;
-
     protected static Log log = LogFactory.getLog( MMTxRunner.class );
 
-    private MMTxAPI MMTx;
+    private static final long serialVersionUID = 1L;
 
-    private int scoreThreshold;
+    private CacheManager cacheManager;
 
     private Cache memoryOnlyCache;
 
-    private CacheManager cacheManager;
+    /**
+     * the business end
+     */
+    private MMTxAPI mmtxAPI;
+
+    private int scoreThreshold;
 
     /**
      * @param scoreThreshold
@@ -74,14 +78,21 @@ public class MMTxRunner {
         }
 
         // try MMTxAPILite?
+
+        log.info( StringUtils.join( options, " " ) );
+
         try {
-            MMTx = new MMTxAPI( options );
+            mmtxAPI = new MMTxAPI( options );
         } catch ( Exception e ) {
+            log.error( "**** MMTx Initialization faild : " + e.getMessage() + " ****" );
             throw new RuntimeException( e );
         }
 
     }
 
+    /**
+     * 
+     */
     public void clearCache() {
         memoryOnlyCache.removeAll();
     }
@@ -131,6 +142,7 @@ public class MMTxRunner {
      * @param text
      * @return
      */
+    @SuppressWarnings("unchecked")
     public List<Phrase> getPhrases( String text ) {
         // check to see if we done it before
         Element element = memoryOnlyCache.get( text );
@@ -144,7 +156,7 @@ public class MMTxRunner {
 
         // MMTX processing
         try {
-            doc = MMTx.processDocument( text );
+            doc = mmtxAPI.processDocument( text );
         } catch ( Exception e ) {
             throw new RuntimeException( e );
         }
@@ -167,4 +179,5 @@ public class MMTxRunner {
     public void setScoreThreshold( int scoreThreshold ) {
         this.scoreThreshold = scoreThreshold;
     }
+
 }

@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import ubic.GEOMMTx.CUIMapper;
 import ubic.GEOMMTx.OntologyTools;
 import ubic.basecode.ontology.OntologyLoader;
 
@@ -40,7 +39,7 @@ import com.hp.hpl.jena.query.ResultSet;
  * @author lfrench
  * @version $Id$
  */
-public class BirnLexMapper extends AbstractToUMLSMapper implements CUIMapper {
+public class BirnLexMapper extends AbstractToUMLSMapper {
 
     private OntModel birnLex;
 
@@ -79,7 +78,7 @@ public class BirnLexMapper extends AbstractToUMLSMapper implements CUIMapper {
             ResultSet results = qexec.execSelect();
             while ( results.hasNext() ) {
                 QuerySolution soln = results.nextSolution();
-                String label = OntologyTools.varToString( "label", soln );
+                // String label = OntologyTools.varToString( "label", soln );
                 String cui = OntologyTools.varToString( "cui", soln );
                 String URI = OntologyTools.varToString( "class", soln );
                 // some have blank UMLS codes

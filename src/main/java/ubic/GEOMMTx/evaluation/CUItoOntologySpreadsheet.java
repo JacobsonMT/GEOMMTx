@@ -38,19 +38,19 @@ import com.hp.hpl.jena.rdf.model.Model;
  * @version $Id$
  */
 public class CUItoOntologySpreadsheet extends CreateSpreadSheet {
-    /**
-     * @param args
-     */
-    public static void main( String[] args ) throws Exception {
-        CUItoOntologySpreadsheet test = new CUItoOntologySpreadsheet( "tt.xls" );
-
-        // log.info( "populating" );
-        // test.populate( "mergedRDF.firstrun.rdf" );
-        // log.info( "saving.." );
-        // test.save();
-        // log.info( "Done!" );
-
-    }
+    // /**
+    // * @param args
+    // */
+    // public static void main( String[] args ) throws Exception {
+    // CUItoOntologySpreadsheet test = new CUItoOntologySpreadsheet( "tt.xls" );
+    //
+    // // log.info( "populating" );
+    // // test.populate( "mergedRDF.firstrun.rdf" );
+    // // log.info( "saving.." );
+    // // test.save();
+    // // log.info( "Done!" );
+    //
+    // }
 
     Model linkedOntologies;
 

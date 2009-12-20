@@ -136,7 +136,7 @@ public class MakeHistogramData {
             results = qexec.execSelect();
             while ( results.hasNext() ) {
                 QuerySolution soln = results.nextSolution();
-                String dataset = OntologyTools.varToString( "dataset", soln );
+                // String dataset = OntologyTools.varToString( "dataset", soln );
                 String geoLabel = OntologyTools.varToString( "geoLabel", soln );
                 String mapping = OntologyTools.varToString( "mapping", soln );
                 String label = labelMap.get( mapping );
@@ -194,7 +194,7 @@ public class MakeHistogramData {
                 String mapping = OntologyTools.varToString( "mapping", soln );
                 String label = labelMap.get( mapping );
 
-                Double count = resultMatrix.getByKeys( title, label );
+                // Double count = resultMatrix.getByKeys( title, label );
                 resultMatrix.setByKeys( title, label, 1.0 );
                 c++;
             }
@@ -249,7 +249,7 @@ public class MakeHistogramData {
     public static void writeRTable( String filename, DoubleMatrix<String, String> matrix ) throws Exception {
         // write it out for R
         FileWriter fOut = new FileWriter( filename );
-        MatrixWriter matWriter = new MatrixWriter( fOut );
+        MatrixWriter<String, String> matWriter = new MatrixWriter<String, String>( fOut );
 
         matWriter.setTopLeft( "" );
         matWriter.writeMatrix( matrix, true );

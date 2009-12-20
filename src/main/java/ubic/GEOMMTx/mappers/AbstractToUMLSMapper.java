@@ -37,6 +37,7 @@ import ubic.GEOMMTx.UMLSSourceCode;
  * This class is for mapping to an ontology that has CUI's in it, here you are going backwards from an ontology to UMLS
  * 
  * @author Leon
+ * @version $Id$
  */
 public abstract class AbstractToUMLSMapper implements CUIMapper {
     protected static Log log = LogFactory.getLog( AbstractToUMLSMapper.class );
@@ -80,6 +81,9 @@ public abstract class AbstractToUMLSMapper implements CUIMapper {
         return result;
     }
 
+    /**
+     * @return
+     */
     public Set<String> getAllURLs() {
         Set<String> result = new HashSet<String>();
         for ( Set<String> URLs : CUIMap.values() ) {
@@ -90,17 +94,26 @@ public abstract class AbstractToUMLSMapper implements CUIMapper {
         return result;
     }
 
+    /**
+     * @return
+     */
     public String getFileName() {
         return this.getClass().getName() + ".mappings";
     }
 
+    /**
+     * @throws Exception
+     */
+    @SuppressWarnings("unchecked")
     public void loadFromDisk() throws Exception {
         ObjectInputStream o = new ObjectInputStream( new FileInputStream( getFileName() ) );
         CUIMap = ( Map<String, Set<String>> ) o.readObject();
         o.close();
-
     }
 
+    /**
+     * 
+     */
     public void save() {
         try {
             ObjectOutputStream o = new ObjectOutputStream( new FileOutputStream( getFileName() ) );

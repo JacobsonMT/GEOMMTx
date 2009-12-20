@@ -59,7 +59,7 @@ public abstract class AbstractFilter {
             Resource resource = model.createResource( URL );
             // list all the mentions
             ResIterator mentionIterator = model.listResourcesWithProperty( Vocabulary.mappedTerm, resource );
-            Set mentionSet = mentionIterator.toSet();
+            Set<Resource> mentionSet = mentionIterator.toSet();
             ProjectRDFModelTools.removeMentions( model, mentionSet );
             howMany += mentionSet.size();
         }

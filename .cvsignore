@@ -1,5 +1,6 @@
 RDFSandbox
 target
+target/classes
 example.rdf
 ubic.GEOMMTx.mappers.BirnLexMapper.mappings
 ubic.GEOMMTx.mappers.DiseaseOntologyMapper.mappings

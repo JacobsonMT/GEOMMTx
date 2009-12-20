@@ -20,6 +20,8 @@ package ubic.GEOMMTx.util;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.ConfigurationException;
@@ -48,7 +50,6 @@ public class SetupParameters {
     private static final String DEFAULT_CONFIGURATION = "geommtx.default.properties";
 
     static {
-
         config = new CompositeConfiguration();
         config.addConfiguration( new SystemConfiguration() );
 
@@ -69,7 +70,6 @@ public class SetupParameters {
         }
 
         try {
-            // Default comes first.
             config.addConfiguration( new PropertiesConfiguration( DEFAULT_CONFIGURATION ) );
         } catch ( ConfigurationException e ) {
             System.out.println( "Could not load " + DEFAULT_CONFIGURATION );
@@ -85,17 +85,20 @@ public class SetupParameters {
                 "http://purl.org/obo/owl/FMA#FMA_9604" ) );
         rejectedCUIIRIPairs.add( new CUIIRIPair( "http://www.purl.org/umls/umls#C0001655",
                 "http://purl.org/obo/owl/FMA#FMA_74639" ) );
+
     }
 
     /**
      * @return
      * @see org.apache.commons.configuration.CompositeConfiguration#getKeys()
      */
-    public static Iterator getKeys() {
+    @SuppressWarnings("unchecked")
+    public static Iterator<String> getKeys() {
         return config.getKeys();
     }
 
-    public static Iterator getKeys( String k ) {
+    @SuppressWarnings("unchecked")
+    public static Iterator<String> getKeys( String k ) {
         return config.getKeys( k );
     }
 
