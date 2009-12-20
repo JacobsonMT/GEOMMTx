@@ -81,6 +81,14 @@ public class LabelLoader {
      */
     private static Map<String, String> writeLabels() {
 
+        String labelFilePath = getLabelFilePath();
+
+        File labelFile = new File( labelFilePath );
+        if ( !labelFile.canWrite() ) {
+            log.warn( "Cannot write to: " + labelFile );
+            return null;
+        }
+
         log.info( "Initializing the label cache..." );
 
         OntologyLabelLoader labelLoader = new OntologyLabelLoader();
