@@ -210,7 +210,7 @@
 		<repository>
 			<id>pavlab</id>
 			<name>PavLab</name>
-			<url>http://www.chibi.ubc.ca/pavlidis/lab/maven2</url>
+			<url>http://www.chibi.ubc.ca/maven2</url>
 			<layout>default</layout>
 			<snapshots>
 				<enabled>true</enabled>
@@ -255,7 +255,7 @@
 		<pluginRepository>
 			<id>pavlab</id>
 			<name>PavLab</name>
-			<url>http://www.chibi.ubc.ca/pavlidis/lab/maven2</url>
+			<url>http://www.chibi.ubc.ca/maven2</url>
 			<layout>default</layout>
 			<snapshots>
 				<enabled>true</enabled>
