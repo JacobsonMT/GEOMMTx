@@ -20,8 +20,6 @@ package ubic.GEOMMTx.util;
 
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.ConfigurationException;

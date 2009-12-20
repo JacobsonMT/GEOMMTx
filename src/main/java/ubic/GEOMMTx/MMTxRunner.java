@@ -84,7 +84,7 @@ public class MMTxRunner {
         try {
             mmtxAPI = new MMTxAPI( options );
         } catch ( Exception e ) {
-            log.error( "**** MMTx Initialization faild : " + e.getMessage() + " ****" );
+            log.error( "**** MMTx Initialization failed : " + e.getMessage() + " ****" );
             throw new RuntimeException( e );
         }
 
