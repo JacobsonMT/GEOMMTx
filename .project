@@ -1,7 +1,9 @@
 <projectDescription>
   <name>GEOMMTx</name>
   <comment>Automated annotation from free text</comment>
-  <projects/>
+  <projects>
+    <project>baseCode</project>
+  </projects>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>
