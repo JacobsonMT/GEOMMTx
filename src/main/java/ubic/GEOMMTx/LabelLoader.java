@@ -57,10 +57,11 @@ public class LabelLoader {
      * @return label map
      */
     @SuppressWarnings("unchecked")
-    public static Map<String, String> readLabels() {
+    public static Map<String, String> readLabels() throws IOException {
+
         try {
             String labelFilePath = getLabelFilePath();
-
+            log.info( "Reading labels from " + labelFilePath );
             File labelFile = new File( labelFilePath );
             if ( !labelFile.canRead() ) {
                 return writeLabels();
@@ -79,15 +80,14 @@ public class LabelLoader {
     /**
      * @return label map
      */
-    private static Map<String, String> writeLabels() {
+    private static Map<String, String> writeLabels() throws IOException {
 
         String labelFilePath = getLabelFilePath();
 
-        File labelFile = new File( labelFilePath );
-        if ( !labelFile.canWrite() ) {
-            log.warn( "Cannot write to: " + labelFile );
-            return null;
-        }
+        // File labelFile = new File( labelFilePath );
+        // if ( !labelFile.canWrite() ) {
+        // throw new IOException( "Cannot write to: " + labelFile );
+        // }
 
         log.info( "Initializing the label cache..." );
 
@@ -112,7 +112,7 @@ public class LabelLoader {
         }
 
         try {
-            ObjectOutputStream o2 = new ObjectOutputStream( new FileOutputStream( getLabelFilePath() ) );
+            ObjectOutputStream o2 = new ObjectOutputStream( new FileOutputStream( labelFilePath ) );
             o2.writeObject( labels );
             o2.close();
         } catch ( FileNotFoundException e ) {
