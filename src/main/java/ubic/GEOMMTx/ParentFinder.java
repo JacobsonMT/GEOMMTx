@@ -29,6 +29,8 @@ import org.apache.commons.logging.LogFactory;
 import ubic.basecode.ontology.model.OntologyTerm;
 import ubic.basecode.ontology.providers.AbstractOntologyService;
 import ubic.basecode.ontology.providers.BirnLexOntologyService;
+import ubic.basecode.ontology.providers.DiseaseOntologyService;
+import ubic.basecode.ontology.providers.FMAOntologyService;
 
 public class ParentFinder {
     private static Log log = LogFactory.getLog( ParentFinder.class.getName() );
@@ -42,6 +44,13 @@ public class ParentFinder {
     }
 
     Set<AbstractOntologyService> ontologies = new HashSet<AbstractOntologyService>();
+    public int nullTerms = 0;
+
+    public Set<String> allParents( String inputURI ) {
+        Set<String> set = new HashSet<String>();
+        set.add( inputURI );
+        return allParents( set );
+    }
 
     /**
      * Given a set of URI's return them and their parents.
@@ -49,8 +58,6 @@ public class ParentFinder {
      * @param inputURIs
      * @return
      */
-    public int nullTerms = 0;
-
     public Set<String> allParents( Set<String> inputURIs ) {
         Set<String> result = new HashSet<String>( inputURIs );
         for ( String URI : inputURIs ) {
@@ -61,8 +68,12 @@ public class ParentFinder {
                 continue;
             }
             // convert the parents to string and add it
-            for ( OntologyTerm p : t.getParents( false ) ) {
-                result.add( p.getUri() );
+            try {
+                for ( OntologyTerm p : t.getParents( false ) ) {
+                    result.add( p.getUri() );
+                }
+            } catch ( com.hp.hpl.jena.ontology.ConversionException ce ) {
+                ce.printStackTrace();
             }
         }
         return result;
@@ -77,11 +88,15 @@ public class ParentFinder {
     }
 
     public void init() throws Exception {
-        BirnLexOntologyService hd = new BirnLexOntologyService();
+        loadOntology( new BirnLexOntologyService() );
+        log.info( "Done brinlex" );
+        loadOntology( new FMAOntologyService() );
+        log.info( "Done FMA" );
+        loadOntology( new DiseaseOntologyService() );
+        log.info( "Done disease" );
+    }
 
-        // HumanDiseaseOntologyService hd = new HumanDiseaseOntologyService();
-        // FMAOntologyService hd = new FMAOntologyService();
-
+    private void loadOntology( AbstractOntologyService hd ) throws InterruptedException {
         hd.init( true );
         while ( !hd.isOntologyLoaded() ) {
             Thread.sleep( 5000 );
@@ -162,9 +177,15 @@ public class ParentFinder {
 
         System.out.println( allParents( inputURIs ) );
 
+        System.out.println( "----------Hippocampus" );
+        t = getTerm( "http://purl.org/obo/owl/FMA#FMA_62493" );
+        for ( OntologyTerm tt : t.getParents( false ) ) {
+            log.info( tt.getLabel() + "  URL:" + tt.getUri() );
+        }
+
     }
 
-    private OntologyTerm getTerm( String URI ) {
+    public OntologyTerm getTerm( String URI ) {
         OntologyTerm t = null;
         for ( AbstractOntologyService ontology : ontologies ) {
             t = ontology.getTerm( URI );
