@@ -20,6 +20,7 @@ package ubic.GEOMMTx.mappers;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Collection;
@@ -32,6 +33,7 @@ import org.apache.commons.logging.LogFactory;
 
 import ubic.GEOMMTx.CUIMapper;
 import ubic.GEOMMTx.UMLSSourceCode;
+import ubic.GEOMMTx.util.SetupParameters;
 
 /**
  * This class is for mapping to an ontology that has CUI's in it, here you are going backwards from an ontology to UMLS
@@ -98,7 +100,8 @@ public abstract class AbstractToUMLSMapper implements CUIMapper {
      * @return
      */
     public String getFileName() {
-        return this.getClass().getName() + ".mappings";
+        return SetupParameters.getString( "geommtx.data", System.getProperty( "user.dir" ) )
+                + this.getClass().getName() + ".mappings";
     }
 
     /**
@@ -119,9 +122,9 @@ public abstract class AbstractToUMLSMapper implements CUIMapper {
             ObjectOutputStream o = new ObjectOutputStream( new FileOutputStream( getFileName() ) );
             o.writeObject( CUIMap );
             o.close();
-        } catch ( Exception e ) {
-            log.info( "cannot save CUI mappings" );
-            e.printStackTrace();
+            log.info( "Wrote CUI mappings to " + getFileName() );
+        } catch ( IOException e ) {
+            log.info( "Cannot save CUI mappings to " + getFileName() + ": " + e.getMessage() );
         }
     }
 

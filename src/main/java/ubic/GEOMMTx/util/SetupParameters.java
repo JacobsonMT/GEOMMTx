@@ -35,17 +35,17 @@ import ubic.GEOMMTx.evaluation.CUIIRIPair;
  */
 public class SetupParameters {
 
-    // The few rejected CUI to IRI/URL pairings as determined by human curation
-    public static HashSet<CUIIRIPair> rejectedCUIIRIPairs;
-
-    static String USER_CONFIGURATION = "geommtx.properties";
-
     private static CompositeConfiguration config;
 
     /**
      * Name of the resource containing defaults that the user can override (classpath)
      */
     private static final String DEFAULT_CONFIGURATION = "geommtx.default.properties";
+
+    // The few rejected CUI to IRI/URL pairings as determined by human curation
+    public static HashSet<CUIIRIPair> rejectedCUIIRIPairs;
+
+    static String USER_CONFIGURATION = "geommtx.properties";
 
     static {
         config = new CompositeConfiguration();
@@ -84,38 +84,6 @@ public class SetupParameters {
         rejectedCUIIRIPairs.add( new CUIIRIPair( "http://www.purl.org/umls/umls#C0001655",
                 "http://purl.org/obo/owl/FMA#FMA_74639" ) );
 
-    }
-
-    /**
-     * @return
-     * @see org.apache.commons.configuration.CompositeConfiguration#getKeys()
-     */
-    @SuppressWarnings("unchecked")
-    public static Iterator<String> getKeys() {
-        return config.getKeys();
-    }
-
-    @SuppressWarnings("unchecked")
-    public static Iterator<String> getKeys( String k ) {
-        return config.getKeys( k );
-    }
-
-    /**
-     * @param key
-     * @return
-     * @see org.apache.commons.configuration.CompositeConfiguration#getKeys(java.lang.String)
-     */
-    public static String getString( String key ) {
-        return config.getString( key );
-    }
-
-    /**
-     * @param key
-     * @return
-     * @see org.apache.commons.configuration.CompositeConfiguration#getStringArray(java.lang.String)
-     */
-    public static String[] getStringArray( String key ) {
-        return config.getStringArray( key );
     }
 
     /**
@@ -171,8 +139,44 @@ public class SetupParameters {
      * @return
      * @see org.apache.commons.configuration.AbstractConfiguration#getInt(java.lang.String, int)
      */
-    public int getInt( String key, int defaultValue ) {
+    public static int getInt( String key, int defaultValue ) {
         return config.getInt( key, defaultValue );
+    }
+
+    /**
+     * @return
+     * @see org.apache.commons.configuration.CompositeConfiguration#getKeys()
+     */
+    @SuppressWarnings("unchecked")
+    public static Iterator<String> getKeys() {
+        return config.getKeys();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Iterator<String> getKeys( String k ) {
+        return config.getKeys( k );
+    }
+
+    /**
+     * @param key
+     * @return
+     * @see org.apache.commons.configuration.CompositeConfiguration#getKeys(java.lang.String)
+     */
+    public static String getString( String key ) {
+        return config.getString( key );
+    }
+
+    public static String getString( String key, String defaultValue ) {
+        return config.getString( key, defaultValue );
+    }
+
+    /**
+     * @param key
+     * @return
+     * @see org.apache.commons.configuration.CompositeConfiguration#getStringArray(java.lang.String)
+     */
+    public static String[] getStringArray( String key ) {
+        return config.getStringArray( key );
     }
 
 }

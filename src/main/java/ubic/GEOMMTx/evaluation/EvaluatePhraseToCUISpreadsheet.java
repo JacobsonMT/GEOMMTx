@@ -51,10 +51,6 @@ public class EvaluatePhraseToCUISpreadsheet {
         System.out.println( evaluator.getRejectedSUIs().size() );
     }
 
-    public EvaluatePhraseToCUISpreadsheet() {
-
-    }
-
     public Set<CUISUIPair> getRejectedSUIs() {
         return getRejectedSUIs( SetupParameters.getString( "geommtx.annotator.CUISUIEvaluationFile" ) );
     }
