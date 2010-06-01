@@ -22,6 +22,7 @@ import gov.nih.nlm.nls.nlp.textfeatures.Candidate;
 import gov.nih.nlm.nls.nlp.textfeatures.Phrase;
 import gov.nih.nlm.nls.nlp.textfeatures.UMLS_SemanticTypePointer;
 
+import java.io.File;
 import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.List;
@@ -94,7 +95,7 @@ public class MeSHMapperTest {
     public void testPredictions() throws Exception {
 
         CSVReader reader = new CSVReader( new InputStreamReader( this.getClass().getResourceAsStream(
-                "/testdata/LMD-FEATURES.txt" ) ), ',', '"' );
+                "/LMD-FEATURES.txt" ) ), ',', '"' );
         List<String[]> lines = reader.readAll();
         reader.close();
 
@@ -112,9 +113,9 @@ public class MeSHMapperTest {
             // if ( predictedCount > 10 ) break;
         }
         // mapper.printSemMap();
-        log.info( "Rejected anot:" + CUISUIrejects );
-        log.info( "predictedCount:" + predictedCount );
-        log.info( "zeroCalls:" + zeroCalls );
+        log.debug( "Rejected anot:" + CUISUIrejects );
+        log.debug( "predictedCount:" + predictedCount );
+        log.debug( "zeroCalls:" + zeroCalls );
 
         for ( String[] line : lines ) {
             String ID = line[0];
@@ -126,15 +127,15 @@ public class MeSHMapperTest {
 
             Set<String> predictions = getMeSHIDs( desc, false );
             for ( String prediction : predictions ) {
-                log.info( ID + "|desc|" + prediction );
+                log.debug( ID + "|desc|" + prediction );
             }
 
             if ( predictions.size() == 0 ) zeroCalls++;
             predictedCount += predictions.size();
         }
-        log.info( "Rejected anot:" + CUISUIrejects );
-        log.info( "predictedCount:" + predictedCount );
-        log.info( "zeroCalls:" + zeroCalls );
+        log.debug( "Rejected anot:" + CUISUIrejects );
+        log.debug( "predictedCount:" + predictedCount );
+        log.debug( "zeroCalls:" + zeroCalls );
 
     }
 
@@ -153,11 +154,13 @@ public class MeSHMapperTest {
         rejectedConcepts.add( "Carcinoma" );
         setRejectedConcepts( rejectedConcepts );
 
-        log.info( getMeSHIDs( "Juvenile Myoclonic Epilepsy", true ) );
+        log.debug( getMeSHIDs( "Juvenile Myoclonic Epilepsy", true ) );
         // read in spreadsheet
         int howMany = 0;
-        HSSFSheet sheet = ExcelUtil.getSheetFromFile( "/media/disk/SPOMIMtoMeSH.xls", "Sheet1" );
-        for ( int i = 0; i < 400; i++ ) {
+        HSSFSheet sheet = ExcelUtil.getSheetFromFile( SetupParameters.getString( "geommtx.home" ) + File.separator
+                + "/src/test/resources/SPOMIMtoMeSH.xls", "Sheet1" );
+        int stopAfter = 10;
+        for ( int i = 0; i < stopAfter; i++ ) {
             // get curated set for column e(pos 4)
             StringTokenizer MeSHBreaker = new StringTokenizer( ExcelUtil.getValue( sheet, i, 4 ), " " );
             Set<String> answers = new HashSet<String>();
@@ -175,7 +178,7 @@ public class MeSHMapperTest {
                 continue;
             }
 
-            log.info( ExcelUtil.getValue( sheet, i, 1 ) );
+            log.debug( ExcelUtil.getValue( sheet, i, 1 ) );
 
             // the input text/description
             // get text from col C (pos 2)
@@ -186,7 +189,7 @@ public class MeSHMapperTest {
             }
 
         }
-        log.info( "Descriptions seen:" + howMany );
+        log.debug( "Descriptions seen:" + howMany );
         printStats();
     }
 

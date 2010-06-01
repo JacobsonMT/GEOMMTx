@@ -108,7 +108,7 @@
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-					<argLine>-ea -Xmx3200m -Djava.awt.headless=true</argLine>
+					<argLine>-ea -Xmx5g -Djava.awt.headless=true</argLine>
 					<reportsDirectory>target/surefire-reports</reportsDirectory>
 					<includes>
 						<include>**/Test*.java</include>
