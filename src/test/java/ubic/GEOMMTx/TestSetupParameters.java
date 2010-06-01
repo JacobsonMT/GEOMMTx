@@ -28,14 +28,13 @@ import org.junit.Test;
 import ubic.GEOMMTx.util.SetupParameters;
 
 /**
- * TODO Document Me
+ * Test of options setting.
  * 
  * @author paul
  * @version $Id$
  */
 public class TestSetupParameters {
 
-    @SuppressWarnings("unchecked")
     @Test
     public void test() {
         Iterator<String> i = SetupParameters.getKeys( "geommtx.annotator" );
