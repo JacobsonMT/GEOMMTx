@@ -108,7 +108,7 @@
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-					<argLine>-ea -Xmx1200m -Djava.awt.headless=true</argLine>
+					<argLine>-ea -Xmx3200m -Djava.awt.headless=true</argLine>
 					<reportsDirectory>target/surefire-reports</reportsDirectory>
 					<includes>
 						<include>**/Test*.java</include>
@@ -139,7 +139,7 @@
 			<version>1.0.9</version>
 			<type>jar</type>
 		</dependency>
-				<dependency>
+		<dependency>
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache-core</artifactId>
 			<version>1.7.0</version>
@@ -180,6 +180,11 @@
 			<version>2.4C</version>
 		</dependency>
 		<dependency>
+			<groupId>mtj</groupId>
+			<artifactId>mtj</artifactId>
+			<version>0.9.8</version>
+		</dependency>
+		<dependency>
 			<groupId>com.hp.hpl.jena</groupId>
 			<artifactId>jena</artifactId>
 			<version>2.6.0</version>
@@ -198,7 +203,7 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.5.6</version>
+			<version>1.5.8</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>

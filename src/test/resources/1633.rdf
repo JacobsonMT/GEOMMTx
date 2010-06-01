@@ -1,0 +1,229 @@
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:j.0="http://bioinformatics.ubc.ca/Gemma/ws/xml/gemmaAnnotations.owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" > 
+  <rdf:Description rdf:nodeID="A0">
+    <j.0:spanEnd rdf:datatype="http://www.w3.org/2001/XMLSchema#long">29</j.0:spanEnd>
+    <j.0:spanStart rdf:datatype="http://www.w3.org/2001/XMLSchema#long">0</j.0:spanStart>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Endothelial adherens junctions</rdfs:label>
+    <j.0:hasMention rdf:nodeID="A1"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A2">
+    <j.0:hasScore rdf:datatype="http://www.w3.org/2001/XMLSchema#long">1000</j.0:hasScore>
+    <j.0:hasSUI rdf:resource="http://www.purl.org/umls/umls#S0053557"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Intercellular Junctions</rdfs:label>
+    <j.0:hasCUI rdf:resource="http://www.purl.org/umls/umls#C0021721"/>
+    <j.0:mappedTerm rdf:resource="http://purl.org/obo/owl/FMA#FMA_67945"/>
+    <j.0:mappedTerm rdf:resource="http://purl.org/obo/owl/FMA#FMA_67394"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A3">
+    <j.0:spanEnd rdf:datatype="http://www.w3.org/2001/XMLSchema#long">53</j.0:spanEnd>
+    <j.0:spanStart rdf:datatype="http://www.w3.org/2001/XMLSchema#long">39</j.0:spanStart>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">tight junctions</rdfs:label>
+    <j.0:hasMention rdf:nodeID="A4"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A5">
+    <j.0:spanEnd rdf:datatype="http://www.w3.org/2001/XMLSchema#long">579</j.0:spanEnd>
+    <j.0:spanStart rdf:datatype="http://www.w3.org/2001/XMLSchema#long">565</j.0:spanStart>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">by VE-cadherin</rdfs:label>
+    <j.0:hasMention rdf:nodeID="A6"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A7">
+    <j.0:hasScore rdf:datatype="http://www.w3.org/2001/XMLSchema#long">861</j.0:hasScore>
+    <j.0:hasSUI rdf:resource="http://www.purl.org/umls/umls#S1246901"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Physical activity</rdfs:label>
+    <j.0:hasCUI rdf:resource="http://www.purl.org/umls/umls#C0026606"/>
+    <j.0:mappedTerm rdf:resource="http://purl.org/nbirn/birnlex/ontology/BIRNLex-SenseCogBehavior.owl#birnlex_1862"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://bioinformatics.ubc.ca/Gemma/experiment/1633">
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/bioAssay/61798/description"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/bioAssay/61805/name"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/bioAssay/61803/name"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/primaryReference/784/title"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/experimentalDesign/1903/description"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/bioAssay/61798/name"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/experiment/1633/description"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/bioAssay/61791/name"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/bioAssay/61804/description"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/bioAssay/61795/name"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/bioAssay/61800/name"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/bioAssay/61790/description"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/bioAssay/61796/name"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/bioAssay/61792/name"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/bioAssay/61790/name"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/bioAssay/61795/description"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/bioAssay/61805/description"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/bioAssay/61797/name"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/bioAssay/61794/name"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/bioAssay/61793/name"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/bioAssay/61797/description"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/bioAssay/61802/name"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/primaryReference/784/abstract"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/bioAssay/61801/description"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/bioAssay/61791/description"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/bioAssay/61803/description"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/bioAssay/61802/description"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/experiment/1633/name"/>
+    <rdfs:label>GSE11674</rdfs:label>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/bioAssay/61804/name"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/bioAssay/61800/description"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/bioAssay/61799/description"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/bioAssay/61794/description"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/bioAssay/61796/description"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/bioAssay/61793/description"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/bioAssay/61801/name"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/bioAssay/61792/description"/>
+    <j.0:describedBy rdf:resource="http://bioinformatics.ubc.ca/Gemma/bioAssay/61799/name"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A8">
+    <j.0:hasScore rdf:datatype="http://www.w3.org/2001/XMLSchema#long">1000</j.0:hasScore>
+    <j.0:hasSUI rdf:resource="http://www.purl.org/umls/umls#S1344662"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Cadherins</rdfs:label>
+    <j.0:hasCUI rdf:resource="http://www.purl.org/umls/umls#C0006631"/>
+    <j.0:mappedTerm rdf:resource="http://purl.org/obo/owl/FMA#FMA_61790"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A9">
+    <j.0:spanEnd rdf:datatype="http://www.w3.org/2001/XMLSchema#long">167</j.0:spanEnd>
+    <j.0:spanStart rdf:datatype="http://www.w3.org/2001/XMLSchema#long">150</j.0:spanStart>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adherens junctions</rdfs:label>
+    <j.0:hasMention rdf:nodeID="A10"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://bioinformatics.ubc.ca/Gemma/primaryReference/784/title">
+    <j.0:hasPhrase rdf:nodeID="A3"/>
+    <j.0:hasPhrase rdf:nodeID="A0"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A11">
+    <j.0:spanEnd rdf:datatype="http://www.w3.org/2001/XMLSchema#long">669</j.0:spanEnd>
+    <j.0:spanStart rdf:datatype="http://www.w3.org/2001/XMLSchema#long">661</j.0:spanStart>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">-cadherin</rdfs:label>
+    <j.0:hasMention rdf:nodeID="A8"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A12">
+    <j.0:spanEnd rdf:datatype="http://www.w3.org/2001/XMLSchema#long">138</j.0:spanEnd>
+    <j.0:spanStart rdf:datatype="http://www.w3.org/2001/XMLSchema#long">124</j.0:spanStart>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">tight junctions</rdfs:label>
+    <j.0:hasMention rdf:nodeID="A13"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A14">
+    <j.0:spanEnd rdf:datatype="http://www.w3.org/2001/XMLSchema#long">172</j.0:spanEnd>
+    <j.0:spanStart rdf:datatype="http://www.w3.org/2001/XMLSchema#long">169</j.0:spanStart>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">(AJs</rdfs:label>
+    <j.0:hasMention rdf:nodeID="A15"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://bioinformatics.ubc.ca/Gemma/primaryReference/784/abstract">
+    <j.0:hasPhrase rdf:nodeID="A16"/>
+    <j.0:hasPhrase rdf:nodeID="A12"/>
+    <j.0:hasPhrase rdf:nodeID="A9"/>
+    <j.0:hasPhrase rdf:nodeID="A17"/>
+    <j.0:hasPhrase rdf:nodeID="A11"/>
+    <j.0:hasPhrase rdf:nodeID="A14"/>
+    <j.0:hasPhrase rdf:nodeID="A18"/>
+    <j.0:hasPhrase rdf:nodeID="A19"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A19">
+    <j.0:spanEnd rdf:datatype="http://www.w3.org/2001/XMLSchema#long">867</j.0:spanEnd>
+    <j.0:spanStart rdf:datatype="http://www.w3.org/2001/XMLSchema#long">857</j.0:spanStart>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">between AJs</rdfs:label>
+    <j.0:hasMention rdf:nodeID="A20"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A21">
+    <j.0:spanEnd rdf:datatype="http://www.w3.org/2001/XMLSchema#long">139</j.0:spanEnd>
+    <j.0:spanStart rdf:datatype="http://www.w3.org/2001/XMLSchema#long">122</j.0:spanStart>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">with the same line</rdfs:label>
+    <j.0:hasMention rdf:nodeID="A22"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A17">
+    <j.0:spanEnd rdf:datatype="http://www.w3.org/2001/XMLSchema#long">418</j.0:spanEnd>
+    <j.0:spanStart rdf:datatype="http://www.w3.org/2001/XMLSchema#long">413</j.0:spanStart>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">at AJs</rdfs:label>
+    <j.0:hasMention rdf:nodeID="A23"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A1">
+    <j.0:hasScore rdf:datatype="http://www.w3.org/2001/XMLSchema#long">901</j.0:hasScore>
+    <j.0:hasSUI rdf:resource="http://www.purl.org/umls/umls#S2004620"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Adherens Junction</rdfs:label>
+    <j.0:hasCUI rdf:resource="http://www.purl.org/umls/umls#C0887872"/>
+    <j.0:mappedTerm rdf:resource="http://purl.org/obo/owl/FMA#FMA_67400"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A16">
+    <j.0:spanEnd rdf:datatype="http://www.w3.org/2001/XMLSchema#long">22</j.0:spanEnd>
+    <j.0:spanStart rdf:datatype="http://www.w3.org/2001/XMLSchema#long">0</j.0:spanStart>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Intercellular junctions</rdfs:label>
+    <j.0:hasMention rdf:nodeID="A2"/>
+    <j.0:hasMention rdf:nodeID="A24"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A4">
+    <j.0:hasScore rdf:datatype="http://www.w3.org/2001/XMLSchema#long">1000</j.0:hasScore>
+    <j.0:hasSUI rdf:resource="http://www.purl.org/umls/umls#S0409828"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Tight Junctions</rdfs:label>
+    <j.0:hasCUI rdf:resource="http://www.purl.org/umls/umls#C0242358"/>
+    <j.0:mappedTerm rdf:resource="http://purl.org/obo/owl/FMA#FMA_67397"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A13">
+    <j.0:hasScore rdf:datatype="http://www.w3.org/2001/XMLSchema#long">1000</j.0:hasScore>
+    <j.0:hasSUI rdf:resource="http://www.purl.org/umls/umls#S0409828"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Tight Junctions</rdfs:label>
+    <j.0:hasCUI rdf:resource="http://www.purl.org/umls/umls#C0242358"/>
+    <j.0:mappedTerm rdf:resource="http://purl.org/obo/owl/FMA#FMA_67397"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A20">
+    <j.0:hasScore rdf:datatype="http://www.w3.org/2001/XMLSchema#long">966</j.0:hasScore>
+    <j.0:hasSUI rdf:resource="http://www.purl.org/umls/umls#S6128198"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Zonula Adherens</rdfs:label>
+    <j.0:hasCUI rdf:resource="http://www.purl.org/umls/umls#C0230613"/>
+    <j.0:mappedTerm rdf:resource="http://purl.org/obo/owl/FMA#FMA_67407"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A6">
+    <j.0:hasScore rdf:datatype="http://www.w3.org/2001/XMLSchema#long">861</j.0:hasScore>
+    <j.0:hasSUI rdf:resource="http://www.purl.org/umls/umls#S1344662"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Cadherins</rdfs:label>
+    <j.0:hasCUI rdf:resource="http://www.purl.org/umls/umls#C0006631"/>
+    <j.0:mappedTerm rdf:resource="http://purl.org/obo/owl/FMA#FMA_61790"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A18">
+    <j.0:spanEnd rdf:datatype="http://www.w3.org/2001/XMLSchema#long">543</j.0:spanEnd>
+    <j.0:spanStart rdf:datatype="http://www.w3.org/2001/XMLSchema#long">518</j.0:spanStart>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">of the inhibitory activity</rdfs:label>
+    <j.0:hasMention rdf:nodeID="A7"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A10">
+    <j.0:hasScore rdf:datatype="http://www.w3.org/2001/XMLSchema#long">1000</j.0:hasScore>
+    <j.0:hasSUI rdf:resource="http://www.purl.org/umls/umls#S2004620"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Adherens Junction</rdfs:label>
+    <j.0:hasCUI rdf:resource="http://www.purl.org/umls/umls#C0887872"/>
+    <j.0:mappedTerm rdf:resource="http://purl.org/obo/owl/FMA#FMA_67400"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A15">
+    <j.0:hasScore rdf:datatype="http://www.w3.org/2001/XMLSchema#long">966</j.0:hasScore>
+    <j.0:hasSUI rdf:resource="http://www.purl.org/umls/umls#S6128198"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Zonula Adherens</rdfs:label>
+    <j.0:hasCUI rdf:resource="http://www.purl.org/umls/umls#C0230613"/>
+    <j.0:mappedTerm rdf:resource="http://purl.org/obo/owl/FMA#FMA_67407"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A23">
+    <j.0:hasScore rdf:datatype="http://www.w3.org/2001/XMLSchema#long">966</j.0:hasScore>
+    <j.0:hasSUI rdf:resource="http://www.purl.org/umls/umls#S6128198"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Zonula Adherens</rdfs:label>
+    <j.0:hasCUI rdf:resource="http://www.purl.org/umls/umls#C0230613"/>
+    <j.0:mappedTerm rdf:resource="http://purl.org/obo/owl/FMA#FMA_67407"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A22">
+    <j.0:hasScore rdf:datatype="http://www.w3.org/2001/XMLSchema#long">861</j.0:hasScore>
+    <j.0:hasSUI rdf:resource="http://www.purl.org/umls/umls#S0676785"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Linear</rdfs:label>
+    <j.0:hasCUI rdf:resource="http://www.purl.org/umls/umls#C0205132"/>
+    <j.0:mappedTerm rdf:resource="http://purl.org/obo/owl/FMA#FMA_50595"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A24">
+    <j.0:hasScore rdf:datatype="http://www.w3.org/2001/XMLSchema#long">861</j.0:hasScore>
+    <j.0:hasSUI rdf:resource="http://www.purl.org/umls/umls#S0053556"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Intercellular Junctions</rdfs:label>
+    <j.0:hasCUI rdf:resource="http://www.purl.org/umls/umls#C0021721"/>
+    <j.0:mappedTerm rdf:resource="http://purl.org/obo/owl/FMA#FMA_67945"/>
+    <j.0:mappedTerm rdf:resource="http://purl.org/obo/owl/FMA#FMA_67394"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://bioinformatics.ubc.ca/Gemma/experiment/1633/description">
+    <j.0:hasPhrase rdf:nodeID="A21"/>
+    <j.0:hasPhrase rdf:nodeID="A5"/>
+  </rdf:Description>
+</rdf:RDF>

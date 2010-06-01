@@ -20,7 +20,11 @@ package ubic.GEOMMTx;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+
 import org.junit.Test;
+
+import ubic.GEOMMTx.util.SetupParameters;
 
 /**
  * TODO Document Me
@@ -32,6 +36,7 @@ public class ProjectRDFModelToolsTest {
 
     @Test
     public void test() throws Exception {
-        assertTrue( ProjectRDFModelTools.getMentionCount( "mergedRDFBirnLexUpdate.afterUseless.rdf" ) > 0 );
+        assertTrue( ProjectRDFModelTools.getMentionCount( SetupParameters.getString( "geommtx.home" ) + File.separator
+                + "/src/test/resources/1633.rdf" ) > 0 );
     }
 }
