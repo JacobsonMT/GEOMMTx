@@ -22,6 +22,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.StringWriter;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 
 import ubic.GEOMMTx.mappers.BirnLexMapper;
@@ -32,10 +34,14 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
+ * Test of text scanning into ontology terms.
+ * 
  * @author paul
  * @version $Id$
  */
 public class Text2OwlTest {
+
+    private static Log log = LogFactory.getLog( Text2OwlTest.class );
 
     @Test
     public void test() throws Exception {
@@ -54,7 +60,7 @@ public class Text2OwlTest {
         fout.close();
 
         String results = fout.toString();
-        System.err.println( results );
+        log.debug( results );
         assertTrue( results.contains( "purl.org" ) );
         assertTrue( results.contains( "BIRNLex" ) );
 

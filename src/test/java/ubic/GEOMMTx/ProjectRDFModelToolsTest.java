@@ -27,7 +27,7 @@ import org.junit.Test;
 import ubic.GEOMMTx.util.SetupParameters;
 
 /**
- * TODO Document Me
+ * Test of ProjectRDFModelTools
  * 
  * @author paul
  * @version $Id$

@@ -22,8 +22,6 @@ import gov.nih.nlm.nls.nlp.textfeatures.Candidate;
 import gov.nih.nlm.nls.nlp.textfeatures.Phrase;
 import gov.nih.nlm.nls.nlp.textfeatures.UMLS_SemanticTypePointer;
 
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.List;
@@ -49,6 +47,7 @@ import au.com.bytecode.opencsv.CSVReader;
  * Basically just a class that calls MMTx to get MeSH terms from free text
  * 
  * @author leon
+ * @version $Id$
  */
 public class MeSHMapperTest {
 
@@ -105,7 +104,7 @@ public class MeSHMapperTest {
 
             Set<String> predictions = getMeSHIDs( name, false );
             for ( String prediction : predictions ) {
-                System.out.println( ID + "|name|" + prediction );
+                log.info( ID + "|name|" + prediction );
             }
 
             if ( predictions.size() == 0 ) zeroCalls++;
@@ -113,9 +112,9 @@ public class MeSHMapperTest {
             // if ( predictedCount > 10 ) break;
         }
         // mapper.printSemMap();
-        System.out.println( "Rejected anot:" + CUISUIrejects );
-        System.out.println( "predictedCount:" + predictedCount );
-        System.out.println( "zeroCalls:" + zeroCalls );
+        log.info( "Rejected anot:" + CUISUIrejects );
+        log.info( "predictedCount:" + predictedCount );
+        log.info( "zeroCalls:" + zeroCalls );
 
         for ( String[] line : lines ) {
             String ID = line[0];
@@ -127,7 +126,7 @@ public class MeSHMapperTest {
 
             Set<String> predictions = getMeSHIDs( desc, false );
             for ( String prediction : predictions ) {
-                System.out.println( ID + "|desc|" + prediction );
+                log.info( ID + "|desc|" + prediction );
             }
 
             if ( predictions.size() == 0 ) zeroCalls++;

@@ -26,6 +26,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -34,10 +36,13 @@ import org.junit.Test;
  * @version $Id$
  */
 public class GetUMLSCodesTest {
-    static GetUMLSCodes umlscodez;
+
+    private static Log log = LogFactory.getLog( GetUMLSCodesTest.class );
+
+    private GetUMLSCodes umlscodez;
 
     @BeforeClass
-    public static void setup() throws Exception {
+    public void setup() throws Exception {
         umlscodez = new GetUMLSCodes();
     }
 
@@ -51,7 +56,7 @@ public class GetUMLSCodesTest {
     public void meSHTest() throws Exception {
         Map<String, Set<UMLSSourceCode>> map = umlscodez.getUMLSCodeMap();
         Set<String> meshCodes = new HashSet<String>();
-        System.out.println( map.get( "C0030567" ) );
+        log.info( map.get( "C0030567" ) );
 
         String name = "//umlsks.nlm.nih.gov/KSSRetriever";
         int bothC;
@@ -67,15 +72,15 @@ public class GetUMLSCodesTest {
 
         char[] result = retriever.getSemanticType( "2008AA", "C0001175" );
         String conceptName = new String( result );
-        System.out.println( "Concept Name in XML: " + conceptName );
+        log.info( "Concept Name in XML: " + conceptName );
 
         result = retriever.getSemanticType( "2008AA", "C0001175" );
         conceptName = new String( result );
-        System.out.println( "Concept Name in XML: " + conceptName );
+        log.info( "Concept Name in XML: " + conceptName );
 
         int i = 0;
         for ( String CUI : map.keySet() ) {
-            if ( i++ % 10000 == 0 ) System.out.println( ( i - 1.0 ) / 1170000.0 );
+            if ( i++ % 10000 == 0 ) log.info( ( i - 1.0 ) / 1170000.0 );
 
             boolean both = false;
             boolean mesh = false;
@@ -103,11 +108,11 @@ public class GetUMLSCodesTest {
             if ( omim ) omimC++;
         }
 
-        System.out.println( "OMIM=" + omimC );
-        System.out.println( "Mesh=" + meshC );
-        System.out.println( "both=" + bothC );
-        System.out.println( "Unique Mesh codes=" + meshCodes.size() );
-        System.out.println( "Size:" + map.size() );
+        log.info( "OMIM=" + omimC );
+        log.info( "Mesh=" + meshC );
+        log.info( "both=" + bothC );
+        log.info( "Unique Mesh codes=" + meshCodes.size() );
+        log.info( "Size:" + map.size() );
 
     }
 
