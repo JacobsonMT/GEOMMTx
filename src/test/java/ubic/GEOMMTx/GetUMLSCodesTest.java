@@ -39,10 +39,10 @@ public class GetUMLSCodesTest {
 
     private static Log log = LogFactory.getLog( GetUMLSCodesTest.class );
 
-    private GetUMLSCodes umlscodez;
+    private static GetUMLSCodes umlscodez;
 
     @BeforeClass
-    public void setup() throws Exception {
+    public static void setup() throws Exception {
         umlscodez = new GetUMLSCodes();
     }
 
