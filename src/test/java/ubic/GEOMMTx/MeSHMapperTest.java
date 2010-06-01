@@ -22,7 +22,9 @@ import gov.nih.nlm.nls.nlp.textfeatures.Candidate;
 import gov.nih.nlm.nls.nlp.textfeatures.Phrase;
 import gov.nih.nlm.nls.nlp.textfeatures.UMLS_SemanticTypePointer;
 
+import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +40,7 @@ import org.junit.Test;
 
 import ubic.GEOMMTx.evaluation.CUISUIPair;
 import ubic.GEOMMTx.evaluation.EvaluatePhraseToCUISpreadsheet;
+import ubic.GEOMMTx.util.SetupParameters;
 import ubic.basecode.dataStructure.CountingMap;
 import ubic.basecode.io.excel.ExcelUtil;
 import au.com.bytecode.opencsv.CSVReader;
@@ -52,28 +55,27 @@ public class MeSHMapperTest {
     protected static Log log = LogFactory.getLog( MeSHMapperTest.class );
     static String[] PHRASE_PARAMS = new String[] { "--no_acros_abbrs", "--term_processing", "--ignore_word_order",
             "--allow_concept_gaps" };
-    static String[] TEXT_PARAMS = new String[] { "--an_derivational_variants", "--no_acros_abbrs" };
-    public int CUISUIrejects = 0;
-    Set<String> acceptedSemanticTypes;
+    private int CUISUIrejects = 0;
+    private Set<String> acceptedSemanticTypes;
 
-    int answerCount;
-    int atLeastOne;
-    static GetUMLSCodes mapper;
-    int matchedCount;
-    static MMTxRunner mmtx;
-    int predictedCount;
-    Set<String> rejectedConcepts;
-    static Set<CUISUIPair> rejectedCUISUIPairs;
+    private int answerCount;
+    private int atLeastOne;
+    private static GetUMLSCodes mapper;
+    private int matchedCount;
+    private static MMTxRunner mmtx;
+    private int predictedCount;
+    private Set<String> rejectedConcepts;
+    private static Set<CUISUIPair> rejectedCUISUIPairs;
 
-    CountingMap<String> semTypeMap;
+    private CountingMap<String> semTypeMap;
 
-    static Map<String, Set<UMLSSourceCode>> sourceMap;
+    private static Map<String, Set<UMLSSourceCode>> sourceMap;
 
-    int zeroCalls;
+    private int zeroCalls;
 
     @BeforeClass
     public static void setupOnce() throws Exception {
-        mmtx = new MMTxRunner( null, 0, PHRASE_PARAMS );
+        mmtx = new MMTxRunner( null, 0, SetupParameters.getStringArray( "geommtx.annotator.mmtxOptions" ) );
         mapper = new GetUMLSCodes();
         sourceMap = mapper.getUMLSCodeMap();
         EvaluatePhraseToCUISpreadsheet evalSheet = new EvaluatePhraseToCUISpreadsheet();
@@ -92,7 +94,8 @@ public class MeSHMapperTest {
     @Test
     public void testPredictions() throws Exception {
 
-        CSVReader reader = new CSVReader( new FileReader( "/testdata/LMD-FEATURES.txt" ), ',', '"' );
+        CSVReader reader = new CSVReader( new InputStreamReader( this.getClass().getResourceAsStream(
+                "/testdata/LMD-FEATURES.txt" ) ), ',', '"' );
         List<String[]> lines = reader.readAll();
         reader.close();
 
