@@ -56,8 +56,8 @@ public class BIRNLexFMANullsFilter extends AbstractFilter implements URIFilter {
         this.BIRN = birn;
 
         // load FMA and birnlex
-        if ( FMA.isEnabled() ) {
-            FMA.init( false );
+//        if ( FMA.isEnabled() ) {
+            FMA.startInitializationThread( false );
             while ( !FMA.isOntologyLoaded() ) {
                 try {
                     Thread.sleep( 2500 );
@@ -65,10 +65,10 @@ public class BIRNLexFMANullsFilter extends AbstractFilter implements URIFilter {
                     e.printStackTrace();
                 }
             }
-        }
+//        }
 
-        if ( BIRN.isEnabled() ) {
-            BIRN.init( false );
+//        if ( BIRN.isEnabled() ) {
+            BIRN.startInitializationThread( false );
             while ( !BIRN.isOntologyLoaded() ) {
                 try {
                     Thread.sleep( 2500 );
@@ -76,7 +76,7 @@ public class BIRNLexFMANullsFilter extends AbstractFilter implements URIFilter {
                     e.printStackTrace();
                 }
             }
-        }
+//        }
     }
 
     /*

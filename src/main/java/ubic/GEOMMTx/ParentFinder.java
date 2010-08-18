@@ -97,7 +97,7 @@ public class ParentFinder {
     }
 
     private void loadOntology( AbstractOntologyService hd ) throws InterruptedException {
-        hd.init( true );
+        hd.startInitializationThread( true );
         while ( !hd.isOntologyLoaded() ) {
             Thread.sleep( 5000 );
         }
