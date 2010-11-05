@@ -294,18 +294,18 @@
 		<site>
 			<id>katz</id>
 			<name>broca</name>
-			<url>scp://katz.pavlab.chibi.ubc.ca:/space/gemmaData/geommtx-site
+			<url>file:///space/gemmaData/geommtx-site
 			</url>
 		</site>
 		<repository>
 			<id>repo</id>
 			<name>Pavlab</name>
-			<url>scp://katz.pavlab.chibi.ubc.ca:/space/maven2</url>
+			<url>file:///space/maven2</url>
 		</repository>
 		<snapshotRepository>
 			<id>repo</id>
 			<name>Pavlab</name>
-			<url>scp://katz.pavlab.chibi.ubc.ca:/space/maven2</url>
+			<url>file:///space/maven2</url>
 		</snapshotRepository>
 	</distributionManagement>
 </project>
