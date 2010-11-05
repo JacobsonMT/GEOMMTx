@@ -41,20 +41,32 @@ public class GetUMLSCodes {
 
     private Map<String, Set<UMLSSourceCode>> SABMap;
 
+    /**
+     * If true, limit hwo many codes are read
+     */
+    private boolean testMode = false;
+
+    private static final int TEST_MODE_LIMIT = 100000;
+
     protected static Log log = LogFactory.getLog( GetUMLSCodes.class );
 
-    public GetUMLSCodes() {
-        this( SetupParameters.getString( "geommtx.annotator.cui_code_loc" ) );
+    public GetUMLSCodes( boolean testMode ) {
+        this( SetupParameters.getString( "geommtx.annotator.cui_code_loc" ), testMode );
     }
 
     // location of MRCONSO.RRF
-    public GetUMLSCodes( String location ) {
+    public GetUMLSCodes( String location, boolean testMode ) {
+        this.testMode = testMode;
         this.location = location;
         try {
             loadUMLSCodeMap();
         } catch ( IOException e ) {
             throw new RuntimeException( e );
         }
+    }
+
+    public GetUMLSCodes() {
+        this( false );
     }
 
     /**
@@ -100,6 +112,10 @@ public class GetUMLSCodes {
 
             if ( ++count % 500000 == 0 ) {
                 log.info( count + " UMLS codes processed ..." );
+            }
+
+            if ( testMode && count > TEST_MODE_LIMIT ) {
+                break;
             }
         }
         f.close();

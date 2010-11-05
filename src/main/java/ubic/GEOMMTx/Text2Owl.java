@@ -107,7 +107,7 @@ public class Text2Owl {
         log.info( "Initializing MMTx..." );
         mmtx = new MMTxRunner( cacheManager, threshold, options );
         CUIMappers = new ArrayList<CUIMapper>();
-        umlscodes = new GetUMLSCodes();
+        umlscodes = new GetUMLSCodes( true );
         codeMap = umlscodes.getUMLSCodeMap();
         log.info( "... ready" );
     }

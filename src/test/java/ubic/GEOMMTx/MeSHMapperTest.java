@@ -76,7 +76,7 @@ public class MeSHMapperTest {
     @BeforeClass
     public static void setupOnce() throws Exception {
         mmtx = new MMTxRunner( null, 0, SetupParameters.getStringArray( "geommtx.annotator.mmtxOptions" ) );
-        mapper = new GetUMLSCodes();
+        mapper = new GetUMLSCodes( true );
         sourceMap = mapper.getUMLSCodeMap();
         EvaluatePhraseToCUISpreadsheet evalSheet = new EvaluatePhraseToCUISpreadsheet();
         rejectedCUISUIPairs = evalSheet.getRejectedSUIs();

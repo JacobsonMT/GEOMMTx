@@ -40,13 +40,13 @@ public class GetUMLSCodesTest {
 
     @BeforeClass
     public static void setup() throws Exception {
-        umlscodez = new GetUMLSCodes();
+        umlscodez = new GetUMLSCodes( true );
     }
 
     @Test
     public void test() throws Exception {
         Map<String, Set<UMLSSourceCode>> map = umlscodez.getUMLSCodeMap();
-        assertNotNull( map.get( "C0814999" ) );
+        assertNotNull( map.get( "C0022059" ) );
     }
 
     /**

@@ -36,7 +36,7 @@ public class FMALiteMapperTest {
 
     @Test
     public void test() {
-        GetUMLSCodes codes = new GetUMLSCodes();
+        GetUMLSCodes codes = new GetUMLSCodes( true );
         FMALiteMapper fma = new FMALiteMapper();
         Set<UMLSSourceCode> map = codes.getUMLSCodeMap().get( "C0024109" );
 
