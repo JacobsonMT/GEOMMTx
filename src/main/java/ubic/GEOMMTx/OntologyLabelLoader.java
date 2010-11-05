@@ -31,6 +31,12 @@ import com.hp.hpl.jena.rdf.model.Selector;
 import com.hp.hpl.jena.rdf.model.SimpleSelector;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
+/**
+ * TODO Document Me
+ * 
+ * @author lfrench
+ * @version $Id$
+ */
 public class OntologyLabelLoader {
     protected static Log log = LogFactory.getLog( OntologyLabelLoader.class );
 
@@ -40,11 +46,17 @@ public class OntologyLabelLoader {
         RDFNode nullNode = null;
         Selector labelSelector = new SimpleSelector( null, RDFS.label, nullNode );
 
-        OntModel birnLex = OntologyLoader.loadMemoryModel( "http://purl.org/nbirn/birnlex/ontology/birnlex.owl" );
-        log.info( "loaded birnLex..." );
-        model.add( birnLex.listStatements( labelSelector ) );
-        log.info( "Done merging Birnlex..." );
-        birnLex.close();
+        OntModel nifstd = OntologyLoader.loadMemoryModel( "http://ontology.neuinfo.org/NIF/nif-gemma.owl" );
+        log.info( "loaded nifstd..." );
+        model.add( nifstd.listStatements( labelSelector ) );
+        log.info( "Done merging nifstd..." );
+        nifstd.close();
+
+        // OntModel birnLex = OntologyLoader.loadMemoryModel( "http://purl.org/nbirn/birnlex/ontology/birnlex.owl" );
+        // log.info( "loaded birnLex..." );
+        // model.add( birnLex.listStatements( labelSelector ) );
+        // log.info( "Done merging Birnlex..." );
+        // birnLex.close();
 
         OntModel FMAlite = OntologyLoader
                 .loadMemoryModel( "http://www.berkeleybop.org/ontologies/obo-all/fma_lite/fma_lite.owl" );
