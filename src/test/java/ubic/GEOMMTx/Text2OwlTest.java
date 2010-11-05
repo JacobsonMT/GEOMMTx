@@ -26,7 +26,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 
-import ubic.GEOMMTx.mappers.BirnLexMapper;
+import ubic.GEOMMTx.mappers.NIFSTDMapper;
 import ubic.GEOMMTx.util.SetupParameters;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -47,7 +47,7 @@ public class Text2OwlTest {
     public void test() throws Exception {
 
         Text2Owl text2Owl = new Text2Owl( null, 0, SetupParameters.getStringArray( "geommtx.annotator.mmtxOptions" ) );
-        text2Owl.addMapper( new BirnLexMapper() );
+        text2Owl.addMapper( new NIFSTDMapper() );
 
         Model model = ModelFactory.createDefaultModel();
         Resource root = model.createResource( "http://www.bioinformatics.ubca.ca/testing/umls#Sample" );
@@ -62,7 +62,7 @@ public class Text2OwlTest {
         String results = fout.toString();
         log.debug( results );
         assertTrue( results.contains( "purl.org" ) );
-        assertTrue( results.contains( "BIRNLex" ) );
+        assertTrue( results.contains( "NIF" ) );
 
     }
 

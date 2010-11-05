@@ -19,10 +19,7 @@
 package ubic.GEOMMTx;
 
 import static org.junit.Assert.assertNotNull;
-import gov.nih.nlm.kss.api.KSSRetrieverV5_0;
 
-import java.rmi.Naming;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 

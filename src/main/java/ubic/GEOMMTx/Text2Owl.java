@@ -44,6 +44,7 @@ import org.apache.commons.logging.LogFactory;
 import ubic.GEOMMTx.mappers.BirnLexMapper;
 import ubic.GEOMMTx.mappers.DiseaseOntologyMapper;
 import ubic.GEOMMTx.mappers.FMALiteMapper;
+import ubic.GEOMMTx.mappers.NIFSTDMapper;
 import ubic.GEOMMTx.util.SetupParameters;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -86,9 +87,14 @@ public class Text2Owl {
         this( cacheManager, SetupParameters.getInt( "geommtx.annotator.scoreThreshold" ), SetupParameters
                 .getStringArray( "geommtx.annotator.mmtxOptions" ) );
 
-        if ( SetupParameters.getBoolean( "geommtx.map.birnlex", true ) ) {
+        if ( SetupParameters.getBoolean( "geommtx.map.birnlex", false ) ) {
             addMapper( new BirnLexMapper() );
         }
+
+        if ( SetupParameters.getBoolean( "geommtx.map.nifstd", true ) ) {
+            addMapper( new NIFSTDMapper() );
+        }
+
         if ( SetupParameters.getBoolean( "geommtx.map.fma", true ) ) {
             addMapper( new FMALiteMapper() );
         }
