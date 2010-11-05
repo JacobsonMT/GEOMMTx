@@ -41,7 +41,6 @@ import net.sf.ehcache.CacheManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import ubic.GEOMMTx.mappers.BirnLexMapper;
 import ubic.GEOMMTx.mappers.DiseaseOntologyMapper;
 import ubic.GEOMMTx.mappers.FMALiteMapper;
 import ubic.GEOMMTx.mappers.NIFSTDMapper;
@@ -86,10 +85,6 @@ public class Text2Owl {
 
         this( cacheManager, SetupParameters.getInt( "geommtx.annotator.scoreThreshold" ), SetupParameters
                 .getStringArray( "geommtx.annotator.mmtxOptions" ) );
-
-        if ( SetupParameters.getBoolean( "geommtx.map.birnlex", false ) ) {
-            addMapper( new BirnLexMapper() );
-        }
 
         if ( SetupParameters.getBoolean( "geommtx.map.nifstd", true ) ) {
             addMapper( new NIFSTDMapper() );
