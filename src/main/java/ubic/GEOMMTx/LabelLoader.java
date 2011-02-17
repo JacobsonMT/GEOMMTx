@@ -57,7 +57,7 @@ public class LabelLoader {
      * @return label map
      */
     @SuppressWarnings("unchecked")
-    public static Map<String, String> readLabels() throws IOException {
+    public static Map<String, String> readLabels() {
 
         try {
             String labelFilePath = getLabelFilePath();
@@ -80,7 +80,7 @@ public class LabelLoader {
     /**
      * @return label map
      */
-    private static Map<String, String> writeLabels() throws IOException {
+    private static Map<String, String> writeLabels() {
 
         String labelFilePath = getLabelFilePath();
 
