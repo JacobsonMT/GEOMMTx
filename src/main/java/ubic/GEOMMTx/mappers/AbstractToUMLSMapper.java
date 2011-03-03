@@ -54,11 +54,11 @@ public abstract class AbstractToUMLSMapper implements CUIMapper {
     public AbstractToUMLSMapper() {
         super();
         try {
-            log.info( "getting " + getMainURL() );
+            log.info( "Getting " + getMainURL() );
             loadFromDisk();
             log.info( "loaded from disk, mappings:" + CUIMap.size() );
         } catch ( Exception e ) {
-            log.info( "can't load from disk, loading from ontology" );
+            log.info( "Can't load " + getMainURL() + " from disk, loading from ontology (" + e.getMessage() + ")" );
             loadFromOntology();
             log.info( "loaded, mappings:" + CUIMap.size() );
             save();
