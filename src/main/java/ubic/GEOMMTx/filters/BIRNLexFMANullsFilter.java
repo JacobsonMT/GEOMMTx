@@ -56,31 +56,32 @@ public class BIRNLexFMANullsFilter extends AbstractFilter implements URIFilter {
         this.BIRN = birn;
 
         // load FMA and birnlex
-//        if ( FMA.isEnabled() ) {
-            FMA.startInitializationThread( false );
-            while ( !FMA.isOntologyLoaded() ) {
-                try {
-                    Thread.sleep( 2500 );
-                } catch ( Exception e ) {
-                    e.printStackTrace();
-                }
+        // if ( FMA.isEnabled() ) {
+        FMA.startInitializationThread( true );
+        while ( !FMA.isOntologyLoaded() ) {
+            try {
+                Thread.sleep( 2500 );
+            } catch ( Exception e ) {
+                e.printStackTrace();
             }
-//        }
+        }
+        // }
 
-//        if ( BIRN.isEnabled() ) {
-            BIRN.startInitializationThread( false );
-            while ( !BIRN.isOntologyLoaded() ) {
-                try {
-                    Thread.sleep( 2500 );
-                } catch ( Exception e ) {
-                    e.printStackTrace();
-                }
+        // if ( BIRN.isEnabled() ) {
+        BIRN.startInitializationThread( true );
+        while ( !BIRN.isOntologyLoaded() ) {
+            try {
+                Thread.sleep( 2500 );
+            } catch ( Exception e ) {
+                e.printStackTrace();
             }
-//        }
+        }
+        // }
     }
 
     /*
      * (non-Javadoc)
+     * 
      * @see ubic.GEOMMTx.filters.URIFilter#accept(java.lang.String)
      */
     public boolean accept( String URI ) {
@@ -97,6 +98,7 @@ public class BIRNLexFMANullsFilter extends AbstractFilter implements URIFilter {
 
     /*
      * (non-Javadoc)
+     * 
      * @see ubic.GEOMMTx.filters.AbstractFilter#filter(com.hp.hpl.jena.rdf.model.Model)
      */
     @Override
@@ -135,6 +137,7 @@ public class BIRNLexFMANullsFilter extends AbstractFilter implements URIFilter {
 
     /*
      * (non-Javadoc)
+     * 
      * @see ubic.GEOMMTx.filters.AbstractFilter#getName()
      */
     @Override
