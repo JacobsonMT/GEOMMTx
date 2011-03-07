@@ -29,10 +29,8 @@ import java.util.Arrays;
 public class CUItoOntologySchema extends SpreadSheetSchema {
 
     public static void main( String[] args ) {
-        // TODO Auto-generated method stub
         CUItoOntologySchema test = new CUItoOntologySchema();
         System.out.println( "Header:" + Arrays.asList( test.getHeaderRow() ).toString() );
-
     }
 
     /**

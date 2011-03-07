@@ -68,14 +68,14 @@ public class DiseaseOntologyMapper extends AbstractToUMLSMapper {
         CUIMap = new HashMap<String, Set<String>>();
         model = OntologyLoader.loadMemoryModel( getMainURL() );
 
-        String queryString = "PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>                                                    \r\n"
-                + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>                                                    \r\n"
-                + "SELECT ?obj ?label ?dbcode                                                    \r\n"
-                + "WHERE  {                                                               \r\n"
-                + "    ?anon rdfs:label ?dbcode .                                                    \r\n"
-                + "    ?obj oboInOwl:hasDbXref ?anon .                                                    \r\n"
-                + "    ?obj rdfs:label ?label .                                                    \r\n"
-                + "    FILTER (REGEX(?dbcode, \"UMLS_CUI:\"))                                                    \r\n"
+        String queryString = "PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>    \r\n"
+                + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>    \r\n"
+                + "SELECT ?obj ?label ?dbcode          \r\n"
+                + "WHERE  {   \r\n"
+                + "    ?anon rdfs:label ?dbcode .    \r\n"
+                + "    ?obj oboInOwl:hasDbXref ?anon .   \r\n"
+                + "    ?obj rdfs:label ?label .      \r\n"
+                + "    FILTER (REGEX(?dbcode, \"UMLS_CUI:\"))   \r\n"
                 + "}";
 
         Query q = QueryFactory.create( queryString );
