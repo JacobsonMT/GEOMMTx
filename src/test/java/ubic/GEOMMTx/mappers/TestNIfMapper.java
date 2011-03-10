@@ -48,6 +48,12 @@ public class TestNIfMapper {
 
         assertTrue( map.size() > 0 );
 
+        // for ( String cui : test.CUIMap.keySet() ) {
+        // for ( String s : test.CUIMap.get( cui ) ) {
+        // System.err.println( s );
+        // }
+        // }
+
         Set<String> URL = test.convert( "C0024109", codes.getUMLSCodeMap().get( "C0024109" ) );
 
         int count = 0;

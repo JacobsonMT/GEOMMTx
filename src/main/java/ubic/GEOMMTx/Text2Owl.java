@@ -51,7 +51,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
 /**
- * TODO document me
+ * Performs the mapping of free text to terms from the ontologies.
  * 
  * @author lfrench
  * @version $Id$
@@ -129,6 +129,8 @@ public class Text2Owl {
     }
 
     /**
+     * The main entry point.
+     * 
      * @param text
      * @param root
      * @return
@@ -142,7 +144,7 @@ public class Text2Owl {
         // phrases, or chunks of the text
         List<Phrase> phrases = mmtx.getPhrases( text );
 
-        log.debug( phrases.size() + " phrases" );
+        // log.debug( phrases.size() + " phrases" );
 
         for ( Phrase p : phrases ) {
 
@@ -166,6 +168,7 @@ public class Text2Owl {
                             if ( mentionNode == null ) {
                                 mentionNode = model.createResource();
                             }
+                            log.debug( "Found " + URI );
                             mentionNode.addProperty( mappedTerm, model.createResource( URI ) );
                         }
                     }
