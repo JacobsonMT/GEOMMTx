@@ -18,6 +18,7 @@
  */
 package ubic.GEOMMTx.mappers;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -101,14 +102,13 @@ public abstract class AbstractToUMLSMapper implements CUIMapper {
      * @return
      */
     public String getFileName() {
-        return SetupParameters.getString( "geommtx.data", System.getProperty( "user.dir" ) )
+        return SetupParameters.getString( "geommtx.data", System.getProperty( "user.dir" ) ) + File.separatorChar
                 + this.getClass().getName() + ".mappings";
     }
 
     /**
      * @throws Exception
      */
-    @SuppressWarnings("unchecked")
     public void loadFromDisk() throws Exception {
         ObjectInputStream o = new ObjectInputStream( new FileInputStream( getFileName() ) );
         CUIMap = ( Map<String, Set<String>> ) o.readObject();
