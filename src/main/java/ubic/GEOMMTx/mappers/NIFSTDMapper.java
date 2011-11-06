@@ -57,9 +57,9 @@ public class NIFSTDMapper extends AbstractToUMLSMapper {
                 + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
                 + "SELECT ?class ?label ?cui\n"
                 + "WHERE  {\n"
-                + "   ?class obo_annot:UmlsCui ?cui .                                      \n"
-                + "   ?class rdfs:label ?label .\n                                               "
-                + "}                     ";
+                + "   ?class obo_annot:UmlsCui ?cui .   \n"
+                + "   ?class rdfs:label ?label .\n     "
+                + "}   ";
 
         Query q = QueryFactory.create( queryString );
         QueryExecution qexec = QueryExecutionFactory.create( q, model );
@@ -84,7 +84,7 @@ public class NIFSTDMapper extends AbstractToUMLSMapper {
                 // System.out.print( label + "|" );
                 // System.out.print( cui + "|" );
                 // System.out.println( URI + "|" );
-                //                
+                //
                 // if ( x.isAnon() ) continue; // some reasoners will return these.
             }
         } finally {
