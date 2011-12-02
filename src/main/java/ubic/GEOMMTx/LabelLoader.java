@@ -56,7 +56,6 @@ public class LabelLoader {
     /**
      * @return label map
      */
-    @SuppressWarnings("unchecked")
     public static Map<String, String> readLabels() {
 
         try {
@@ -84,10 +83,9 @@ public class LabelLoader {
 
         String labelFilePath = getLabelFilePath();
 
-        // File labelFile = new File( labelFilePath );
-        // if ( !labelFile.canWrite() ) {
-        // throw new IOException( "Cannot write to: " + labelFile );
-        // }
+        File labelFile = new File( labelFilePath );
+        File dir = new File( labelFile.getParent() );
+        if ( !dir.exists() ) dir.mkdirs();
 
         log.info( "Initializing the label cache..." );
 
