@@ -27,8 +27,8 @@
 	<classpathentry kind="var" path="M2_REPO/umls/mms/1.0/mms-1.0.jar"/>
 	<classpathentry kind="var" path="M2_REPO/umls/mmsObjects/1.0/mmsObjects-1.0.jar"/>
 	<classpathentry kind="var" path="M2_REPO/umls/mmtx/2.4C/mmtx-2.4C.jar"/>
-	<classpathentry kind="var" path="M2_REPO/umls/mmtxProject/2.4C/mmtxProject-2.4C.jar"/>
-	<classpathentry kind="var" path="M2_REPO/umls/mmtxProjectJS/2.4C/mmtxProjectJS-2.4C.jar"/>
+	<classpathentry kind="var" path="M2_REPO/umls/mmtxProject/2.4D/mmtxProject-2.4D.jar"/>
+	<classpathentry kind="var" path="M2_REPO/umls/mmtxProjectJS/2.4D/mmtxProjectJS-2.4D.jar"/>
 	<classpathentry kind="var" path="M2_REPO/opencsv/opencsv/1.3/opencsv-1.3.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/apache/poi/poi/3.5-beta6/poi-3.5-beta6.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.5.8/slf4j-api-1.5.8.jar"/>

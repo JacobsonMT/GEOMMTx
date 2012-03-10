@@ -15,8 +15,8 @@
 	</organization>
 	<packaging>jar</packaging>
 	<scm>
-		<connection>scm:cvs:ext:@katz.pavlab.chibi.ubc.ca/space/cvs:GEOMMTx</connection>
-		<developerConnection>scm:cvs:ext:@katz.pavlab.chibi.ubc.ca:/space/cvs:GEOMMTx</developerConnection>
+		<connection>scm:cvs:ext:@krusty.pavlab.chibi.ubc.ca/space/cvs:GEOMMTx</connection>
+		<developerConnection>scm:cvs:ext:@krusty.pavlab.chibi.ubc.ca:/space/cvs:GEOMMTx</developerConnection>
 		<url>http://www.chibi.ubc.ca/faculty/pavlidis/fisheye/browse/pavlab/GEOMMTx</url>
 	</scm>
 	<issueManagement>
@@ -168,12 +168,12 @@
 		<dependency>
 			<groupId>umls</groupId>
 			<artifactId>mmtxProject</artifactId>
-			<version>2.4C</version>
+			<version>2.4D</version>
 		</dependency>
 		<dependency>
 			<groupId>umls</groupId>
 			<artifactId>mmtxProjectJS</artifactId>
-			<version>2.4C</version>
+			<version>2.4D</version>
 		</dependency>
 		<dependency>
 			<groupId>mtj</groupId>
