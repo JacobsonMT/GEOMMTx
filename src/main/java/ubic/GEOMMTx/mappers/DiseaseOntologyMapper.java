@@ -70,13 +70,9 @@ public class DiseaseOntologyMapper extends AbstractToUMLSMapper {
 
         String queryString = "PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>    \r\n"
                 + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>    \r\n"
-                + "SELECT ?obj ?label ?dbcode          \r\n"
-                + "WHERE  {   \r\n"
-                + "    ?anon rdfs:label ?dbcode .    \r\n"
-                + "    ?obj oboInOwl:hasDbXref ?anon .   \r\n"
-                + "    ?obj rdfs:label ?label .      \r\n"
-                + "    FILTER (REGEX(?dbcode, \"UMLS_CUI:\"))   \r\n"
-                + "}";
+                + "SELECT ?obj ?label ?dbcode          \r\n" + "WHERE  {   \r\n"
+                + "    ?anon rdfs:label ?dbcode .    \r\n" + "    ?obj oboInOwl:hasDbXref ?anon .   \r\n"
+                + "    ?obj rdfs:label ?label .      \r\n" + "    FILTER (REGEX(?dbcode, \"UMLS_CUI:\"))   \r\n" + "}";
 
         Query q = QueryFactory.create( queryString );
         QueryExecution qexec = QueryExecutionFactory.create( q, model );
@@ -101,7 +97,7 @@ public class DiseaseOntologyMapper extends AbstractToUMLSMapper {
                 /*
                  * System.out.print( label + " " ); System.out.println( cui + " " ); System.out.println( URI + " " );
                  */
-                //                
+                //
                 // if ( x.isAnon() ) continue; // some reasoners will return these.
             }
         } finally {

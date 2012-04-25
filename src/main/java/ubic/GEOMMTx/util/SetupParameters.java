@@ -147,12 +147,10 @@ public class SetupParameters {
      * @return
      * @see org.apache.commons.configuration.CompositeConfiguration#getKeys()
      */
-    @SuppressWarnings("unchecked")
     public static Iterator<String> getKeys() {
         return config.getKeys();
     }
 
-    @SuppressWarnings("unchecked")
     public static Iterator<String> getKeys( String k ) {
         return config.getKeys( k );
     }
