@@ -45,8 +45,6 @@ import org.apache.commons.logging.LogFactory;
 public class MMTxRunner {
     protected static Log log = LogFactory.getLog( MMTxRunner.class );
 
-    private static final long serialVersionUID = 1L;
-
     private CacheManager cacheManager;
 
     private Cache memoryOnlyCache;
@@ -142,7 +140,6 @@ public class MMTxRunner {
      * @param text
      * @return
      */
-    @SuppressWarnings("unchecked")
     public List<Phrase> getPhrases( String text ) {
         // check to see if we done it before
         Element element = memoryOnlyCache.get( text );
