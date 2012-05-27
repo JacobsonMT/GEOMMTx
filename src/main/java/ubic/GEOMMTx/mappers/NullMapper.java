@@ -32,6 +32,7 @@ import ubic.GEOMMTx.UMLSSourceCode;
  */
 public class NullMapper implements CUIMapper {
 
+    @Override
     public Set<String> convert( String CUI, Collection<UMLSSourceCode> sourceCodes ) {
         return null;
     }

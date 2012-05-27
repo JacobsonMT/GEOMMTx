@@ -73,6 +73,7 @@ public abstract class AbstractToUMLSMapper implements CUIMapper {
      * @param CUI UMLS concept identifier
      * @return
      */
+    @Override
     public Set<String> convert( String CUI, Collection<UMLSSourceCode> sourceCodes ) {
         return CUIMap.get( CUI );
     }

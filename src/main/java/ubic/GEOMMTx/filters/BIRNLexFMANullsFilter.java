@@ -84,6 +84,7 @@ public class BIRNLexFMANullsFilter extends AbstractFilter implements URIFilter {
      * 
      * @see ubic.GEOMMTx.filters.URIFilter#accept(java.lang.String)
      */
+    @Override
     public boolean accept( String URI ) {
         OntologyTerm term = getTerm( URI );
         // go into FMA and birnlex and check if it's missing

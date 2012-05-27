@@ -56,6 +56,7 @@ public class UninformativeFilter extends AbstractFilter implements URIFilter {
         }
     }
 
+    @Override
     public boolean accept( String URI ) {
         return !frequentURLs.contains( URI );
     }

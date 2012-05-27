@@ -41,6 +41,7 @@ public class FMALiteMapper implements CUIMapper {
      * Should probably refactor as this does not use the CUI parameter for anything (non-Javadoc)
      * @see ubic.GEOMMTx.CUIMapper#convert(java.lang.String, java.util.Collection)
      */
+    @Override
     public Set<String> convert( String CUI, Collection<UMLSSourceCode> sourceCodes ) {
         if ( sourceCodes == null ) return null;
         String code = null;

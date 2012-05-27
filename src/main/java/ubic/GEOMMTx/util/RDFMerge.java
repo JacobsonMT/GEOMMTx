@@ -41,6 +41,7 @@ public class RDFMerge {
 
     // class for RDF filenames
     public static FilenameFilter RDFFileFilter = new FilenameFilter() {
+        @Override
         public boolean accept( File dir, String name ) {
             return name.toLowerCase().endsWith( ".rdf" );
         }
