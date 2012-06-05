@@ -74,7 +74,7 @@ public class MeSHMapperTest {
     private int zeroCalls;
 
     @BeforeClass
-    public static void setupOnce() throws Exception {
+    public static void setupOnce() {
         mmtx = new MMTxRunner( null, 0, SetupParameters.getStringArray( "geommtx.annotator.mmtxOptions" ) );
         mapper = new GetUMLSCodes( true );
         sourceMap = mapper.getUMLSCodeMap();
@@ -83,14 +83,13 @@ public class MeSHMapperTest {
     }
 
     @Before
-    public void setup() throws Exception {
+    public void setup() {
         acceptedSemanticTypes = new HashSet<String>();
         rejectedConcepts = new HashSet<String>();
         semTypeMap = new CountingMap<String>();
         resetCounters();
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testPredictions() throws Exception {
 

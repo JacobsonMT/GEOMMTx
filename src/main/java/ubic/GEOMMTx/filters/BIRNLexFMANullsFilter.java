@@ -108,10 +108,10 @@ public class BIRNLexFMANullsFilter extends AbstractFilter implements URIFilter {
         Set<String> removeURIs = new HashSet<String>();
 
         String queryString = "PREFIX gemmaAnn: <http://bioinformatics.ubc.ca/Gemma/ws/xml/gemmaAnnotations.owl#>\n"
-                + "SELECT DISTINCT ?url \n                                                                                       "
-                + "WHERE {\n                                                                                                 "
+                + "SELECT DISTINCT ?url \n"
+                + "WHERE {\n"
                 + "   ?mention gemmaAnn:" + Vocabulary.mappedTerm.getLocalName()
-                + " ?url .\n                                                                        " + "}";
+                + " ?url .\n  " + "}";
 
         Query q = QueryFactory.create( queryString );
         QueryExecution qexec = QueryExecutionFactory.create( q, model );

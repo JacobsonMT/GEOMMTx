@@ -32,16 +32,15 @@ import ubic.basecode.io.excel.ExcelUtil;
  */
 public class CheckHighLevelSpreadSheet extends CreateSpreadSheet {
 
-    public CheckHighLevelSpreadSheet( String filename ) throws Exception {
+    public CheckHighLevelSpreadSheet( String filename ) {
         super( filename, new CheckHighLevelSchema() );
     }
 
-    public void populate( Map<String, Set<String>> newPredictions, Map<String, String> labels ) throws Exception {
+    public void populate( Map<String, Set<String>> newPredictions, Map<String, String> labels ) {
         populate( newPredictions, labels, newPredictions.size() );
     }
 
-    public void populate( Map<String, Set<String>> newPredictions, Map<String, String> labels, int size )
-            throws Exception {
+    public void populate( Map<String, Set<String>> newPredictions, Map<String, String> labels, int size ) {
 
         List<String> datasets = new LinkedList<String>( newPredictions.keySet() );
 

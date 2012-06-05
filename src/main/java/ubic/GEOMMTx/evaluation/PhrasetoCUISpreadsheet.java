@@ -51,7 +51,7 @@ public class PhrasetoCUISpreadsheet extends CreateSpreadSheet {
         log.info( "Done!" );
     }
 
-    public PhrasetoCUISpreadsheet( String filename ) throws Exception {
+    public PhrasetoCUISpreadsheet( String filename ) {
         super( filename, new PhraseToCUISchema() );
     }
 

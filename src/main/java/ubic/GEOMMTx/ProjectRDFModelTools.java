@@ -52,14 +52,11 @@ public class ProjectRDFModelTools {
     public static int getMentionCount( Model model ) {
         int count = 0;
         String queryString = "PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>"
-                + "PREFIX gemmaAnn: <http://bioinformatics.ubc.ca/Gemma/ws/xml/gemmaAnnotations.owl#>\n                              "
-                + "SELECT ?description ?dataset ?phrase ?mapping\n                                                            "
-                + "WHERE {\n                                                            "
-                + "    ?dataset gemmaAnn:describedBy ?description .\n                                                            "
-                + "    ?description gemmaAnn:hasPhrase ?phrase .\n                                                            "
-                + "    ?phrase gemmaAnn:hasMention ?mention .\n                                                           "
-                + "    ?mention gemmaAnn:mappedTerm ?mapping .\n                                                           "
-                + " }";
+                + "PREFIX gemmaAnn: <http://bioinformatics.ubc.ca/Gemma/ws/xml/gemmaAnnotations.owl#>\n "
+                + "SELECT ?description ?dataset ?phrase ?mapping\n " + "WHERE {\n"
+                + "    ?dataset gemmaAnn:describedBy ?description .\n"
+                + "    ?description gemmaAnn:hasPhrase ?phrase .\n" + "    ?phrase gemmaAnn:hasMention ?mention .\n"
+                + "    ?mention gemmaAnn:mappedTerm ?mapping .\n" + " }";
         Query q = QueryFactory.create( queryString );
         QueryExecution qexec = QueryExecutionFactory.create( q, model );
         ResultSet results = qexec.execSelect();
@@ -89,26 +86,20 @@ public class ProjectRDFModelTools {
 
         // from RDF
         String queryString = "PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>"
-                + "PREFIX gemmaAnn: <http://bioinformatics.ubc.ca/Gemma/ws/xml/gemmaAnnotations.owl#>\n                              "
+                + "PREFIX gemmaAnn: <http://bioinformatics.ubc.ca/Gemma/ws/xml/gemmaAnnotations.owl#>\n"
                 + "\n                                                            "
-                + "SELECT ?dataset ?label ?mapping\n                                                            "
-                + "\n"
-                + "WHERE {\n                                                            "
-                + "    ?dataset gemmaAnn:describedBy ?description .\n                                                            "
-                + "    OPTIONAL {\n                                                                           "
-                + "      ?description gemmaAnn:hasPhrase ?phrase .\n                                                            "
-                + "      ?phrase gemmaAnn:hasMention ?mention .\n                                                           "
-                + "      ?mention gemmaAnn:mappedTerm ?mapping .\n                                                            "
+                + "SELECT ?dataset ?label ?mapping\n" + "\n" + "WHERE {\n"
+                + "    ?dataset gemmaAnn:describedBy ?description .\n" + "    OPTIONAL {\n"
+                + "      ?description gemmaAnn:hasPhrase ?phrase .\n"
+                + "      ?phrase gemmaAnn:hasMention ?mention .\n" + "      ?mention gemmaAnn:mappedTerm ?mapping .\n"
                 + "      ?mention rdf:label ?label .\n" + "} }";
 
         Query q = QueryFactory.create( queryString );
         // go through them all and put in excel file
         QueryExecution qexec = QueryExecutionFactory.create( q, model );
 
-        int row = 1;
         ResultSet results = qexec.execSelect();
         while ( results.hasNext() ) {
-            row++;
             QuerySolution soln = results.nextSolution();
             String dataset = OntologyTools.varToString( "dataset", soln );
             dataset = dataset.substring( dataset.lastIndexOf( '/' ) + 1 );
