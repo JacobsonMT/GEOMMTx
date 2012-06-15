@@ -56,7 +56,7 @@ public class CUItoOntologySpreadsheet extends CreateSpreadSheet {
 
     Model model;
 
-    public CUItoOntologySpreadsheet( String filename ) throws Exception {
+    public CUItoOntologySpreadsheet( String filename ) {
         super( filename, new CUItoOntologySchema() );
         OntologyLabelLoader labels = new OntologyLabelLoader();
         model = labels.loadOntologies();

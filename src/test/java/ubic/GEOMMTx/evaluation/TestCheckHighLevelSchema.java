@@ -29,7 +29,7 @@ import org.junit.Test;
 public class TestCheckHighLevelSchema {
 
     @Test
-    public void test() throws Exception {
+    public void test() {
         CheckHighLevelSchema test = new CheckHighLevelSchema();
         assertTrue( test.getHeaderRow().length > 0 );
     }
