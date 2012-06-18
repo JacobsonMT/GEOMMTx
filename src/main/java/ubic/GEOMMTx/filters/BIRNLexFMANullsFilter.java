@@ -108,15 +108,11 @@ public class BIRNLexFMANullsFilter extends AbstractFilter implements URIFilter {
         Set<String> removeURIs = new HashSet<String>();
 
         String queryString = "PREFIX gemmaAnn: <http://bioinformatics.ubc.ca/Gemma/ws/xml/gemmaAnnotations.owl#>\n"
-                + "SELECT DISTINCT ?url \n"
-                + "WHERE {\n"
-                + "   ?mention gemmaAnn:" + Vocabulary.mappedTerm.getLocalName()
-                + " ?url .\n  " + "}";
+                + "SELECT DISTINCT ?url \n" + "WHERE {\n" + "   ?mention gemmaAnn:"
+                + Vocabulary.mappedTerm.getLocalName() + " ?url .\n  " + "}";
 
         Query q = QueryFactory.create( queryString );
         QueryExecution qexec = QueryExecutionFactory.create( q, model );
-
-        int count = 0;
 
         ResultSet results = qexec.execSelect();
         while ( results.hasNext() ) {
@@ -128,7 +124,6 @@ public class BIRNLexFMANullsFilter extends AbstractFilter implements URIFilter {
             if ( accept( URI ) == false ) {
                 removeURIs.add( URI );
                 // log.info( URI );
-                count++;
             }
             // else its not FMA or birnlex
         }

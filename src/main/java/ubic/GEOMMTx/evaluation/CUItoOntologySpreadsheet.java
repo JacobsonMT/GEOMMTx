@@ -69,17 +69,17 @@ public class CUItoOntologySpreadsheet extends CreateSpreadSheet {
 
         // log.info( "Done reading..." );
 
-        String queryString = "PREFIX gemmaAnn: <http://bioinformatics.ubc.ca/Gemma/ws/xml/gemmaAnnotations.owl#>                                 \r\n"
-                + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>                                \r\n"
-                + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>                                     \r\n"
-                + "PREFIX gss: <http://www.w3.org/2001/11/IsaViz/graphstylesheets#>                         \r\n"
-                + "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>                                          \r\n"
-                + "PREFIX rs: <http://www.w3.org/2001/sw/DataAccess/tests/result-set#>                      \r\n"
-                + "SELECT DISTINCT ?CUI ?CUILabel ?mappedTerm ?mappedTermLabel                              \r\n"
-                + "WHERE {                                                                                  \r\n"
-                + "    ?mention gemmaAnn:hasCUI ?CUI .                                                         \r\n"
-                + "    ?mention rdfs:label ?CUILabel .                                                 \r\n"
-                + "    ?mention gemmaAnn:mappedTerm ?mappedTerm .                                                 \r\n"
+        String queryString = "PREFIX gemmaAnn: <http://bioinformatics.ubc.ca/Gemma/ws/xml/gemmaAnnotations.owl#>   \r\n"
+                + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>      \r\n"
+                + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>     \r\n"
+                + "PREFIX gss: <http://www.w3.org/2001/11/IsaViz/graphstylesheets#>     \r\n"
+                + "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>     \r\n"
+                + "PREFIX rs: <http://www.w3.org/2001/sw/DataAccess/tests/result-set#>     \r\n"
+                + "SELECT DISTINCT ?CUI ?CUILabel ?mappedTerm ?mappedTermLabel     \r\n"
+                + "WHERE {      \r\n"
+                + "    ?mention gemmaAnn:hasCUI ?CUI .        \r\n"
+                + "    ?mention rdfs:label ?CUILabel .      \r\n"
+                + "    ?mention gemmaAnn:mappedTerm ?mappedTerm .        \r\n"
                 + " ?mappedTerm rdfs:label ?mappedTermLabel . \r\n" + "} ORDER BY ASC(?CUI) ASC(?mappedTerm)";
 
         // sparql query
@@ -91,7 +91,6 @@ public class CUItoOntologySpreadsheet extends CreateSpreadSheet {
         QueryExecution qexec = QueryExecutionFactory.create( q, model );
 
         try {
-            int skipped = 0;
             int row = 1;
             ResultSet results = qexec.execSelect();
             log.info( "Query executed" );
@@ -101,7 +100,6 @@ public class CUItoOntologySpreadsheet extends CreateSpreadSheet {
 
                 // so if the two labels are the same, do we need to evaluate it with a human?
                 if ( solutionMap.get( "CUILabel" ).equalsIgnoreCase( solutionMap.get( "mappedTermLabel" ) ) ) {
-                    skipped++;
                     continue;
                 }
 

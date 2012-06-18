@@ -34,6 +34,7 @@ import org.junit.Test;
  */
 public class GetUMLSCodesTest {
 
+    @SuppressWarnings("unused")
     private static Log log = LogFactory.getLog( GetUMLSCodesTest.class );
 
     private static GetUMLSCodes umlscodez;
