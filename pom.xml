@@ -15,8 +15,8 @@
 	</organization>
 	<packaging>jar</packaging>
 	<scm>
-		<connection>scm:cvs:ext:@krusty.pavlab.chibi.ubc.ca/space/cvs:GEOMMTx</connection>
-		<developerConnection>scm:cvs:ext:@krusty.pavlab.chibi.ubc.ca:/space/cvs:GEOMMTx</developerConnection>
+		<connection>scm:cvs:ext:@otto.pavlab.chibi.ubc.ca/space/cvs:GEOMMTx</connection>
+		<developerConnection>scm:cvs:ext:@otto.pavlab.chibi.ubc.ca:/space/cvs:GEOMMTx</developerConnection>
 		<url>http://www.chibi.ubc.ca/faculty/pavlidis/fisheye/browse/pavlab/GEOMMTx</url>
 	</scm>
 	<issueManagement>
@@ -65,7 +65,7 @@
 	<build>
 		<directory>target</directory>
 		<outputDirectory>target/classes</outputDirectory>
-		<finalName>${artifactId}-${version}</finalName>
+		<finalName>${project.artifactId}-${project.version}</finalName>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<testSourceDirectory>src/test/java</testSourceDirectory>
 		<testOutputDirectory>target/test-classes</testOutputDirectory>
@@ -96,6 +96,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
@@ -126,8 +127,14 @@
 				<version>2.0-beta-5</version>
 			</plugin>
 		</plugins>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ssh-external</artifactId>
+				<version>1.0-beta-6</version>
+			</extension>
+		</extensions>
 	</build>
-
 	<dependencies>
 		<dependency>
 			<groupId>baseCode</groupId>
