@@ -9,3 +9,8 @@ mmtxProjectJS.jar
 *.mappings
 null
 .externalToolBuilders
+build
+classes
+ontology.index.dir
+release.properties
+test-classes
