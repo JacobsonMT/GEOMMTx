@@ -7,7 +7,7 @@
 	<version>1.1-SNAPSHOT</version>
 	<inceptionYear>2008</inceptionYear>
 	<description>
-		<![CDATA[Automated annotation from free text]]>
+	<![CDATA[Automated annotation from free text]]>
 	</description>
 	<organization>
 		<name>UBC Centre for High-throughput Biology</name>
@@ -145,7 +145,7 @@
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache-core</artifactId>
-			<version>2.4.4</version>
+			<version>2.5.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.poi</groupId>
@@ -259,7 +259,7 @@
 			<name>Apache Development Repository</name>
 			<url>
 				http://cvs.apache.org/maven-snapshot-repository
-					</url>
+			</url>
 			<releases>
 				<enabled>false</enabled>
 			</releases>
@@ -273,7 +273,7 @@
 			<name>Mojo</name>
 			<url>
 				http://snapshots.maven.codehaus.org/maven2/
-					</url>
+			</url>
 			<layout>default</layout>
 			<releases>
 				<enabled>false</enabled>
