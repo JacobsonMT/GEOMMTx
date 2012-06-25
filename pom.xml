@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>chibi</groupId>
 	<artifactId>GEOMMTx</artifactId>
-	<version>1.1</version>
+	<version>1.2-SNAPSHOT</version>
 	<inceptionYear>2008</inceptionYear>
 	<description>
 	<![CDATA[Automated annotation from free text]]>
@@ -17,7 +17,6 @@
 		<connection>scm:cvs:ext:@otto.pavlab.chibi.ubc.ca/cvs:GEOMMTx</connection>
 		<developerConnection>scm:cvs:ext:@otto.pavlab.chibi.ubc.ca:/cvs:GEOMMTx</developerConnection>
 		<url>http://www.chibi.ubc.ca/faculty/pavlidis/fisheye/browse/pavlab/GEOMMTx</url>
-	  <tag>GEOMMTx-1_1</tag>
   </scm>
 	<issueManagement>
 		<system>Bugzilla</system>
