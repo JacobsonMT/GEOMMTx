@@ -60,7 +60,8 @@ public class DiseaseOntologyMapper extends AbstractToUMLSMapper {
 
     @Override
     public String getMainURL() {
-        return "http://www.berkeleybop.org/ontologies/obo-all/disease_ontology/disease_ontology.owl";
+        // FIXME don't hardcode this.
+        return "http://purl.obolibrary.org/obo/doid.owl";
     }
 
     @Override

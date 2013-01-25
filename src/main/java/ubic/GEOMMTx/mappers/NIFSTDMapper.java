@@ -18,6 +18,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import ubic.GEOMMTx.OntologyTools;
+import ubic.basecode.ontology.OntologyLoader;
+
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -25,9 +28,6 @@ import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
-
-import ubic.GEOMMTx.OntologyTools;
-import ubic.basecode.ontology.OntologyLoader;
 
 /**
  * @author paul
@@ -53,13 +53,12 @@ public class NIFSTDMapper extends AbstractToUMLSMapper {
             System.exit( 1 );
         }
 
-        String queryString = "PREFIX obo_annot: <http://ontology.neuinfo.org/NIF/Backend/OBO_annotation_properties.owl#>\n"
+        String queryString = "PREFIX obo_annot: <http://ontology.neuinfo.org/NIF/Backend/OBO_annotation_properties.owl#>  \n"
                 + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
-                + "SELECT ?class ?label ?cui\n"
-                + "WHERE  {\n"
-                + "   ?class obo_annot:UmlsCui ?cui .   \n"
-                + "   ?class rdfs:label ?label .\n     "
-                + "}   ";
+                + "SELECT ?class ?label ?cui  \n  "
+                + "WHERE  {  \n  "
+                + "   ?class obo_annot:UmlsCui ?cui .   \n   "
+                + "   ?class rdfs:label ?label .\n     " + "}   ";
 
         Query q = QueryFactory.create( queryString );
         QueryExecution qexec = QueryExecutionFactory.create( q, model );
