@@ -28,9 +28,9 @@ import org.apache.commons.logging.LogFactory;
 
 import ubic.basecode.ontology.model.OntologyTerm;
 import ubic.basecode.ontology.providers.AbstractOntologyService;
-import ubic.basecode.ontology.providers.BirnLexOntologyService;
 import ubic.basecode.ontology.providers.DiseaseOntologyService;
 import ubic.basecode.ontology.providers.FMAOntologyService;
+import ubic.basecode.ontology.providers.NIFSTDOntologyService;
 
 public class ParentFinder {
     private static Log log = LogFactory.getLog( ParentFinder.class.getName() );
@@ -88,7 +88,7 @@ public class ParentFinder {
     }
 
     public void init() throws Exception {
-        loadOntology( new BirnLexOntologyService() );
+        loadOntology( new NIFSTDOntologyService() );
         log.info( "Done brinlex" );
         loadOntology( new FMAOntologyService() );
         log.info( "Done FMA" );
@@ -144,6 +144,9 @@ public class ParentFinder {
         return result;
     }
 
+    /**
+     * FIXME: this needs to be updated for NIFSTD, we don't use BIRNLex.
+     */
     public void test() {
         // OntologyTerm t = getTerm( "http://purl.org/nbirn/birnlex/ontology/BIRNLex-Anatomy.owl#birnlex_721" );
         // birnlex_4

@@ -26,13 +26,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import ubic.GEOMMTx.ProjectRDFModelTools;
-import ubic.basecode.ontology.providers.BirnLexOntologyService;
 import ubic.basecode.ontology.providers.FMAOntologyService;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
 /**
- * TODO document me
+ * Leon explains: "mergedRDFBirnLexUpdate.afterUseless.axon4.rdf sounds like one of the files I would dump out for
+ * analysis. So all the annotations on experiments were also stored in RDF for generating statistics for the paper. I
+ * would run it on the server to create that output file, and I think we had a server named axon way back. I don't think
+ * it matters if the RDF version is stored"
  * 
  * @author lfrench
  * @version $Id$
@@ -52,7 +54,7 @@ public class ExecuteFilters {
         filters.add( new ExperimentalFactorFilter() );
         filters.add( new CUISUIFilter() );
         filters.add( new CUIIRIFilter() );
-        filters.add( new BIRNLexFMANullsFilter( new FMAOntologyService(), new BirnLexOntologyService() ) );
+        filters.add( new FMANullsFilter( new FMAOntologyService() ) );
         filters.add( new UninformativeFilter() );
         // low score filter not used
 

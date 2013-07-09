@@ -23,7 +23,6 @@ import java.util.Set;
 
 import ubic.GEOMMTx.Vocabulary;
 import ubic.basecode.ontology.model.OntologyTerm;
-import ubic.basecode.ontology.providers.BirnLexOntologyService;
 import ubic.basecode.ontology.providers.FMAOntologyService;
 
 import com.hp.hpl.jena.query.Query;
@@ -36,27 +35,25 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
- * TODO document me
+ * Leon explains what this does: "I think sometimes MMTx would give me links to ontology terms that are not in or null
+ * in BIRNLex or FMA. That code would just remove those null terms." Since we don't use BIRNLex any more, we removed
+ * that.
  * 
  * @author lfrench
  * @version $Id$
  */
-public class BIRNLexFMANullsFilter extends AbstractFilter implements URIFilter {
+public class FMANullsFilter extends AbstractFilter implements URIFilter {
 
     FMAOntologyService FMA;
-    BirnLexOntologyService BIRN;
 
     /**
      * @param fma
      * @param birn
      */
-    public BIRNLexFMANullsFilter( FMAOntologyService fma, BirnLexOntologyService birn ) {
+    public FMANullsFilter( FMAOntologyService fma ) {
 
         this.FMA = fma;
-        this.BIRN = birn;
 
-        // load FMA and birnlex
-        // if ( FMA.isEnabled() ) {
         FMA.startInitializationThread( true );
         while ( !FMA.isOntologyLoaded() ) {
             try {
@@ -65,18 +62,7 @@ public class BIRNLexFMANullsFilter extends AbstractFilter implements URIFilter {
                 e.printStackTrace();
             }
         }
-        // }
 
-        // if ( BIRN.isEnabled() ) {
-        BIRN.startInitializationThread( true );
-        while ( !BIRN.isOntologyLoaded() ) {
-            try {
-                Thread.sleep( 2500 );
-            } catch ( Exception e ) {
-                e.printStackTrace();
-            }
-        }
-        // }
     }
 
     /*
@@ -138,7 +124,7 @@ public class BIRNLexFMANullsFilter extends AbstractFilter implements URIFilter {
      */
     @Override
     public String getName() {
-        return "BIRNLex and FMA null mapping remover";
+        return "FMA null mapping remover";
     }
 
     /**
@@ -146,9 +132,7 @@ public class BIRNLexFMANullsFilter extends AbstractFilter implements URIFilter {
      * @return
      */
     private OntologyTerm getTerm( String uri ) {
-        OntologyTerm term = FMA.getTerm( uri );
-        if ( term != null ) return term;
-        return BIRN.getTerm( uri );
+        return FMA.getTerm( uri );
     }
 
 }
