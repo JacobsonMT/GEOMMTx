@@ -23,9 +23,13 @@ import java.util.Iterator;
 
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.ListDelimiterHandler;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.configuration.PropertiesConfiguration.PropertiesReader;
+import org.apache.commons.configuration.PropertiesConfiguration.PropertiesWriter;
+import org.apache.commons.configuration.io.FileHandler;
+import org.apache.commons.lang3.StringUtils;
 
 import ubic.GEOMMTx.evaluation.CUIIRIPair;
 
@@ -52,7 +56,12 @@ public class SetupParameters {
         config.addConfiguration( new SystemConfiguration() );
 
         try {
-            config.addConfiguration( new PropertiesConfiguration( USER_CONFIGURATION ) );
+            PropertiesConfiguration pc = new PropertiesConfiguration();
+            FileHandler handler = new FileHandler( pc );
+            handler.setFileName( USER_CONFIGURATION );
+            handler.load();
+
+            config.addConfiguration( pc );
         } catch ( Exception e ) {
             System.out.println( "Could not load " + USER_CONFIGURATION );
             System.exit( 1 );
@@ -68,7 +77,11 @@ public class SetupParameters {
         }
 
         try {
-            config.addConfiguration( new PropertiesConfiguration( DEFAULT_CONFIGURATION ) );
+            PropertiesConfiguration pc = new PropertiesConfiguration();
+            FileHandler handler = new FileHandler( pc );
+            handler.setFileName( DEFAULT_CONFIGURATION );
+            handler.load();
+            config.addConfiguration( pc );
         } catch ( ConfigurationException e ) {
             System.out.println( "Could not load " + DEFAULT_CONFIGURATION );
             System.exit( 1 );

@@ -22,7 +22,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Iterator;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import ubic.GEOMMTx.util.SetupParameters;
