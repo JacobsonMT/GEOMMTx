@@ -23,11 +23,8 @@ import java.util.Iterator;
 
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.ListDelimiterHandler;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
-import org.apache.commons.configuration.PropertiesConfiguration.PropertiesReader;
-import org.apache.commons.configuration.PropertiesConfiguration.PropertiesWriter;
 import org.apache.commons.configuration.io.FileHandler;
 import org.apache.commons.lang3.StringUtils;
 
