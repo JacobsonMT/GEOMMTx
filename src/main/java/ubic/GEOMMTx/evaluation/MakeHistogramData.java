@@ -7,7 +7,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,6 +20,7 @@ package ubic.GEOMMTx.evaluation;
 
 import java.io.FileInputStream;
 import java.io.FileWriter;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -92,151 +93,142 @@ public class MakeHistogramData {
         Set<String> titles = new HashSet<String>();
         Set<String> URIs = new HashSet<String>();
         Map<String, String> labelMap = new HashMap<String, String>();
+        try (InputStream is1 = new FileInputStream( file );
+                InputStream is2 = new FileInputStream( SetupParameters.getString( "geommtx.annotator.gemmaTitles" ) )) {
+            Model model = ModelFactory.createDefaultModel();
+            model.read( is1, null );
+            model.read( is2, null );
 
-        Model model = ModelFactory.createDefaultModel();
-        model.read( new FileInputStream( file ), null );
-        model.read( new FileInputStream( SetupParameters.getString( "geommtx.annotator.gemmaTitles" ) ), null );
-
-        String queryString = "PREFIX gemmaAnn: <http://bioinformatics.ubc.ca/Gemma/ws/xml/gemmaAnnotations.owl#>                                            \n"
-                + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>                                     \n"
-                + "SELECT DISTINCT ?mapping ?label \n"
-                + "WHERE {                                                                                  \n"
-                + "    ?mention gemmaAnn:mappedTerm ?mapping .                                                            \n"
-                + "    ?mention rdfs:label ?label .                                                         \n"
-                + " }                                                                                        \n";
-        Query q = QueryFactory.create( queryString );
-        QueryExecution qexec = QueryExecutionFactory.create( q, model );
-        ResultSet results = qexec.execSelect();
-        while ( results.hasNext() ) {
-            QuerySolution soln = results.nextSolution();
-            String mapping = OntologyTools.varToString( "mapping", soln );
-            String label = "\"" + OntologyTools.varToString( "label", soln ) + "\"";
-            labelMap.put( mapping, label );
-        }
-        qexec.close();
-
-        queryString = "PREFIX gemmaAnn: <http://bioinformatics.ubc.ca/Gemma/ws/xml/gemmaAnnotations.owl#>                                            \r\n"
-                + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>                                     \r\n"
-                + "PREFIX dc: <http://purl.org/dc/elements/1.1/>                                           \r\n"
-                + "SELECT DISTINCT ?dataset ?geoLabel ?mapping ?title                                        \r\n"
-                + "WHERE {                                                                                  \r\n"
-                + "    ?dataset gemmaAnn:describedBy ?description .                                             \r\n"
-                + "    ?dataset rdfs:label ?geoLabel .                                                      \r\n"
-                + "    OPTIONAL {?dataset dc:title ?title}  .                                                           \r\n"
-                + "    OPTIONAL{                                                                             \n"
-                + "      ?description gemmaAnn:hasPhrase ?phrase .                                                \r\n"
-                + "      ?phrase gemmaAnn:hasMention ?mention .                                                   \r\n"
-                + "      ?mention gemmaAnn:mappedTerm ?mapping .                                                  \r\n"
-                + "      ?mention rdfs:label ?label .                                                         \r\n"
-                + "} }                                                                                        \r\n";
-
-        q = QueryFactory.create( queryString );
-        qexec = QueryExecutionFactory.create( q, model );
-        try {
-            results = qexec.execSelect();
+            String queryString = "PREFIX gemmaAnn: <http://bioinformatics.ubc.ca/Gemma/ws/xml/gemmaAnnotations.owl#> \n"
+                    + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  \n"
+                    + "SELECT DISTINCT ?mapping ?label \n"
+                    + "WHERE { \n"
+                    + " ?mention gemmaAnn:mappedTerm ?mapping . \n"
+                    + " ?mention rdfs:label ?label .\n"
+                    + " }  \n";
+            Query q = QueryFactory.create( queryString );
+            QueryExecution qexec = QueryExecutionFactory.create( q, model );
+            ResultSet results = qexec.execSelect();
             while ( results.hasNext() ) {
                 QuerySolution soln = results.nextSolution();
-                // String dataset = OntologyTools.varToString( "dataset", soln );
-                String geoLabel = OntologyTools.varToString( "geoLabel", soln );
                 String mapping = OntologyTools.varToString( "mapping", soln );
-                String label = labelMap.get( mapping );
-                String title = "\"" + OntologyTools.varToString( "title", soln ) + " [" + geoLabel + "]\"";
-                titles.add( title );
-                if ( mapping != null ) {
-                    URIs.add( mapping );
-                    addToSetMap( conceptToExp, label + "|" + mapping, geoLabel );
-                    addToSetMap( expToConcept, geoLabel, label + "|" + mapping );
-                } else {
-                    addToSetMap( expToConcept, geoLabel, null );
+                String label = "\"" + OntologyTools.varToString( "label", soln ) + "\"";
+                labelMap.put( mapping, label );
+            }
+            qexec.close();
+
+            queryString = "PREFIX gemmaAnn: <http://bioinformatics.ubc.ca/Gemma/ws/xml/gemmaAnnotations.owl#> \r\n"
+                    + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  \r\n"
+                    + "PREFIX dc: <http://purl.org/dc/elements/1.1/>\r\n"
+                    + "SELECT DISTINCT ?dataset ?geoLabel ?mapping ?title  \r\n" + "WHERE { \r\n"
+                    + " ?dataset gemmaAnn:describedBy ?description .  \r\n" + " ?dataset rdfs:label ?geoLabel .\r\n"
+                    + " OPTIONAL {?dataset dc:title ?title}  .\r\n" + " OPTIONAL{ \n"
+                    + "?description gemmaAnn:hasPhrase ?phrase .  \r\n" + "?phrase gemmaAnn:hasMention ?mention .\r\n"
+                    + "?mention gemmaAnn:mappedTerm ?mapping . \r\n" + "?mention rdfs:label ?label .\r\n" + "} }  \r\n";
+
+            q = QueryFactory.create( queryString );
+            qexec = QueryExecutionFactory.create( q, model );
+            try {
+                results = qexec.execSelect();
+                while ( results.hasNext() ) {
+                    QuerySolution soln = results.nextSolution();
+                    // String dataset = OntologyTools.varToString( "dataset", soln );
+                    String geoLabel = OntologyTools.varToString( "geoLabel", soln );
+                    String mapping = OntologyTools.varToString( "mapping", soln );
+                    String label = labelMap.get( mapping );
+                    String title = "\"" + OntologyTools.varToString( "title", soln ) + " [" + geoLabel + "]\"";
+                    titles.add( title );
+                    if ( mapping != null ) {
+                        URIs.add( mapping );
+                        addToSetMap( conceptToExp, label + "|" + mapping, geoLabel );
+                        addToSetMap( expToConcept, geoLabel, label + "|" + mapping );
+                    } else {
+                        addToSetMap( expToConcept, geoLabel, null );
+                    }
                 }
+            } finally {
+                qexec.close();
             }
-        } finally {
-            qexec.close();
-        }
-        System.out.println( "URIs:" + URIs.size() );
-        Set<String> labels = new HashSet<String>();
+            System.out.println( "URIs:" + URIs.size() );
+            Set<String> labels = new HashSet<String>();
 
-        for ( String URI : URIs ) {
-            labels.add( labelMap.get( URI ) );
-        }
-        System.out.println( "labels:" + labels.size() );
-
-        queryString = "PREFIX gemmaAnn: <http://bioinformatics.ubc.ca/Gemma/ws/xml/gemmaAnnotations.owl#>                                            \r\n"
-                + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>                                     \r\n"
-                + "PREFIX dc: <http://purl.org/dc/elements/1.1/>                                           \r\n"
-                + "SELECT DISTINCT ?dataset ?geoLabel ?mapping  ?title                                                  \r\n"
-                + "WHERE {                                                                                  \r\n"
-                + "    ?dataset gemmaAnn:describedBy ?description .                                             \r\n"
-                + "    ?dataset rdfs:label ?geoLabel .                                                      \r\n"
-                + "    ?description gemmaAnn:hasPhrase ?phrase .                                                \r\n"
-                + "    ?phrase gemmaAnn:hasMention ?mention .                                                   \r\n"
-                + "    ?mention gemmaAnn:mappedTerm ?mapping .                                                  \r\n"
-                + "    ?mention rdfs:label ?label .                                                         \r\n"
-                + "    OPTIONAL {?dataset dc:title ?title} .                                                           \r\n"
-                + " }                                                                                        \r\n";
-
-        DoubleMatrix<String, String> resultMatrix = new DenseDoubleMatrix<String, String>( expToConcept.size(),
-                conceptToExp.size() );
-        resultMatrix.setRowNames( new ArrayList<String>( titles ) );
-        resultMatrix.setColumnNames( new ArrayList<String>( labels ) );
-
-        q = QueryFactory.create( queryString );
-        qexec = QueryExecutionFactory.create( q, model );
-        try {
-            results = qexec.execSelect();
-            int c = 0;
-            while ( results.hasNext() ) {
-                QuerySolution soln = results.nextSolution();
-
-                String geoLabel = OntologyTools.varToString( "geoLabel", soln );
-                String title = "\"" + OntologyTools.varToString( "title", soln ) + " [" + geoLabel + "]\"";
-
-                String mapping = OntologyTools.varToString( "mapping", soln );
-                String label = labelMap.get( mapping );
-
-                // Double count = resultMatrix.getByKeys( title, label );
-                resultMatrix.setByKeys( title, label, 1.0 );
-                c++;
+            for ( String URI : URIs ) {
+                labels.add( labelMap.get( URI ) );
             }
-            System.out.println( "c=" + c );
-        } finally {
-            qexec.close();
+            System.out.println( "labels:" + labels.size() );
+
+            queryString = "PREFIX gemmaAnn: <http://bioinformatics.ubc.ca/Gemma/ws/xml/gemmaAnnotations.owl#> \r\n"
+                    + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  \r\n"
+                    + "PREFIX dc: <http://purl.org/dc/elements/1.1/>\r\n"
+                    + "SELECT DISTINCT ?dataset ?geoLabel ?mapping  ?title \r\n" + "WHERE { \r\n"
+                    + " ?dataset gemmaAnn:describedBy ?description .  \r\n" + " ?dataset rdfs:label ?geoLabel .\r\n"
+                    + " ?description gemmaAnn:hasPhrase ?phrase .  \r\n"
+                    + " ?phrase gemmaAnn:hasMention ?mention .\r\n" + " ?mention gemmaAnn:mappedTerm ?mapping . \r\n"
+                    + " ?mention rdfs:label ?label .\r\n" + " OPTIONAL {?dataset dc:title ?title} .\r\n" + " }  \r\n";
+
+            DoubleMatrix<String, String> resultMatrix = new DenseDoubleMatrix<String, String>( expToConcept.size(),
+                    conceptToExp.size() );
+            resultMatrix.setRowNames( new ArrayList<String>( titles ) );
+            resultMatrix.setColumnNames( new ArrayList<String>( labels ) );
+
+            q = QueryFactory.create( queryString );
+            qexec = QueryExecutionFactory.create( q, model );
+            try {
+                results = qexec.execSelect();
+                int c = 0;
+                while ( results.hasNext() ) {
+                    QuerySolution soln = results.nextSolution();
+
+                    String geoLabel = OntologyTools.varToString( "geoLabel", soln );
+                    String title = "\"" + OntologyTools.varToString( "title", soln ) + " [" + geoLabel + "]\"";
+
+                    String mapping = OntologyTools.varToString( "mapping", soln );
+                    String label = labelMap.get( mapping );
+
+                    // Double count = resultMatrix.getByKeys( title, label );
+                    resultMatrix.setByKeys( title, label, 1.0 );
+                    c++;
+                }
+                System.out.println( "c=" + c );
+            } finally {
+                qexec.close();
+            }
+
+            // Histogram1D hist = new Histogram1D( "Distribution of terms" );//numBins, minSize, maxSize );
+            // run query
+
+            // remove dupes within experiments - hash->set
+            // excel file setup .xls
+            System.out.println( "Concept to experiment" );
+            System.out.println( arrayToRString( getCounts( conceptToExp ) ) );
+            printMapSizes( conceptToExp );
+            System.out.println( "Experiment to Concept" );
+            System.out.println( arrayToRString( getCounts( expToConcept ) ) );
+            printMapSizes( expToConcept );
+
+            System.out.println( "Concept to experiment" );
+            System.out.println( arrayToRString( getCounts( conceptToExp ) ) );
+            System.out.println( "Experiment to Concept" );
+            System.out.println( arrayToRString( getCounts( expToConcept ) ) );
+            System.out.println( "Number of concepts:" + conceptToExp.size() );
+            System.out.println( "Number of experiments:" + expToConcept.size() );
+
+            int total = 0;
+            for ( Set<String> x : expToConcept.values() ) {
+                total += x.size();
+            }
+            System.out.println( "Total from exp:" + total );
+
+            total = 0;
+            for ( Set<String> x : conceptToExp.values() ) {
+                total += x.size();
+            }
+            System.out.println( "Total from concepts:" + total );
+
+            writeRTable( "ExperimentToConceptMatrix.txt", resultMatrix );
+
+            System.out.println( "Matrix wrote" );
         }
-
-        // Histogram1D hist = new Histogram1D( "Distribution of terms" );//numBins, minSize, maxSize );
-        // run query
-
-        // remove dupes within experiments - hash->set
-        // excel file setup .xls
-        System.out.println( "Concept to experiment" );
-        System.out.println( arrayToRString( getCounts( conceptToExp ) ) );
-        printMapSizes( conceptToExp );
-        System.out.println( "Experiment to Concept" );
-        System.out.println( arrayToRString( getCounts( expToConcept ) ) );
-        printMapSizes( expToConcept );
-
-        System.out.println( "Concept to experiment" );
-        System.out.println( arrayToRString( getCounts( conceptToExp ) ) );
-        System.out.println( "Experiment to Concept" );
-        System.out.println( arrayToRString( getCounts( expToConcept ) ) );
-        System.out.println( "Number of concepts:" + conceptToExp.size() );
-        System.out.println( "Number of experiments:" + expToConcept.size() );
-
-        int total = 0;
-        for ( Set<String> x : expToConcept.values() ) {
-            total += x.size();
-        }
-        System.out.println( "Total from exp:" + total );
-
-        total = 0;
-        for ( Set<String> x : conceptToExp.values() ) {
-            total += x.size();
-        }
-        System.out.println( "Total from concepts:" + total );
-
-        writeRTable( "ExperimentToConceptMatrix.txt", resultMatrix );
-
-        System.out.println( "Matrix wrote" );
     }
 
     public static void printMapSizes( Map<String, Set<String>> map ) {
@@ -248,11 +240,11 @@ public class MakeHistogramData {
 
     public static void writeRTable( String filename, DoubleMatrix<String, String> matrix ) throws Exception {
         // write it out for R
-        FileWriter fOut = new FileWriter( filename );
-        MatrixWriter<String, String> matWriter = new MatrixWriter<String, String>( fOut );
+        try (FileWriter fOut = new FileWriter( filename )) {
+            MatrixWriter<String, String> matWriter = new MatrixWriter<String, String>( fOut );
 
-        matWriter.setTopLeft( "" );
-        matWriter.writeMatrix( matrix, true );
-        fOut.close();
+            matWriter.setTopLeft( "" );
+            matWriter.writeMatrix( matrix, true );
+        }
     }
 }
