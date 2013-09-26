@@ -64,7 +64,9 @@ public class ExecuteFilters {
             int result = filter.filter( model );
             log.info( "Removed: " + result );
         }
-        model.write( new FileWriter( "mergedRDFBirnLexUpdate.afterUseless.axon4.filtered.rdf" ) );
+        try (FileWriter writer = new FileWriter( "mergedRDFBirnLexUpdate.afterUseless.axon4.filtered.rdf" );) {
+            model.write( writer );
+        }
         log.info( "Final Mentions:" + ProjectRDFModelTools.getMentionCount( model ) );
 
     }
