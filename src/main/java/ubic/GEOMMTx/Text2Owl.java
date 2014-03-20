@@ -134,8 +134,9 @@ public class Text2Owl {
      * @param text
      * @param root
      * @return
+     * @throws GEOMMTXException
      */
-    public Model processText( String text, Resource root ) {
+    public Model processText( String text, Resource root ) throws GEOMMTXException {
         Model model;
         model = root.getModel();
 

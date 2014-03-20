@@ -127,7 +127,7 @@ public class MMTxRunner {
      * @param text
      * @return
      */
-    public Collection<Candidate> getConcepts( String text ) {
+    public Collection<Candidate> getConcepts( String text ) throws GEOMMTXException {
         Collection<Candidate> results = new ArrayList<Candidate>();
 
         for ( Phrase p : getPhrases( text ) ) {
@@ -140,7 +140,7 @@ public class MMTxRunner {
      * @param text
      * @return
      */
-    public List<Phrase> getPhrases( String text ) {
+    public List<Phrase> getPhrases( String text ) throws GEOMMTXException {
         // check to see if we done it before
         Element element = memoryOnlyCache.get( text );
         if ( element != null ) {
@@ -155,15 +155,14 @@ public class MMTxRunner {
         try {
             doc = mmtxAPI.processDocument( text );
         } catch ( Exception e ) {
-            throw new RuntimeException( e );
+            throw new GEOMMTXException( "While processing: '" + text + "'", e );
         }
-        // doc.getSentences()
 
         if ( doc.getPhrases() == null ) return results;
 
         for ( Object phraseObj : doc.getPhrases() ) {
             results.add( ( Phrase ) phraseObj );
-        } // end for
+        }
 
         memoryOnlyCache.put( new Element( text, results ) );
         return results;

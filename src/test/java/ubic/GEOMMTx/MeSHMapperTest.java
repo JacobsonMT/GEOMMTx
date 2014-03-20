@@ -192,7 +192,7 @@ public class MeSHMapperTest {
         printStats();
     }
 
-    private void evaluate( String text, Set<String> answers ) {
+    private void evaluate( String text, Set<String> answers ) throws GEOMMTXException {
         Set<String> predictions = getMeSHIDs( text, true );
         if ( predictions.size() == 0 ) zeroCalls++;
         predictedCount += predictions.size();
@@ -206,8 +206,9 @@ public class MeSHMapperTest {
      * @param text
      * @param useSemTypes
      * @return
+     * @throws GEOMMTXException
      */
-    private Set<String> getMeSHIDs( String text, boolean useSemTypes ) {
+    private Set<String> getMeSHIDs( String text, boolean useSemTypes ) throws GEOMMTXException {
         // log.info(text);
         text = text.replace( ')', ' ' );
         text = text.replace( '(', ' ' );
