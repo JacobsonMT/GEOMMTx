@@ -110,18 +110,17 @@ public abstract class AbstractToUMLSMapper implements CUIMapper {
     /**
      * @throws Exception
      */
-    public void loadFromDisk() throws Exception {
-        ObjectInputStream o = new ObjectInputStream( new FileInputStream( getFileName() ) );
-        CUIMap = ( Map<String, Set<String>> ) o.readObject();
-        o.close();
+    public void loadFromDisk() throws IOException, ClassNotFoundException {
+        try (ObjectInputStream o = new ObjectInputStream( new FileInputStream( getFileName() ) );) {
+            CUIMap = ( Map<String, Set<String>> ) o.readObject();
+        }
     }
 
     /**
      * 
      */
     public void save() {
-        try {
-            ObjectOutputStream o = new ObjectOutputStream( new FileOutputStream( getFileName() ) );
+        try (ObjectOutputStream o = new ObjectOutputStream( new FileOutputStream( getFileName() ) );) {
             o.writeObject( CUIMap );
             o.close();
             log.info( "Wrote CUI mappings to " + getFileName() );

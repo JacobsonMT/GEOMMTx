@@ -57,16 +57,14 @@ public class LabelLoader {
      * @return label map
      */
     public static Map<String, String> readLabels() {
-
-        try {
-            String labelFilePath = getLabelFilePath();
+        String labelFilePath = getLabelFilePath();
+        try (ObjectInputStream o2 = new ObjectInputStream( new FileInputStream( labelFilePath ) );) {
             log.info( "Reading labels from " + labelFilePath );
             File labelFile = new File( labelFilePath );
             if ( !labelFile.canRead() ) {
                 return writeLabels();
             }
 
-            ObjectInputStream o2 = new ObjectInputStream( new FileInputStream( labelFilePath ) );
             Map<String, String> labels = ( Map<String, String> ) o2.readObject();
             o2.close();
             return labels;
@@ -94,10 +92,8 @@ public class LabelLoader {
 
         Map<String, String> labels = new HashMap<String, String>();
 
-        String queryString = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>                                     \r\n"
-                + "SELECT DISTINCT ?URI ?label                                    \r\n"
-                + "WHERE {                                                                                  \r\n"
-                + "    ?URI rdfs:label ?label .                                                         \r\n" + "}";
+        String queryString = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  " + "SELECT DISTINCT ?URI ?label "
+                + "WHERE { " + "    ?URI rdfs:label ?label .  " + "}";
         Query q = QueryFactory.create( queryString );
         QueryExecution qexec = QueryExecutionFactory.create( q, model );
         ResultSet results = qexec.execSelect();
@@ -109,8 +105,7 @@ public class LabelLoader {
             }
         }
 
-        try {
-            ObjectOutputStream o2 = new ObjectOutputStream( new FileOutputStream( labelFilePath ) );
+        try (ObjectOutputStream o2 = new ObjectOutputStream( new FileOutputStream( labelFilePath ) );) {
             o2.writeObject( labels );
             o2.close();
         } catch ( FileNotFoundException e ) {
