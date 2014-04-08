@@ -74,12 +74,16 @@ public class RDFMerge {
         for ( File file : files ) {
             Model current = ModelFactory.createDefaultModel();
             log.info( file.toString() + " " + ( i++ ) + " of " + files.length );
-            current.read( new FileInputStream( file ), null );
-            Model newModel = oldModel.union( current );
-            oldModel = newModel;
+            try (FileInputStream in = new FileInputStream( file );) {
+                current.read( in, null );
+                Model newModel = oldModel.union( current );
+                oldModel = newModel;
+            }
         }
         log.info( "Writing out" );
-        oldModel.write( new FileOutputStream( output ) );
+        try (FileOutputStream out = new FileOutputStream( output );) {
+            oldModel.write( out );
+        }
     }
 
     public static void mergeWorkingDirRDF( String outputfile ) throws Exception {

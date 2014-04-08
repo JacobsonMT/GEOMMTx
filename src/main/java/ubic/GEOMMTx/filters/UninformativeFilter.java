@@ -41,9 +41,10 @@ public class UninformativeFilter extends AbstractFilter implements URIFilter {
 
     public UninformativeFilter() {
         frequentURLs = new HashSet<String>();
-        try {
-            String uselessurlsFilePath = SetupParameters.getString( "geommtx.annotator.uselessFrequentURLsFile" );
-            BufferedReader f = new BufferedReader( new FileReader( uselessurlsFilePath ) );
+        String uselessurlsFilePath = SetupParameters.getString( "geommtx.annotator.uselessFrequentURLsFile" );
+
+        try (BufferedReader f = new BufferedReader( new FileReader( uselessurlsFilePath ) );) {
+
             String line;
             while ( ( line = f.readLine() ) != null ) {
                 frequentURLs.add( line );

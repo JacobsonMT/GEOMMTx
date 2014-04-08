@@ -57,26 +57,26 @@ public class PhrasetoCUISpreadsheet extends CreateSpreadSheet {
 
     public void populate( String inputFile ) throws Exception {
         Model model = ModelFactory.createDefaultModel();
-        FileInputStream fi = new FileInputStream( inputFile );
-        model.read( fi, null );
-        fi.close();
+        try (FileInputStream fi = new FileInputStream( inputFile );) {
+            model.read( fi, null );
+        }
         log.info( "Done reading..." );
 
-        String queryString = "PREFIX gemmaAnn: <http://bioinformatics.ubc.ca/Gemma/ws/xml/gemmaAnnotations.owl#>                                 \r\n"
-                + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>                                \r\n"
-                + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>                                     \r\n"
-                + "PREFIX gss: <http://www.w3.org/2001/11/IsaViz/graphstylesheets#>                         \r\n"
-                + "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>                                          \r\n"
-                + "PREFIX rs: <http://www.w3.org/2001/sw/DataAccess/tests/result-set#>                      \r\n"
-                + "SELECT DISTINCT ?CUI ?SUI ?phraseLabel ?mentionLabel                    \r\n"
-                + "WHERE {                                                                                  \r\n"
-                + "    ?phrase gemmaAnn:hasMention ?mention .                                                   \r\n"
-                + "    ?phrase rdfs:label ?phraseLabel .                                                   \r\n"
-                + "    ?mention gemmaAnn:hasSUI ?SUI .                                                         \r\n"
-                + "    ?mention gemmaAnn:hasCUI ?CUI .                                                         \r\n"
-                + "    ?mention rdfs:label ?mentionLabel .                                                 \r\n"
-                + "    ?mention gemmaAnn:mappedTerm ?mappedTerm .                                                 \r\n"
-                + "} ORDER BY ASC(?CUI) ASC(?SUI)                                                                   \r\n";
+        String queryString = "PREFIX gemmaAnn: <http://bioinformatics.ubc.ca/Gemma/ws/xml/gemmaAnnotations.owl#>  \n"
+                + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>  \n"
+                + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  \n"
+                + "PREFIX gss: <http://www.w3.org/2001/11/IsaViz/graphstylesheets#> \n"
+                + "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>   \n"
+                + "PREFIX rs: <http://www.w3.org/2001/sw/DataAccess/tests/result-set#>  \n"
+                + "SELECT DISTINCT ?CUI ?SUI ?phraseLabel ?mentionLabel \n"
+                + "WHERE {  \n"
+                + "    ?phrase gemmaAnn:hasMention ?mention .  \n"
+                + "    ?phrase rdfs:label ?phraseLabel .  \n"
+                + "    ?mention gemmaAnn:hasSUI ?SUI .  \n"
+                + "    ?mention gemmaAnn:hasCUI ?CUI . \n"
+                + "    ?mention rdfs:label ?mentionLabel .  \n"
+                + "    ?mention gemmaAnn:mappedTerm ?mappedTerm .  \n"
+                + "} ORDER BY ASC(?CUI) ASC(?SUI) \n";
 
         // sparql query
         // CUI, SUI, phrase, label

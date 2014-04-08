@@ -141,9 +141,9 @@ public class ProjectRDFModelTools {
 
     public static Model loadModel( String file ) throws IOException {
         Model model = ModelFactory.createDefaultModel();
-        FileInputStream fi = new FileInputStream( file );
-        model.read( fi, null );
-        fi.close();
+        try (FileInputStream fi = new FileInputStream( file );) {
+            model.read( fi, null );
+        }
         return model;
     }
 

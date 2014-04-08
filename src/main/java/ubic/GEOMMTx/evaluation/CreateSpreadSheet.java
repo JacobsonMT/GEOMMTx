@@ -68,7 +68,7 @@ public abstract class CreateSpreadSheet {
 
     SpreadSheetSchema schema;
 
-    public CreateSpreadSheet( String filename, SpreadSheetSchema schema )  {
+    public CreateSpreadSheet( String filename, SpreadSheetSchema schema ) {
         if ( new File( filename ).exists() ) {
             // throw new Exception( "please delete previous file to prevent overwrite" );
         }
@@ -83,9 +83,9 @@ public abstract class CreateSpreadSheet {
     // public abstract void populate(String inputFile) throws Exception;
 
     public void save() throws Exception {
-        FileOutputStream fileOut = new FileOutputStream( filename );
-        workbook.write( fileOut );
-        fileOut.close();
+        try (FileOutputStream fileOut = new FileOutputStream( filename );) {
+            workbook.write( fileOut );
+        }
     }
 
     private void createHeader() {

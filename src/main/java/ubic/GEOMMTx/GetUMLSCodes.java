@@ -83,43 +83,42 @@ public class GetUMLSCodes {
         int noCodeCount = 0;
         SABMap = new HashMap<String, Set<UMLSSourceCode>>();
 
-        BufferedReader f = new BufferedReader( new FileReader( location ) );
-        String line;
-        String[] tokens;
+        try (BufferedReader f = new BufferedReader( new FileReader( location ) );) {
+            String line;
+            String[] tokens;
 
-        int count = 0;
-        while ( ( line = f.readLine() ) != null ) {
-            tokens = line.split( "\\|" );
-            String CUI = tokens[0];
-            String SAB = null, CODE = null;
+            int count = 0;
+            while ( ( line = f.readLine() ) != null ) {
+                tokens = line.split( "\\|" );
+                String CUI = tokens[0];
+                String SAB = null, CODE = null;
 
-            // SAB is source vocab
-            SAB = tokens[11];
-            CODE = tokens[13];
+                // SAB is source vocab
+                SAB = tokens[11];
+                CODE = tokens[13];
 
-            if ( CODE.equals( "NOCODE" ) ) {
-                noCodeCount++;
-                continue;
-            }
+                if ( CODE.equals( "NOCODE" ) ) {
+                    noCodeCount++;
+                    continue;
+                }
 
-            if ( SAB.startsWith( "MSH" ) || SAB.startsWith( "SNO" ) ) continue;
+                if ( SAB.startsWith( "MSH" ) || SAB.startsWith( "SNO" ) ) continue;
 
-            if ( !SABMap.containsKey( CUI ) ) {
-                SABMap.put( CUI, new HashSet<UMLSSourceCode>() );
-            }
-            // add it to the set associated with this CUI
-            SABMap.get( CUI ).add( new UMLSSourceCode( SAB, CODE ) );
+                if ( !SABMap.containsKey( CUI ) ) {
+                    SABMap.put( CUI, new HashSet<UMLSSourceCode>() );
+                }
+                // add it to the set associated with this CUI
+                SABMap.get( CUI ).add( new UMLSSourceCode( SAB, CODE ) );
 
-            if ( ++count % 500000 == 0 ) {
-                log.info( count + " UMLS codes processed ..." );
-            }
+                if ( ++count % 500000 == 0 ) {
+                    log.info( count + " UMLS codes processed ..." );
+                }
 
-            if ( testMode && count > TEST_MODE_LIMIT ) {
-                break;
+                if ( testMode && count > TEST_MODE_LIMIT ) {
+                    break;
+                }
             }
         }
-        f.close();
-
         log.info( "Loaded UMLS Codes, nocode entries=" + noCodeCount );
     }
 }

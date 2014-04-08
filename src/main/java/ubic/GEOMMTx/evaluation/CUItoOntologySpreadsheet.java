@@ -63,9 +63,9 @@ public class CUItoOntologySpreadsheet extends CreateSpreadSheet {
     }
 
     public void populate( String inputFile ) throws Exception {
-        FileInputStream fi = new FileInputStream( inputFile );
-        model.read( fi, null );
-        fi.close();
+        try (FileInputStream fi = new FileInputStream( inputFile );) {
+            model.read( fi, null );
+        }
 
         // log.info( "Done reading..." );
 
