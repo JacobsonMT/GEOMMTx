@@ -39,13 +39,13 @@ public class TestUninformativeFilter {
     public void test() throws Exception {
         Map<String, String> labels = LabelLoader.readLabels();
 
-        BufferedReader f = new BufferedReader( new FileReader( SetupParameters
-                .getString( "geommtx.annotator.uselessFrequentURLsFile" ) ) );
-        String line;
-        while ( ( line = f.readLine() ) != null ) {
-            System.out.println( labels.get( line ) + " -> " + line );
+        try (BufferedReader f = new BufferedReader( new FileReader(
+                SetupParameters.getString( "geommtx.annotator.uselessFrequentURLsFile" ) ) );) {
+            String line;
+            while ( ( line = f.readLine() ) != null ) {
+                System.out.println( labels.get( line ) + " -> " + line );
+            }
         }
-        f.close();
 
     }
 

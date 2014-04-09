@@ -93,49 +93,48 @@ public class MeSHMapperTest {
     @Test
     public void testPredictions() throws Exception {
 
-        CSVReader reader = new CSVReader( new InputStreamReader( this.getClass().getResourceAsStream(
-                "/LMD-FEATURES.txt" ) ), ',', '"' );
-        List<String[]> lines = reader.readAll();
-        reader.close();
+        try (CSVReader reader = new CSVReader( new InputStreamReader( this.getClass().getResourceAsStream(
+                "/LMD-FEATURES.txt" ) ), ',', '"' );) {
+            List<String[]> lines = reader.readAll();
 
-        for ( String[] line : lines ) {
-            String ID = line[0];
-            String name = line[2];
+            for ( String[] line : lines ) {
+                String ID = line[0];
+                String name = line[2];
 
-            Set<String> predictions = getMeSHIDs( name, false );
-            for ( String prediction : predictions ) {
-                log.info( ID + "|name|" + prediction );
+                Set<String> predictions = getMeSHIDs( name, false );
+                for ( String prediction : predictions ) {
+                    log.info( ID + "|name|" + prediction );
+                }
+
+                if ( predictions.size() == 0 ) zeroCalls++;
+                predictedCount += predictions.size();
+                // if ( predictedCount > 10 ) break;
             }
+            // mapper.printSemMap();
+            log.debug( "Rejected anot:" + CUISUIrejects );
+            log.debug( "predictedCount:" + predictedCount );
+            log.debug( "zeroCalls:" + zeroCalls );
 
-            if ( predictions.size() == 0 ) zeroCalls++;
-            predictedCount += predictions.size();
-            // if ( predictedCount > 10 ) break;
+            for ( String[] line : lines ) {
+                String ID = line[0];
+                String desc = line[3];
+                if ( desc.trim().equals( "" ) ) {
+                    zeroCalls++;
+                    continue;
+                }
+
+                Set<String> predictions = getMeSHIDs( desc, false );
+                for ( String prediction : predictions ) {
+                    log.debug( ID + "|desc|" + prediction );
+                }
+
+                if ( predictions.size() == 0 ) zeroCalls++;
+                predictedCount += predictions.size();
+            }
+            log.debug( "Rejected anot:" + CUISUIrejects );
+            log.debug( "predictedCount:" + predictedCount );
+            log.debug( "zeroCalls:" + zeroCalls );
         }
-        // mapper.printSemMap();
-        log.debug( "Rejected anot:" + CUISUIrejects );
-        log.debug( "predictedCount:" + predictedCount );
-        log.debug( "zeroCalls:" + zeroCalls );
-
-        for ( String[] line : lines ) {
-            String ID = line[0];
-            String desc = line[3];
-            if ( desc.trim().equals( "" ) ) {
-                zeroCalls++;
-                continue;
-            }
-
-            Set<String> predictions = getMeSHIDs( desc, false );
-            for ( String prediction : predictions ) {
-                log.debug( ID + "|desc|" + prediction );
-            }
-
-            if ( predictions.size() == 0 ) zeroCalls++;
-            predictedCount += predictions.size();
-        }
-        log.debug( "Rejected anot:" + CUISUIrejects );
-        log.debug( "predictedCount:" + predictedCount );
-        log.debug( "zeroCalls:" + zeroCalls );
-
     }
 
     @Test

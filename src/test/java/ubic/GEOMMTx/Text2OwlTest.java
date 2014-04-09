@@ -55,14 +55,14 @@ public class Text2OwlTest {
         model = text2Owl.processText(
                 "Expression data from adult laboratory mouse brain hemispheres hippocampus cerebellum leg", root );
 
-        StringWriter fout = new StringWriter();
-        model.write( fout );
-        fout.close();
+        try (StringWriter fout = new StringWriter();) {
+            model.write( fout );
 
-        String results = fout.toString();
-        log.debug( results );
-        assertTrue( results.contains( "purl.org" ) );
-        assertTrue( results.contains( "NIF" ) );
+            String results = fout.toString();
+            log.debug( results );
+            assertTrue( results.contains( "purl.org" ) );
+            assertTrue( results.contains( "NIF" ) );
+        }
 
     }
 
