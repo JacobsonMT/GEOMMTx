@@ -64,7 +64,7 @@ public class DiseaseOntologyMapper extends AbstractToUMLSMapper {
     @Override
     public void loadFromOntology() {
         CUIMap = new HashMap<String, Set<String>>();
-        model = OntologyLoader.loadMemoryModel( getMainURL() );
+        this.model = OntologyLoader.loadMemoryModel( getMainURL() );
 
         // String test =
         // "SELECT DISTINCT ?pred ?subj WHERE { <http://purl.obolibrary.org/obo/DOID_7233>  ?pred ?subj .}";

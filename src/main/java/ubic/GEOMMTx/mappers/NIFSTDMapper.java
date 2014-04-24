@@ -46,13 +46,7 @@ public class NIFSTDMapper extends AbstractToUMLSMapper {
     void loadFromOntology() {
         CUIMap = new HashMap<String, Set<String>>();
 
-        // load the ontology model
-        try {
-            model = OntologyLoader.loadMemoryModel( getMainURL() );
-        } catch ( Exception e ) {
-            e.printStackTrace();
-            System.exit( 1 );
-        }
+        this.model = OntologyLoader.loadMemoryModel( getMainURL() );
 
         String queryString = "PREFIX obo_annot: <http://ontology.neuinfo.org/NIF/Backend/OBO_annotation_properties.owl#> "
                 + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
