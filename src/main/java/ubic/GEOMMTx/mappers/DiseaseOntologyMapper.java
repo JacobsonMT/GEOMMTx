@@ -44,9 +44,6 @@ public class DiseaseOntologyMapper extends AbstractToUMLSMapper {
 
     public static void main( String args[] ) {
         DiseaseOntologyMapper test = new DiseaseOntologyMapper();
-        // test.loadFromOntology();
-        // test.save();
-        // /String cui =
 
         System.out.println( test.convert( "C0020492", null ) );
         System.out.println( "CUI's that have more that one URI:" + test.countOnetoMany() );
@@ -69,12 +66,28 @@ public class DiseaseOntologyMapper extends AbstractToUMLSMapper {
         CUIMap = new HashMap<String, Set<String>>();
         model = OntologyLoader.loadMemoryModel( getMainURL() );
 
-        String queryString = "PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>  "
-                + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  SELECT ?obj ?label ?dbcode WHERE  { "
-                + "    ?anon rdfs:label ?dbcode . ?obj oboInOwl:hasDbXref ?anon .  "
-                + "   ?obj rdfs:label ?label .  FILTER (REGEX(?dbcode, \"UMLS_CUI:\")) }";
+        // String test =
+        // "SELECT DISTINCT ?pred ?subj WHERE { <http://purl.obolibrary.org/obo/DOID_7233>  ?pred ?subj .}";
+        // Query qe = QueryFactory.create( test );
+        // QueryExecution qw = QueryExecutionFactory.create( qe, model );
+        //
+        // try {
+        // ResultSet results = qw.execSelect();
+        // while ( results.hasNext() ) {
+        // QuerySolution soln = results.nextSolution();
+        // System.err.println( soln );
+        // }
+        // } finally {
+        // qw.close();
+        // }
 
-        System.err.println( queryString );
+        String queryString = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
+                + "PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>"
+                + " SELECT  ?obj ?label ?cuiCode  WHERE { "
+                + " ?obj oboInOwl:hasDbXref ?cuiCode .  ?obj rdfs:label ?label "
+                + " FILTER regex(STR(?cuiCode), \"UMLS_CUI\")}";
+
+        log.debug( queryString );
 
         Query q = QueryFactory.create( queryString );
         QueryExecution qexec = QueryExecutionFactory.create( q, model );
@@ -84,11 +97,14 @@ public class DiseaseOntologyMapper extends AbstractToUMLSMapper {
 
                 QuerySolution soln = results.nextSolution();
 
-                log.info( soln );
+                if ( log.isDebugEnabled() ) log.debug( soln );
 
                 // String label = OntologyTools.varToString( "label", soln );
                 String URI = OntologyTools.varToString( "obj", soln );
-                String cui = OntologyTools.varToString( "dbcode", soln );
+                String cui = OntologyTools.varToString( "cuiCode", soln );
+
+                assert URI != null;
+                assert cui != null;
 
                 // UMLS_CUI:C00123 is split and we use the second half
                 cui = cui.split( ":" )[1];
@@ -117,5 +133,4 @@ public class DiseaseOntologyMapper extends AbstractToUMLSMapper {
             qexec.close();
         }
     }
-
 }

@@ -63,7 +63,7 @@ public abstract class AbstractToUMLSMapper implements CUIMapper {
                     + "), loading from ontology" );
             loadFromOntology();
             log.info( "Loaded from ontology:" + CUIMap.size() + " mappings for " + getMainURL() );
-            save();
+          //  save();
         }
     }
 
