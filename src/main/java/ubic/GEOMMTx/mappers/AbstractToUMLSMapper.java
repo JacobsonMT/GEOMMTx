@@ -57,12 +57,12 @@ public abstract class AbstractToUMLSMapper implements CUIMapper {
         try {
             log.info( "Getting UMLS mappings for " + getMainURL() );
             loadFromDisk();
-            log.info( "Loaded from disk:" + CUIMap.size() + " mappings" );
+            log.info( "Loaded from disk:" + CUIMap.size() + " mappings for " + getMainURL() );
         } catch ( Exception e ) {
             log.info( "Can't load UMLS mappings for " + getMainURL() + " from disk (looked in " + getFileName()
                     + "), loading from ontology" );
             loadFromOntology();
-            log.info( "Loaded:" + CUIMap.size() + " mappings" );
+            log.info( "Loaded from ontology:" + CUIMap.size() + " mappings for " + getMainURL() );
             save();
         }
     }

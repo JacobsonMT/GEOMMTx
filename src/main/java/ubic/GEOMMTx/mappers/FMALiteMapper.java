@@ -25,6 +25,7 @@ import java.util.Set;
 import ubic.GEOMMTx.CUIMapper;
 import ubic.GEOMMTx.GetUMLSCodes;
 import ubic.GEOMMTx.UMLSSourceCode;
+import ubic.basecode.util.Configuration;
 
 /**
  * TODO document me
@@ -33,19 +34,18 @@ import ubic.GEOMMTx.UMLSSourceCode;
  * @version $Id$
  */
 public class FMALiteMapper implements CUIMapper {
-    private final static String MAIN_URL = "http://purl.org/obo/owl/FMA#FMA_";
-
-  
+    private final static String MAIN_URL = "http://purl.obolibrary.org/obo/FMA_";
 
     /*
      * Should probably refactor as this does not use the CUI parameter for anything (non-Javadoc)
+     * 
      * @see ubic.GEOMMTx.CUIMapper#convert(java.lang.String, java.util.Collection)
      */
     @Override
     public Set<String> convert( String CUI, Collection<UMLSSourceCode> sourceCodes ) {
         if ( sourceCodes == null ) return null;
         String code = null;
-        Set<String> codes = new HashSet<String>();
+        Set<String> codes = new HashSet<>();
         for ( UMLSSourceCode sourceCode : sourceCodes ) {
             // if FMA is the source
             if ( sourceCode.getSource().startsWith( "UWDA" ) || sourceCode.getSource().startsWith( "FMA" ) ) {
@@ -64,7 +64,7 @@ public class FMALiteMapper implements CUIMapper {
     }
 
     public Set<String> getAllURLs() {
-        Set<String> result = new HashSet<String>();
+        Set<String> result = new HashSet<>();
         GetUMLSCodes codes = new GetUMLSCodes();
         for ( String concept : codes.getUMLSCodeMap().keySet() ) {
             Set<String> URLs = convert( concept, codes.getUMLSCodeMap().get( concept ) );
@@ -74,6 +74,6 @@ public class FMALiteMapper implements CUIMapper {
     }
 
     public String getMainURL() {
-        return "http://www.berkeleybop.org/ontologies/owl/FMA";
+        return Configuration.getString( "url.fmaOntology" );
     }
 }

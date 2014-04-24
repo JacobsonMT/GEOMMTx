@@ -24,6 +24,7 @@ import java.util.Set;
 
 import ubic.GEOMMTx.OntologyTools;
 import ubic.basecode.ontology.OntologyLoader;
+import ubic.basecode.util.Configuration;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.query.Query;
@@ -60,8 +61,7 @@ public class DiseaseOntologyMapper extends AbstractToUMLSMapper {
 
     @Override
     public String getMainURL() {
-        // FIXME don't hardcode this.
-        return "http://purl.obolibrary.org/obo/doid.owl";
+        return Configuration.getString( "url.diseaseOntology" );
     }
 
     @Override
@@ -69,18 +69,23 @@ public class DiseaseOntologyMapper extends AbstractToUMLSMapper {
         CUIMap = new HashMap<String, Set<String>>();
         model = OntologyLoader.loadMemoryModel( getMainURL() );
 
-        String queryString = "PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>    \r\n"
-                + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>    \r\n"
-                + "SELECT ?obj ?label ?dbcode          \r\n" + "WHERE  {   \r\n"
-                + "    ?anon rdfs:label ?dbcode .    \r\n" + "    ?obj oboInOwl:hasDbXref ?anon .   \r\n"
-                + "    ?obj rdfs:label ?label .      \r\n" + "    FILTER (REGEX(?dbcode, \"UMLS_CUI:\"))   \r\n" + "}";
+        String queryString = "PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>  "
+                + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  SELECT ?obj ?label ?dbcode WHERE  { "
+                + "    ?anon rdfs:label ?dbcode . ?obj oboInOwl:hasDbXref ?anon .  "
+                + "   ?obj rdfs:label ?label .  FILTER (REGEX(?dbcode, \"UMLS_CUI:\")) }";
+
+        System.err.println( queryString );
 
         Query q = QueryFactory.create( queryString );
         QueryExecution qexec = QueryExecutionFactory.create( q, model );
         try {
             ResultSet results = qexec.execSelect();
             while ( results.hasNext() ) {
+
                 QuerySolution soln = results.nextSolution();
+
+                log.info( soln );
+
                 // String label = OntologyTools.varToString( "label", soln );
                 String URI = OntologyTools.varToString( "obj", soln );
                 String cui = OntologyTools.varToString( "dbcode", soln );
@@ -101,6 +106,13 @@ public class DiseaseOntologyMapper extends AbstractToUMLSMapper {
                 //
                 // if ( x.isAnon() ) continue; // some reasoners will return these.
             }
+
+            if ( CUIMap.isEmpty() ) {
+                log.warn( "No mappings found for DO" );
+            } else {
+                log.warn( CUIMap.size() + " mappings found for DO" );
+            }
+
         } finally {
             qexec.close();
         }

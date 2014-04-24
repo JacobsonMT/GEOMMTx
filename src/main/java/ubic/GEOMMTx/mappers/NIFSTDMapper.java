@@ -20,6 +20,7 @@ import java.util.Set;
 
 import ubic.GEOMMTx.OntologyTools;
 import ubic.basecode.ontology.OntologyLoader;
+import ubic.basecode.util.Configuration;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.query.Query;
@@ -38,7 +39,7 @@ public class NIFSTDMapper extends AbstractToUMLSMapper {
 
     @Override
     String getMainURL() {
-        return "http://ontology.neuinfo.org/NIF/nif-gemma.owl";
+        return Configuration.getString( "url.nifstdOntology" );
     }
 
     @Override
@@ -53,12 +54,10 @@ public class NIFSTDMapper extends AbstractToUMLSMapper {
             System.exit( 1 );
         }
 
-        String queryString = "PREFIX obo_annot: <http://ontology.neuinfo.org/NIF/Backend/OBO_annotation_properties.owl#>  \n"
-                + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
-                + "SELECT ?class ?label ?cui  \n  "
-                + "WHERE  {  \n  "
-                + "   ?class obo_annot:UmlsCui ?cui .   \n   "
-                + "   ?class rdfs:label ?label .\n     " + "}   ";
+        String queryString = "PREFIX obo_annot: <http://ontology.neuinfo.org/NIF/Backend/OBO_annotation_properties.owl#> "
+                + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
+                + "SELECT ?class ?label ?cui "
+                + "WHERE  {  ?class obo_annot:UmlsCui ?cui .    ?class rdfs:label ?label . } ";
 
         Query q = QueryFactory.create( queryString );
         QueryExecution qexec = QueryExecutionFactory.create( q, model );
