@@ -57,7 +57,7 @@ public class NIFSTDMapper extends AbstractToUMLSMapper {
         String queryString = "PREFIX obo_annot: <http://ontology.neuinfo.org/NIF/Backend/OBO_annotation_properties.owl#> "
                 + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
                 + "SELECT ?class ?label ?cui "
-                + "WHERE  {  ?class obo_annot:UmlsCui ?cui .    ?class rdfs:label ?label . } ";
+                + "WHERE  {  ?class obo_annot:UmlsCui ?cui . ?class rdfs:label ?label . } ";
 
         Query q = QueryFactory.create( queryString );
         QueryExecution qexec = QueryExecutionFactory.create( q, model );

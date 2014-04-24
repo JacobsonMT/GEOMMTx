@@ -81,7 +81,7 @@ public class GetUMLSCodes {
      */
     public void loadUMLSCodeMap() throws IOException {
         int noCodeCount = 0;
-        SABMap = new HashMap<String, Set<UMLSSourceCode>>();
+        SABMap = new HashMap<>();
 
         try (BufferedReader f = new BufferedReader( new FileReader( location ) );) {
             String line;

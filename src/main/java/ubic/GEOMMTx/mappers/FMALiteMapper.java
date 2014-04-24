@@ -28,13 +28,13 @@ import ubic.GEOMMTx.UMLSSourceCode;
 import ubic.basecode.util.Configuration;
 
 /**
- * TODO document me
+ * For FMA, we don't find the UMLS mappings in the OWL file; we get those directly from the UMLS data file MRCONSO.RRF.
  * 
  * @author lfrench
  * @version $Id$
  */
 public class FMALiteMapper implements CUIMapper {
-    private final static String MAIN_URL = "http://purl.obolibrary.org/obo/FMA_";
+    private final static String URI_BASE = "http://purl.obolibrary.org/obo/FMA_";
 
     /*
      * Should probably refactor as this does not use the CUI parameter for anything (non-Javadoc)
@@ -50,11 +50,11 @@ public class FMALiteMapper implements CUIMapper {
             // if FMA is the source
             if ( sourceCode.getSource().startsWith( "UWDA" ) || sourceCode.getSource().startsWith( "FMA" ) ) {
                 code = sourceCode.getCode();
-                codes.add( MAIN_URL + code );
+                codes.add( URI_BASE + code );
             }
         }
 
-        // doesnt have digital anatomist code
+        // doesn't have digital anatomist code
         if ( codes.isEmpty() ) {
             return null;
         }
