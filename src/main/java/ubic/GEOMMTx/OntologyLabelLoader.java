@@ -22,6 +22,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import ubic.basecode.ontology.OntologyLoader;
+import ubic.basecode.util.Configuration;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -32,7 +33,7 @@ import com.hp.hpl.jena.rdf.model.SimpleSelector;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
 /**
- * TODO Document Me
+ * Load ontologies.
  * 
  * @author lfrench
  * @version $Id$
@@ -46,27 +47,19 @@ public class OntologyLabelLoader {
         RDFNode nullNode = null;
         Selector labelSelector = new SimpleSelector( null, RDFS.label, nullNode );
 
-        OntModel nifstd = OntologyLoader.loadMemoryModel( "http://ontology.neuinfo.org/NIF/nif-gemma.owl" );
+        OntModel nifstd = OntologyLoader.loadMemoryModel( Configuration.getString( "url.nifstdOntology" ) );
         log.info( "loaded nifstd..." );
         model.add( nifstd.listStatements( labelSelector ) );
         log.info( "Done merging nifstd..." );
         nifstd.close();
 
-        // OntModel birnLex = OntologyLoader.loadMemoryModel( "http://purl.org/nbirn/birnlex/ontology/birnlex.owl" );
-        // log.info( "loaded birnLex..." );
-        // model.add( birnLex.listStatements( labelSelector ) );
-        // log.info( "Done merging Birnlex..." );
-        // birnLex.close();
-
-        OntModel FMAlite = OntologyLoader
-                .loadMemoryModel( "http://www.berkeleybop.org/ontologies/obo-all/fma_lite/fma_lite.owl" );
+        OntModel FMAlite = OntologyLoader.loadMemoryModel( Configuration.getString( "url.fmaOntology" ) );
         log.info( "loaded FMA" );
         model.add( FMAlite.listStatements( labelSelector ) );
         log.info( "Done merging FMA..." );
         FMAlite.close();
 
-        OntModel DO = OntologyLoader
-                .loadMemoryModel( "http://www.berkeleybop.org/ontologies/obo-all/disease_ontology/disease_ontology.owl" );
+        OntModel DO = OntologyLoader.loadMemoryModel( Configuration.getString( "url.diseaseOntology" ) );
         log.info( "loaded Disease ontology" );
         model.add( DO.listStatements( labelSelector ) );
         log.info( "Done merging Disease Ontology..." );
