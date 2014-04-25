@@ -46,7 +46,7 @@ public class DiseaseOntologyMapper extends AbstractToUMLSMapper {
         DiseaseOntologyMapper test = new DiseaseOntologyMapper();
 
         System.out.println( test.convert( "C0020492", null ) );
-        System.out.println( "CUI's that have more that one URI:" + test.countOnetoMany() );
+        System.out.println( "CUI's that have more than one URI:" + test.countOnetoMany() );
         System.out.println( "All urls size:" + test.getAllURLs().size() );
     }
 

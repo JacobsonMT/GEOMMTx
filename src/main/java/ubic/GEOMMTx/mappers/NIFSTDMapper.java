@@ -39,7 +39,15 @@ public class NIFSTDMapper extends AbstractToUMLSMapper {
 
     @Override
     String getMainURL() {
-        return Configuration.getString( "url.nifstdOntology" );
+        return "http://ontology.neuinfo.org/NIF/nif-gemma.owl";//Configuration.getString( "url.nifstdOntology" );
+    }
+
+    public static void main( String args[] ) {
+        NIFSTDMapper test = new NIFSTDMapper();
+
+        System.out.println( test.convert( "C0175286", null ) );
+        System.out.println( "CUI's that have more than one URI:" + test.countOnetoMany() );
+        System.out.println( "All urls size:" + test.getAllURLs().size() );
     }
 
     @Override
