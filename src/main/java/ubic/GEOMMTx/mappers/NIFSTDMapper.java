@@ -39,7 +39,7 @@ public class NIFSTDMapper extends AbstractToUMLSMapper {
 
     @Override
     String getMainURL() {
-        return "http://ontology.neuinfo.org/NIF/nif-gemma.owl";//Configuration.getString( "url.nifstdOntology" );
+        return "http://ontology.neuinfo.org/NIF/nif-gemma.owl";// Configuration.getString( "url.nifstdOntology" );
     }
 
     public static void main( String args[] ) {
@@ -67,7 +67,6 @@ public class NIFSTDMapper extends AbstractToUMLSMapper {
             ResultSet results = qexec.execSelect();
             while ( results.hasNext() ) {
                 QuerySolution soln = results.nextSolution();
-                // String label = OntologyTools.varToString( "label", soln );
                 String cui = OntologyTools.varToString( "cui", soln );
                 String URI = OntologyTools.varToString( "class", soln );
                 // some have blank UMLS codes
@@ -75,16 +74,11 @@ public class NIFSTDMapper extends AbstractToUMLSMapper {
                     // if we already have a mapping for the CUI then?
                     Set<String> URIs = CUIMap.get( cui );
                     if ( URIs == null ) {
-                        URIs = new HashSet<String>();
+                        URIs = new HashSet<>();
                         CUIMap.put( cui, URIs );
                     }
                     URIs.add( URI );
                 }
-
-                // System.out.print( label + "|" );
-                // System.out.print( cui + "|" );
-                // System.out.println( URI + "|" );
-                //
                 // if ( x.isAnon() ) continue; // some reasoners will return these.
             }
         } finally {
