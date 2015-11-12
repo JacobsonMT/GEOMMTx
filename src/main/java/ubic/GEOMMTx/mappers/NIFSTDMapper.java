@@ -20,7 +20,6 @@ import java.util.Set;
 
 import ubic.GEOMMTx.OntologyTools;
 import ubic.basecode.ontology.OntologyLoader;
-import ubic.basecode.util.Configuration;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.query.Query;
