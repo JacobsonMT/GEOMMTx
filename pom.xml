@@ -141,12 +141,6 @@
 			<artifactId>baseCode</artifactId>
 			<version>1.0.16</version>
 			<type>jar</type>
-			<exclusions>
-				<exclusion>
-					<artifactId>log4j</artifactId>
-					<groupId>log4j</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>
