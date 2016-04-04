@@ -103,6 +103,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.12</version>
 				<configuration>
 					<argLine>-ea -Xmx5g -Djava.awt.headless=true</argLine>
 					<reportsDirectory>target/surefire-reports</reportsDirectory>
@@ -232,11 +233,6 @@
 				<enabled>true</enabled>
 				<updatePolicy>daily</updatePolicy>
 			</releases>
-		</repository>
-		<repository>
-			<id>jena</id>
-			<name>Jena</name>
-			<url>http://openjena.org/repo/</url>
 		</repository>
 	</repositories>
 	<pluginRepositories>
