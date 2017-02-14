@@ -27,6 +27,11 @@ package ubic.GEOMMTx;
  */
 public class GEOMMTXException extends Exception {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 7697201966452424516L;
+
     public GEOMMTXException() {
         super();
     }

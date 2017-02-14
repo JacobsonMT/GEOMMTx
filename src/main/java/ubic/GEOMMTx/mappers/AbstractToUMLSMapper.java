@@ -63,7 +63,7 @@ public abstract class AbstractToUMLSMapper implements CUIMapper {
                     + "), loading from ontology" );
             loadFromOntology();
             log.info( "Loaded from ontology:" + CUIMap.size() + " mappings for " + getMainURL() );
-          //  save();
+            // save();
         }
     }
 
@@ -110,6 +110,7 @@ public abstract class AbstractToUMLSMapper implements CUIMapper {
     /**
      * @throws Exception
      */
+    @SuppressWarnings("unchecked")
     public void loadFromDisk() throws IOException, ClassNotFoundException {
         try (ObjectInputStream o = new ObjectInputStream( new FileInputStream( getFileName() ) );) {
             CUIMap = ( Map<String, Set<String>> ) o.readObject();

@@ -31,15 +31,15 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import ubic.GEOMMTx.evaluation.CreateSpreadSheet;
-import ubic.GEOMMTx.util.SetupParameters;
-
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
+
+import ubic.GEOMMTx.evaluation.CreateSpreadSheet;
+import ubic.GEOMMTx.util.SetupParameters;
 
 /**
  * Gets the labels of the ontology classes and saves them to disk
@@ -65,6 +65,7 @@ public class LabelLoader {
                 return writeLabels();
             }
 
+            @SuppressWarnings("unchecked")
             Map<String, String> labels = ( Map<String, String> ) o2.readObject();
             o2.close();
             return labels;

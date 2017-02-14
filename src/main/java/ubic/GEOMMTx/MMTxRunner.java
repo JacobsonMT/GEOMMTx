@@ -18,23 +18,22 @@
  */
 package ubic.GEOMMTx;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import gov.nih.nlm.nls.mmtx.MMTxAPI;
 import gov.nih.nlm.nls.nlp.textfeatures.Candidate;
 import gov.nih.nlm.nls.nlp.textfeatures.Document;
 import gov.nih.nlm.nls.nlp.textfeatures.FinalMapping;
 import gov.nih.nlm.nls.nlp.textfeatures.Phrase;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * TODO Document Me
@@ -140,6 +139,7 @@ public class MMTxRunner {
      * @param text
      * @return
      */
+    @SuppressWarnings("unchecked")
     public List<Phrase> getPhrases( String text ) throws GEOMMTXException {
         // check to see if we done it before
         Element element = memoryOnlyCache.get( text );
